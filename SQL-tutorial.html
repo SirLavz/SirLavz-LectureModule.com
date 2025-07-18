@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Complete SQL Tutorial</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+    }
+    h1, h2, h3 {
+      color: #005f73;
+    }
+    code, pre {
+      background: #f1f1f1;
+      padding: 10px;
+      border-radius: 6px;
+      display: block;
+      overflow-x: auto;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 10px 0;
+    }
+    table, th, td {
+      border: 1px solid #bbb;
+    }
+    th, td {
+      padding: 8px 12px;
+    }
+    th {
+      background-color: #e0f7fa;
+    }
+    a {
+      color: #0288d1;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📘 Complete SQL Tutorial</h1>
+
+  <h2>1. Introduction to SQL</h2>
+  <p>SQL (Structured Query Language) is used to interact with relational databases. Common systems include MySQL, PostgreSQL, and SQL Server.</p>
+  <p><strong>Core Commands:</strong> SELECT, INSERT, UPDATE, DELETE, CREATE, DROP</p>
+
+  <h2>2. Basic SQL Syntax</h2>
+  <pre><code>SELECT column1, column2 FROM table_name WHERE condition;</code></pre>
+
+  <h2>3. SQL Data Types</h2>
+  <table>
+    <tr><th>Type</th><th>Description</th></tr>
+    <tr><td>INT</td><td>Whole number</td></tr>
+    <tr><td>VARCHAR(n)</td><td>String of length n</td></tr>
+    <tr><td>DATE</td><td>Date format</td></tr>
+    <tr><td>BOOLEAN</td><td>True/False</td></tr>
+    <tr><td>DECIMAL</td><td>Precise decimal values</td></tr>
+  </table>
+
+  <h2>4. DDL - Data Definition Language</h2>
+  <pre><code>CREATE TABLE Students (
+  ID INT PRIMARY KEY,
+  Name VARCHAR(100),
+  Age INT
+);</code></pre>
+
+  <h2>5. DML - Data Manipulation Language</h2>
+  <pre><code>INSERT INTO Students (ID, Name, Age) VALUES (1, 'Ronald', 20);</code></pre>
+  <pre><code>UPDATE Students SET Age = 21 WHERE ID = 1;</code></pre>
+  <pre><code>DELETE FROM Students WHERE ID = 1;</code></pre>
+
+  <h2>6. DQL - Data Query Language</h2>
+  <pre><code>SELECT * FROM Students WHERE Age > 18;</code></pre>
+
+  <h2>7. SQL Operators</h2>
+  <table>
+    <tr><th>Operator</th><th>Use</th></tr>
+    <tr><td>=, >, <</td><td>Comparisons</td></tr>
+    <tr><td>BETWEEN</td><td>Range checking</td></tr>
+    <tr><td>LIKE</td><td>Pattern matching</td></tr>
+    <tr><td>IN</td><td>Set inclusion</td></tr>
+    <tr><td>IS NULL</td><td>Check null values</td></tr>
+  </table>
+
+  <h2>8. SQL Joins</h2>
+  <p><strong>Types:</strong> INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL OUTER JOIN</p>
+  <pre><code>SELECT A.Name, B.Grade
+FROM Students A
+INNER JOIN Grades B ON A.ID = B.StudentID;</code></pre>
+
+  <h2>9. Aggregate Functions</h2>
+  <table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr><td>COUNT()</td><td>Count rows</td></tr>
+    <tr><td>SUM()</td><td>Total</td></tr>
+    <tr><td>AVG()</td><td>Average</td></tr>
+    <tr><td>MIN()</td><td>Minimum</td></tr>
+    <tr><td>MAX()</td><td>Maximum</td></tr>
+  </table>
+
+  <h2>10. Subqueries</h2>
+  <pre><code>SELECT Name FROM Students
+WHERE ID IN (SELECT StudentID FROM Grades WHERE Grade = 'A');</code></pre>
+
+  <h2>11. Transactions</h2>
+  <p><code>BEGIN</code> → <code>COMMIT</code> → <code>ROLLBACK</code></p>
+
+  <h2>12. Constraints</h2>
+  <ul>
+    <li>PRIMARY KEY – unique identifier</li>
+    <li>FOREIGN KEY – references another table</li>
+    <li>NOT NULL – field must be filled</li>
+    <li>UNIQUE – prevents duplicate values</li>
+    <li>CHECK – value must meet a condition</li>
+  </ul>
+
+  <h2>13. Views</h2>
+  <pre><code>CREATE VIEW TopStudents AS
+SELECT Name, Grade FROM Students WHERE Grade = 'A';</code></pre>
+
+  <h2>14. Practice Resources</h2>
+  <ul>
+    <li><a href="https://www.w3schools.com/sql/" target="_blank">W3Schools SQL</a></li>
+    <li><a href="https://sqlfiddle.com/" target="_blank">SQL Fiddle</a></li>
+    <li><a href="https://www.youtube.com/watch?v=HXV3zeQKqGY" target="_blank">FreeCodeCamp SQL Video</a></li>
+  </ul>
+
+</body>
+</html>
