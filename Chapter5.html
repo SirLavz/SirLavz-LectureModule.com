@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 5 - Normalization of Database Tables</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- AOS Animation CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding-top: 56px;
+    }
+    header, footer {
+      background-color: #212529;
+      color: white;
+      padding: 1rem;
+    }
+    .content-section {
+      margin-bottom: 3rem;
+    }
+    .lab-card {
+      border-left: 5px solid #0d6efd;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="text-center">
+    <h1>📘 Chapter 5: Normalization of Database Tables</h1>
+    <p class="lead">Based on Coronel & Rob's 8th Edition</p>
+  </header>
+
+  <div class="container mt-4">
+    <!-- Learning Outcomes -->
+    <section class="content-section" data-aos="fade-up">
+      <h2>🎯 Learning Outcomes</h2>
+      <ul>
+        <li>Define normalization and its role in database design</li>
+        <li>Explain the purpose of normal forms (1NF, 2NF, 3NF, BCNF)</li>
+        <li>Identify and resolve data anomalies using normalization</li>
+        <li>Apply functional dependencies to normalize tables</li>
+        <li>Understand denormalization and its trade-offs</li>
+      </ul>
+    </section>
+
+    <!-- Key Concepts -->
+    <section class="content-section" data-aos="fade-right">
+      <h2>📘 Key Concepts</h2>
+      <p><strong>Normalization</strong>: A process that organizes data to reduce redundancy and improve integrity. It involves decomposing tables based on dependencies.</p>
+      <p><strong>Data Anomalies</strong>:
+        <ul>
+          <li><em>Update Anomaly</em>: Inconsistent updates across redundant data</li>
+          <li><em>Insert Anomaly</em>: Inability to add data due to missing related data</li>
+          <li><em>Delete Anomaly</em>: Unintended loss of data when deleting related records</li>
+        </ul>
+      </p>
+      <p><strong>Functional Dependency</strong>: A relationship where one attribute uniquely determines another.</p>
+    </section>
+
+    <!-- Normal Forms Table -->
+    <section class="content-section" data-aos="fade-left">
+      <h2>📊 Normal Forms</h2>
+      <table class="table table-bordered">
+        <thead class="table-dark">
+          <tr><th>Normal Form</th><th>Description</th><th>Requirement</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1NF</td>
+            <td>Eliminates repeating groups</td>
+            <td>Atomic values, unique rows</td>
+          </tr>
+          <tr>
+            <td>2NF</td>
+            <td>Removes partial dependencies</td>
+            <td>All non-key attributes fully dependent on primary key</td>
+          </tr>
+          <tr>
+            <td>3NF</td>
+            <td>Removes transitive dependencies</td>
+            <td>Non-key attributes depend only on the key</td>
+          </tr>
+          <tr>
+            <td>BCNF</td>
+            <td>Stronger version of 3NF</td>
+            <td>Every determinant is a candidate key</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Denormalization -->
+    <section class="content-section" data-aos="zoom-in">
+      <h2>⚖️ Denormalization</h2>
+      <p>Sometimes, for performance reasons, designers intentionally introduce redundancy. This is called <strong>denormalization</strong>. It improves query speed but may increase storage and risk of anomalies.</p>
+    </section>
+
+    <!-- Laboratory Activity -->
+    <section class="content-section lab-card p-4" data-aos="fade-up">
+      <h2>🧪 Laboratory Activity: Normalizing a Student Table</h2>
+      <h5>💡 Objectives</h5>
+      <ul>
+        <li>Identify anomalies in unnormalized data</li>
+        <li>Apply normalization steps to reach 3NF</li>
+        <li>Draw dependency diagrams and revised schemas</li>
+      </ul>
+
+      <h5>📋 Instructions</h5>
+      <ol>
+        <li>Download a sample student-course table with repeating groups</li>
+        <li>Convert the table to 1NF by removing repeating groups</li>
+        <li>Identify partial dependencies and convert to 2NF</li>
+        <li>Identify transitive dependencies and convert to 3NF</li>
+        <li>Draw dependency diagrams for each stage</li>
+        <li>Submit normalized tables and diagrams with brief explanations</li>
+      </ol>
+    </section>
+
+    <!-- Glossary -->
+    <section class="content-section" data-aos="fade-up">
+      <h2>📖 Glossary</h2>
+      <div class="accordion" id="glossaryAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#term1">
+              Transitive Dependency
+            </button>
+          </h2>
+          <div id="term1" class="accordion-collapse collapse">
+            <div class="accordion-body">
+              A non-key attribute depends on another non-key attribute rather than the primary key.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#term2">
+              Composite Key
+            </button>
+          </h2>
+          <div id="term2" class="accordion-collapse collapse">
+            <div class="accordion-body">
+              A primary key made up of two or more attributes.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center mt-4">
+    <p>© 2025 DB Systems Module | Designed for Academic Use</p>
+  </footer>
+
+  <!-- JS Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script>AOS.init();</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 1 - Database Systems</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- AOS Animation CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding-top: 56px;
+    }
+    header, footer {
+      background-color: #212529;
+      color: white;
+      padding: 1rem;
+    }
+    .content-section {
+      margin-bottom: 3rem;
+    }
+    .lab-card {
+      border-left: 5px solid #0d6efd;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="text-center">
+    <h1>📘 Chapter 1: Database Systems</h1>
+    <p class="lead">Based on Coronel & Rob's 8th Edition</p>
+  </header>
+
+  <div class="container mt-4">
+    <!-- Learning Outcomes -->
+    <section class="content-section" data-aos="fade-up">
+      <h2>🎯 Learning Outcomes</h2>
+      <ul>
+        <li>Define data, information, and metadata</li>
+        <li>Explain the purpose and components of a database system</li>
+        <li>Compare file systems and database systems</li>
+        <li>Identify types of databases and their use cases</li>
+        <li>Recognize the role and advantages of a DBMS</li>
+        <li>Describe the database system environment</li>
+      </ul>
+    </section>
+
+    <!-- Key Concepts -->
+    <section class="content-section" data-aos="fade-right">
+      <h2>📘 Key Concepts</h2>
+      <p><strong>Data vs. Information</strong>: Data are raw facts; information is processed data with meaning. Metadata describes data characteristics and relationships.</p>
+      <p><strong>Database</strong>: A shared, integrated structure storing related data and metadata.</p>
+      <p><strong>DBMS</strong>: Software that manages data access, integrity, security, and concurrency.</p>
+      <p><strong>Advantages of DBMS</strong>: Improved data sharing, security, integration, consistency, access, and decision-making.</p>
+      <p><strong>Types of Databases</strong>: Single-user, multi-user, centralized, distributed, operational, analytical, structured, unstructured, XML-based.</p>
+      <p><strong>Database System Environment</strong>: Includes hardware, software, people, procedures, and data.</p>
+    </section>
+
+    <!-- Comparison Table -->
+    <section class="content-section" data-aos="fade-left">
+      <h2>📊 File Systems vs DBMS</h2>
+      <table class="table table-bordered">
+        <thead class="table-dark">
+          <tr><th>Aspect</th><th>File System</th><th>DBMS</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Data Redundancy</td><td>High</td><td>Low</td></tr>
+          <tr><td>Security</td><td>Limited</td><td>Robust</td></tr>
+          <tr><td>Data Sharing</td><td>Difficult</td><td>Efficient</td></tr>
+          <tr><td>Integrity</td><td>Manual</td><td>Automated</td></tr>
+          <tr><td>Query Flexibility</td><td>Low</td><td>High</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Case Study -->
+    <section class="content-section" data-aos="zoom-in">
+      <h2>🎓 Case Study: Hospital Patient Records</h2>
+      <p>
+        A hospital uses a DBMS to manage patient records, appointments, billing, and prescriptions. Relationships between <em>Patient</em>, <em>Doctor</em>, and <em>Visit</em> entities allow secure, efficient access and reporting. Compared to file systems, DBMS ensures consistency and privacy compliance.
+      </p>
+    </section>
+
+    <!-- Laboratory Activity -->
+    <section class="content-section lab-card p-4" data-aos="fade-up">
+      <h2>🧪 Laboratory Activity: Exploring DBMS Advantages</h2>
+      <h5>💡 Objectives</h5>
+      <ul>
+        <li>Identify limitations of file-based systems</li>
+        <li>Design a basic database schema</li>
+        <li>Use SQL to retrieve and manipulate data</li>
+      </ul>
+
+      <h5>📋 Instructions</h5>
+      <ol>
+        <li>Download a sample CSV file with redundant student records</li>
+        <li>Analyze anomalies (update, insert, delete)</li>
+        <li>Design a normalized schema: Student, Course, Enrollment</li>
+        <li>Implement schema in MySQL or SQLite</li>
+        <li>Run basic SELECT queries to demonstrate improvements</li>
+        <li>Submit a short report comparing both systems</li>
+      </ol>
+    </section>
+
+    <!-- Glossary -->
+    <section class="content-section" data-aos="fade-up">
+      <h2>📖 Glossary</h2>
+      <div class="accordion" id="glossaryAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#term1">
+              Metadata
+            </button>
+          </h2>
+          <div id="term1" class="accordion-collapse collapse">
+            <div class="accordion-body">
+              Data about data—describes structure, constraints, and relationships.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#term2">
+              Data Anomaly
+            </button>
+          </h2>
+          <div id="term2" class="accordion-collapse collapse">
+            <div class="accordion-body">
+              Inconsistencies caused by redundant or poorly structured data.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center mt-4">
+    <p>© 2025 DB Systems Module | Designed for Academic Use</p>
+  </footer>
+
+  <!-- JS Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script>AOS.init();</script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 3 - The Relational Database Model</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- AOS Animation CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding-top: 56px;
+    }
+    header, footer {
+      background-color: #212529;
+      color: white;
+      padding: 1rem;
+    }
+    .content-section {
+      margin-bottom: 3rem;
+    }
+    .lab-card {
+      border-left: 5px solid #0d6efd;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="text-center">
+    <h1>📘 Chapter 3: The Relational Database Model</h1>
+    <p class="lead">Based on Coronel & Rob's 8th Edition</p>
+  </header>
+
+  <div class="container mt-4">
+    <!-- Learning Outcomes -->
+    <section class="content-section" data-aos="fade-up">
+      <h2>🎯 Learning Outcomes</h2>
+      <ul>
+        <li>Explain the logical structure of relational databases</li>
+        <li>Define relations, attributes, tuples, and domains</li>
+        <li>Identify and apply different types of keys</li>
+        <li>Understand relational integrity rules</li>
+        <li>Use relational algebra operators conceptually</li>
+        <li>Describe relationships: 1:1, 1:M, M:N</li>
+      </ul>
+    </section>
+
+    <!-- Key Concepts -->
+    <section class="content-section" data-aos="fade-right">
+      <h2>📘 Key Concepts</h2>
+      <p><strong>Relation</strong>: A table composed of rows (tuples) and columns (attributes). Each relation represents an entity set.</p>
+      <p><strong>Keys</strong>:
+        <ul>
+          <li><strong>Primary Key</strong>: Uniquely identifies each row</li>
+          <li><strong>Foreign Key</strong>: Refers to a primary key in another table</li>
+          <li><strong>Candidate Key</strong>: Minimal superkey</li>
+          <li><strong>Composite Key</strong>: Made of multiple attributes</li>
+        </ul>
+      </p>
+      <p><strong>Integrity Rules</strong>:
+        <ul>
+          <li><em>Entity Integrity</em>: No nulls in primary key</li>
+          <li><em>Referential Integrity</em>: Foreign key must match a valid primary key or be null</li>
+        </ul>
+      </p>
+    </section>
+
+    <!-- Relational Algebra -->
+    <section class="content-section" data-aos="fade-left">
+      <h2>🧮 Relational Algebra Operators</h2>
+      <table class="table table-bordered">
+        <thead class="table-dark">
+          <tr><th>Operator</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SELECT (σ)</td><td>Filters rows based on condition</td></tr>
+          <tr><td>PROJECT (π)</td><td>Selects specific columns</td></tr>
+          <tr><td>JOIN</td><td>Combines rows from two tables</td></tr>
+          <tr><td>UNION</td><td>Combines results from two queries</td></tr>
+          <tr><td>INTERSECT</td><td>Returns common rows</td></tr>
+          <tr><td>DIFFERENCE</td><td>Returns rows in one table but not the other</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Relationships -->
+    <section class="content-section" data-aos="zoom-in">
+      <h2>🔗 Relationships in Relational Model</h2>
+      <ul>
+        <li><strong>1:1</strong>: One entity relates to one other entity</li>
+        <li><strong>1:M</strong>: One entity relates to many others (most common)</li>
+        <li><strong>M:N</strong>: Many-to-many; resolved via a bridge table</li>
+      </ul>
+      <p>Example: A <em>Student</em> enrolls in many <em>Courses</em>; each <em>Course</em> has many <em>Students</em>. Use an <em>Enrollment</em> table to resolve M:N.</p>
+    </section>
+
+    <!-- Laboratory Activity -->
+    <section class="content-section lab-card p-4" data-aos="fade-up">
+      <h2>🧪 Laboratory Activity: Designing a Relational Schema</h2>
+      <h5>💡 Objectives</h5>
+      <ul>
+        <li>Apply relational concepts to a real-world scenario</li>
+        <li>Define keys and relationships</li>
+        <li>Use relational algebra to query data</li>
+      </ul>
+
+      <h5>📋 Instructions</h5>
+      <ol>
+        <li>Choose a domain (e.g., Library, School, Inventory)</li>
+        <li>Identify entities and attributes</li>
+        <li>Define primary and foreign keys</li>
+        <li>Draw a relational schema diagram</li>
+        <li>Write 3 relational algebra expressions for sample queries</li>
+        <li>Submit schema and query results</li>
+      </ol>
+    </section>
+
+    <!-- Glossary -->
+    <section class="content-section" data-aos="fade-up">
+      <h2>📖 Glossary</h2>
+      <div class="accordion" id="glossaryAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#term1">
+              Tuple
+            </button>
+          </h2>
+          <div id="term1" class="accordion-collapse collapse">
+            <div class="accordion-body">
+              A single row in a relational table representing one record.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#term2">
+              Referential Integrity
+            </button>
+          </h2>
+          <div id="term2" class="accordion-collapse collapse">
+            <div class="accordion-body">
+              A rule that ensures foreign keys match valid primary keys in related tables.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center mt-4">
+    <p>© 2025 DB Systems Module | Designed for Academic Use</p>
+  </footer>
+
+  <!-- JS Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script>AOS.init();</script>
+</body>
+</html>
