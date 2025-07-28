@@ -1,0 +1,444 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL CheatSheet</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light background */
+            color: #334155; /* Dark gray text */
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        .code-block {
+            background-color: #1e293b; /* Dark slate */
+            color: #e2e8f0; /* Light text for code */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Cascadia Code', monospace; /* Monospace font for code */
+            font-size: 0.9rem;
+            line-height: 1.4;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .section-heading {
+            border-bottom: 2px solid #6366f1; /* Indigo border */
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .nav-link {
+            transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+        }
+        .nav-link:hover {
+            color: #6366f1; /* Indigo on hover */
+            transform: translateX(5px);
+        }
+        /* Styles for hiding/showing content sections */
+        .content-section {
+            display: none; /* Hidden by default */
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+        .content-section.active {
+            display: block; /* Show when active */
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+        /* Custom scrollbar for webkit browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #6366f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4f46e5;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-indigo-600 to-purple-700 text-white py-6 shadow-lg">
+        <div class="container text-center">
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight mb-2">IS 311 - Information Management DB/SQL and IT 311 - Aviation Database Systems SQL CheatSheet</h1>
+            <p class="text-lg md:text-xl opacity-90">A quick reminder of all relevant SQL queries and syntax on how to use them.</p>
+            </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="container py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Table of Contents (Sidebar) -->
+            <aside class="lg:col-span-1 bg-white p-6 rounded-lg shadow-md h-fit sticky top-8 animate-slide-in-left">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Table of Contents</h2>
+                <nav>
+                    <ul class="space-y-2">
+                        <li><a href="#finding-data" class="nav-link text-lg text-gray-700 hover:text-indigo-600 font-medium">1. Finding Data Queries</a></li>
+                        <li><a href="#data-modification" class="nav-link text-lg text-gray-700 hover:text-indigo-600 font-medium">2. Data Modification Queries</a></li>
+                        <li><a href="#reporting-queries" class="nav-link text-lg text-gray-700 hover:text-indigo-600 font-medium">3. Reporting Queries</a></li>
+                        <li><a href="#join-queries" class="nav-link text-lg text-gray-700 hover:text-indigo-600 font-medium">4. Join Queries</a></li>
+                        <li><a href="#view-queries" class="nav-link text-lg text-gray-700 hover:text-indigo-600 font-medium">5. View Queries</a></li>
+                        <li><a href="#altering-table" class="nav-link text-lg text-gray-700 hover:text-indigo-600 font-medium">6. Altering Table Queries</a></li>
+                        <li><a href="#creating-table" class="nav-link text-lg text-gray-700 hover:text-indigo-600 font-medium">7. Creating Table Query</a></li>
+                    </ul>
+                </nav>
+                <div class="mt-6 text-center">
+                    <button id="openModalBtn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                        About This Cheatsheet
+                    </button>
+                </div>
+            </aside>
+
+            <!-- SQL Queries Content -->
+            <section class="lg:col-span-3 bg-white p-8 rounded-lg shadow-md space-y-10">
+
+                <!-- 1. Finding Data Queries -->
+                <div id="finding-data" class="content-section">
+                    <h2 class="text-3xl font-bold text-indigo-700 section-heading">1. Finding Data Queries</h2>
+                    <p class="mb-4 text-gray-600">These queries are used to retrieve information from your database.</p>
+
+                    <h3 class="text-xl font-semibold mb-2 text-gray-700">SELECT</h3>
+                    <p class="mb-2 text-gray-600">Used to select data from a database.</p>
+                    <pre class="code-block"><code>SELECT * FROM table_name;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">DISTINCT</h3>
+                    <p class="mb-2 text-gray-600">Filters away duplicate values and returns rows of specified column.</p>
+                    <pre class="code-block"><code>SELECT DISTINCT column_name FROM table_name;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">WHERE</h3>
+                    <p class="mb-2 text-gray-600">Used to filter records/rows.</p>
+                    <pre class="code-block"><code>SELECT column1, column2 FROM table_name WHERE condition;
+SELECT * FROM table_name WHERE condition1 AND condition2;
+SELECT * FROM table_name WHERE condition1 OR condition2;
+SELECT * FROM table_name WHERE NOT condition;
+SELECT * FROM table_name WHERE condition1 AND (condition2 OR condition3);
+SELECT * FROM table_name WHERE EXISTS (SELECT column_name FROM table_name WHERE condition);</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">ORDER BY</h3>
+                    <p class="mb-2 text-gray-600">Used to sort the result-set in ascending or descending order.</p>
+                    <pre class="code-block"><code>SELECT * FROM table_name ORDER BY column;
+SELECT * FROM table_name ORDER BY column DESC;
+SELECT * FROM table_name ORDER BY column1 ASC, column2 DESC;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">SELECT TOP / LIMIT</h3>
+                    <p class="mb-2 text-gray-600">Used to specify the number of records to return from top of table. Note: Not all database systems support <code>SELECT TOP</code>. The MySQL equivalent is the <code>LIMIT</code> clause.</p>
+                    <pre class="code-block"><code>SELECT TOP number columns_names FROM table_name WHERE condition;
+SELECT TOP percent columns_names FROM table_name WHERE condition;
+
+-- MySQL equivalent
+SELECT column_names FROM table_name LIMIT offset, count;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">LIKE</h3>
+                    <p class="mb-2 text-gray-600">Operator used in a <code>WHERE</code> clause to search for a specific pattern in a column.</p>
+                    <ul class="list-disc list-inside mb-2 text-gray-600">
+                        <li><code>%</code> (percent sign) is a wildcard character that represents zero, one, or multiple characters.</li>
+                        <li><code>_</code> (underscore) is a wildcard character that represents a single character.</li>
+                    </ul>
+                    <pre class="code-block"><code>SELECT column_names FROM table_name WHERE column_name LIKE pattern;
+
+-- Examples:
+LIKE ‘a%’ -- (find any values that start with “a”)
+LIKE ‘%a’ -- (find any values that end with “a”)
+LIKE ‘%or%’ -- (find any values that have “or” in any position)
+LIKE ‘_r%’ -- (find any values that have “r” in the second position)
+LIKE ‘a_%_%’ -- (find any values that start with “a” and are at least 3 characters in length)
+LIKE ‘[a-c]%’ -- (find any values starting with “a”, “b”, or “c”)</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">IN</h3>
+                    <p class="mb-2 text-gray-600">Operator that allows you to specify multiple values in a <code>WHERE</code> clause; essentially shorthand for multiple <code>OR</code> conditions.</p>
+                    <pre class="code-block"><code>SELECT column_names FROM table_name WHERE column_name IN (value1, value2, …);
+SELECT column_names FROM table_name WHERE column_name IN (SELECT STATEMENT);</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">BETWEEN</h3>
+                    <p class="mb-2 text-gray-600">Operator selects values within a given range, inclusive.</p>
+                    <pre class="code-block"><code>SELECT column_names FROM table_name WHERE column_name BETWEEN value1 AND value2;
+SELECT * FROM Products WHERE (column_name BETWEEN value1 AND value2) AND NOT column_name2 IN (value3, value4);
+SELECT * FROM Products WHERE column_name BETWEEN #01/07/1999# AND #03/12/1999#;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">NULL</h3>
+                    <p class="mb-2 text-gray-600">Values in a field with no value.</p>
+                    <pre class="code-block"><code>SELECT * FROM table_name WHERE column_name IS NULL;
+SELECT * FROM table_name WHERE column_name IS NOT NULL;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">AS (Aliases)</h3>
+                    <p class="mb-2 text-gray-600">Aliases are used to assign a temporary name to a table or column.</p>
+                    <pre class="code-block"><code>SELECT column_name AS alias_name FROM table_name;
+SELECT column_name FROM table_name AS alias_name;
+SELECT column_name AS alias_name1, column_name2 AS alias_name2 FROM table_name;
+SELECT column_name1, column_name2 + ', ' + column_name3 AS alias_name FROM table_name;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">UNION</h3>
+                    <p class="mb-2 text-gray-600">Set operator used to combine the result-set of two or more <code>SELECT</code> statements. Each <code>SELECT</code> statement within <code>UNION</code> must have the same number of columns, similar data types, and columns in the same order. <code>UNION</code> selects distinct values, <code>UNION ALL</code> allows duplicates.</p>
+                    <pre class="code-block"><code>SELECT columns_names FROM table1 UNION SELECT column_name FROM table2;
+SELECT columns_names FROM table1 UNION ALL SELECT column_name FROM table2;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">INTERSECT</h3>
+                    <p class="mb-2 text-gray-600">Set operator which is used to return the records that two <code>SELECT</code> statements have in common.</p>
+                    <pre class="code-block"><code>SELECT columns_names FROM table1 INTERSECT SELECT column_name FROM table2;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">EXCEPT</h3>
+                    <p class="mb-2 text-gray-600">Set operator used to return all the records in the first <code>SELECT</code> statement that are not found in the second <code>SELECT</code> statement.</p>
+                    <pre class="code-block"><code>SELECT columns_names FROM table1 EXCEPT SELECT column_name FROM table2;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">ANY|ALL</h3>
+                    <p class="mb-2 text-gray-600">Operators used to check subquery conditions within a <code>WHERE</code> or <code>HAVING</code> clause. <code>ANY</code> returns true if any subquery values meet the condition; <code>ALL</code> returns true if all subquery values meet the condition.</p>
+                    <pre class="code-block"><code>SELECT columns_names FROM table1 WHERE column_name operator (ANY|ALL) (SELECT column_name FROM table_name WHERE condition);</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">GROUP BY</h3>
+                    <p class="mb-2 text-gray-600">Statement often used with aggregate functions (<code>COUNT</code>, <code>MAX</code>, <code>MIN</code>, <code>SUM</code>, <code>AVG</code>) to group the result-set by one or more columns.</p>
+                    <pre class="code-block"><code>SELECT column_name1, COUNT(column_name2) FROM table_name WHERE condition GROUP BY column_name1 ORDER BY COUNT(column_name2) DESC;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">HAVING</h3>
+                    <p class="mb-2 text-gray-600">This clause was added to SQL because the <code>WHERE</code> keyword could not be used with aggregate functions.</p>
+                    <pre class="code-block"><code>SELECT COUNT(column_name1), column_name2 FROM table GROUP BY column_name2 HAVING COUNT(column_name1) > 5;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">WITH (Common Table Expression - CTE)</h3>
+                    <p class="mb-2 text-gray-600">Often used for retrieving hierarchical data or re-using a temporary result set several times in a query.</p>
+                    <pre class="code-block"><code>WITH RECURSIVE cte AS (
+  SELECT c0.* FROM categories AS c0 WHERE id = 1 -- Starting point
+  UNION ALL
+  SELECT c1.* FROM categories AS c1 JOIN cte ON c1.parent_category_id = cte.id
+)
+SELECT *
+FROM cte;</code></pre>
+                </div>
+
+                <!-- 2. Data Modification Queries -->
+                <div id="data-modification" class="content-section">
+                    <h2 class="text-3xl font-bold text-indigo-700 section-heading">2. Data Modification Queries</h2>
+                    <p class="mb-4 text-gray-600">These queries are used to change the data stored in your database tables.</p>
+
+                    <h3 class="text-xl font-semibold mb-2 text-gray-700">INSERT INTO</h3>
+                    <p class="mb-2 text-gray-600">Used to insert new records/rows into a table.</p>
+                    <pre class="code-block"><code>INSERT INTO table_name (column1, column2) VALUES (value1, value2);
+INSERT INTO table_name VALUES (value1, value2 …);</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">UPDATE</h3>
+                    <p class="mb-2 text-gray-600">Used to modify existing records in a table.</p>
+                    <pre class="code-block"><code>UPDATE table_name SET column1 = value1, column2 = value2 WHERE condition;
+UPDATE table_name SET column_name = value;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">DELETE</h3>
+                    <p class="mb-2 text-gray-600">Used to delete existing records/rows from a table.</p>
+                    <pre class="code-block"><code>DELETE FROM table_name WHERE condition;
+DELETE * FROM table_name; -- Deletes all records from the table</code></pre>
+                </div>
+
+                <!-- 3. Reporting Queries -->
+                <div id="reporting-queries" class="content-section">
+                    <h2 class="text-3xl font-bold text-indigo-700 section-heading">3. Reporting Queries</h2>
+                    <p class="mb-4 text-gray-600">These queries are used to summarize and analyze data.</p>
+
+                    <h3 class="text-xl font-semibold mb-2 text-gray-700">COUNT()</h3>
+                    <p class="mb-2 text-gray-600">Returns the number of occurrences.</p>
+                    <pre class="code-block"><code>SELECT COUNT (DISTINCT column_name) FROM table_name;
+SELECT COUNT (*) FROM table_name;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">MIN() and MAX()</h3>
+                    <p class="mb-2 text-gray-600">Returns the smallest/largest value of the selected column.</p>
+                    <pre class="code-block"><code>SELECT MIN (column_names) FROM table_name WHERE condition;
+SELECT MAX (column_names) FROM table_name WHERE condition;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">AVG()</h3>
+                    <p class="mb-2 text-gray-600">Returns the average value of a numeric column.</p>
+                    <pre class="code-block"><code>SELECT AVG (column_name) FROM table_name WHERE condition;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">SUM()</h3>
+                    <p class="mb-2 text-gray-600">Returns the total sum of a numeric column.</p>
+                    <pre class="code-block"><code>SELECT SUM (column_name) FROM table_name WHERE condition;</code></pre>
+                </div>
+
+                <!-- 4. Join Queries -->
+                <div id="join-queries" class="content-section">
+                    <h2 class="text-3xl font-bold text-indigo-700 section-heading">4. Join Queries</h2>
+                    <p class="mb-4 text-gray-600">Joins are used to combine rows from two or more tables, based on a related column between them.</p>
+
+                    <h3 class="text-xl font-semibold mb-2 text-gray-700">INNER JOIN</h3>
+                    <p class="mb-2 text-gray-600">Returns records that have matching values in both tables.</p>
+                    <pre class="code-block"><code>SELECT column_names FROM table1 INNER JOIN table2 ON table1.column_name = table2.column_name;
+SELECT table1.column_name1, table2.column_name2, table3.column_name3 FROM ((table1 INNER JOIN table2 ON relationship) INNER JOIN table3 ON relationship);</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">LEFT (OUTER) JOIN</h3>
+                    <p class="mb-2 text-gray-600">Returns all records from the left table (table1), and the matched records from the right table (table2). If no match, result is NULL from the right side.</p>
+                    <pre class="code-block"><code>SELECT column_names FROM table1 LEFT JOIN table2 ON table1.column_name = table2.column_name;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">RIGHT (OUTER) JOIN</h3>
+                    <p class="mb-2 text-gray-600">Returns all records from the right table (table2), and the matched records from the left table (table1). If no match, result is NULL from the left side.</p>
+                    <pre class="code-block"><code>SELECT column_names FROM table1 RIGHT JOIN table2 ON table1.column_name = table2.column_name;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">FULL (OUTER) JOIN</h3>
+                    <p class="mb-2 text-gray-600">Returns all records when there is a match in either the left or right table. Returns NULL for unmatched sides.</p>
+                    <pre class="code-block"><code>SELECT column_names FROM table1 FULL OUTER JOIN table2 ON table1.column_name = table2.column_name;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">Self JOIN</h3>
+                    <p class="mb-2 text-gray-600">A regular join, but the table is joined with itself. Useful for comparing rows within the same table.</p>
+                    <pre class="code-block"><code>SELECT column_names FROM table1 T1, table1 T2 WHERE condition;</code></pre>
+                </div>
+
+                <!-- 5. View Queries -->
+                <div id="view-queries" class="content-section">
+                    <h2 class="text-3xl font-bold text-indigo-700 section-heading">5. View Queries</h2>
+                    <p class="mb-4 text-gray-600">Views are virtual tables based on the result-set of a SQL query.</p>
+
+                    <h3 class="text-xl font-semibold mb-2 text-gray-700">CREATE VIEW</h3>
+                    <p class="mb-2 text-gray-600">Creates a view.</p>
+                    <pre class="code-block"><code>CREATE VIEW view_name AS SELECT column1, column2 FROM table_name WHERE condition;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">SELECT View</h3>
+                    <p class="mb-2 text-gray-600">Retrieves data from a view.</p>
+                    <pre class="code-block"><code>SELECT * FROM view_name;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">DROP VIEW</h3>
+                    <p class="mb-2 text-gray-600">Deletes a view.</p>
+                    <pre class="code-block"><code>DROP VIEW view_name;</code></pre>
+                </div>
+
+                <!-- 6. Altering Table Queries -->
+                <div id="altering-table" class="content-section">
+                    <h2 class="text-3xl font-bold text-indigo-700 section-heading">6. Altering Table Queries</h2>
+                    <p class="mb-4 text-gray-600">These queries are used to add, modify, or delete columns in an existing table.</p>
+
+                    <h3 class="text-xl font-semibold mb-2 text-gray-700">ADD Column</h3>
+                    <p class="mb-2 text-gray-600">Adds a new column to a table.</p>
+                    <pre class="code-block"><code>ALTER TABLE table_name ADD column_name column_definition;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">MODIFY Column</h3>
+                    <p class="mb-2 text-gray-600">Changes the data type or other properties of an existing column.</p>
+                    <pre class="code-block"><code>ALTER TABLE table_name MODIFY column_name column_type;</code></pre>
+
+                    <h3 class="text-xl font-semibold mt-6 mb-2 text-gray-700">DROP Column</h3>
+                    <p class="mb-2 text-gray-600">Deletes a column from a table.</p>
+                    <pre class="code-block"><code>ALTER TABLE table_name DROP COLUMN column_name;</code></pre>
+                </div>
+
+                <!-- 7. Creating Table Query -->
+                <div id="creating-table" class="content-section">
+                    <h2 class="text-3xl font-bold text-indigo-700 section-heading">7. Creating Table Query</h2>
+                    <p class="mb-4 text-gray-600">This query is used to create a new table in the database.</p>
+
+                    <h3 class="text-xl font-semibold mb-2 text-gray-700">CREATE TABLE</h3>
+                    <p class="mb-2 text-gray-600">Creates a new table with specified columns and their data types.</p>
+                    <pre class="code-block"><code>CREATE TABLE table_name (
+    column1 datatype,
+    column2 datatype,
+    column3 datatype,
+    column4 datatype
+);</code></pre>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-6 mt-8 shadow-inner">
+        <div class="container text-center text-sm">
+            <p>&copy; 2025 Philippine State College of Aeronautics </p>
+          <p> | Institute of Computer Studies | Ronald T. Lava, MSIT SirLavz2025</p>
+        </div>
+    </footer>
+
+    <!-- Modal Structure -->
+    <div id="infoModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 modal-overlay hidden">
+        <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full relative transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+            <button id="closeModalBtn" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+            <h3 class="text-2xl font-bold text-indigo-700 mb-4">About This Cheatsheet</h3>
+            <p class="text-gray-700 mb-4">This SQL Cheatsheet is designed to be a quick reference for IT 311 and IS 311 students. It covers fundamental queries for data retrieval, modification, reporting, and table management.</p>
+            <p class="text-sm text-gray-500 mt-4">Version 1.0.0</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            // Function to show a specific section and hide others
+            const showSection = (targetId) => {
+                contentSections.forEach(section => {
+                    if ('#' + section.id === targetId) {
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+            };
+
+            // Initially show the first section or the one specified in the URL hash
+            const initialHash = window.location.hash || '#finding-data';
+            showSection(initialHash);
+
+            navLinks.forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault(); // Prevent default anchor behavior
+
+                    const targetId = this.getAttribute('href');
+                    showSection(targetId);
+
+                    // Update URL hash without scrolling the page
+                    history.pushState(null, null, targetId);
+
+                    // Optional: Scroll to the top of the content area for better UX
+                    document.querySelector('main').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Modal functionality (remains the same)
+            const openModalBtn = document.getElementById('openModalBtn');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const infoModal = document.getElementById('infoModal');
+            const modalContent = document.getElementById('modalContent');
+
+            openModalBtn.addEventListener('click', () => {
+                infoModal.classList.remove('hidden');
+                setTimeout(() => {
+                    modalContent.classList.remove('opacity-0', 'scale-95');
+                    modalContent.classList.add('opacity-100', 'scale-100');
+                }, 10); // Small delay for transition
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                modalContent.classList.remove('opacity-100', 'scale-100');
+                modalContent.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    infoModal.classList.add('hidden');
+                }, 300); // Wait for transition to finish
+            });
+
+            // Close modal when clicking outside
+            infoModal.addEventListener('click', (e) => {
+                if (e.target === infoModal) {
+                    modalContent.classList.remove('opacity-100', 'scale-100');
+                    modalContent.classList.add('opacity-0', 'scale-95');
+                    setTimeout(() => {
+                        infoModal.classList.add('hidden');
+                    }, 300);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
