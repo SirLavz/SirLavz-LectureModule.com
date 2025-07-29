@@ -1,0 +1,164 @@
+ <!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IS 311 - Laboratory Activity 1.1</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #f4f6f9;
+      padding-bottom: 80px;
+    }
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .section-title {
+      border-left: 5px solid #0d6efd;
+      padding-left: 10px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="card shadow-lg">
+      <div class="card-body">
+        <h2 class="text-center text-primary">IS 311 – Information Management (DB/SQL)</h2>
+        <h4 class="text-center mb-4">Laboratory Activity 1.1: Installing XAMPP / KSWeb</h4><h5 class="section-title">Learning Objectives</h5>
+    <ul>
+      <li>Identify the appropriate installer for XAMPP (Windows/macOS) or KSWeb (Android).</li>
+      <li>Download and install XAMPP/KSWeb on the appropriate platform.</li>
+      <li>Understand the components included in the package (Apache, MySQL, phpMyAdmin).</li>
+      <li>Launch the software and verify successful installation.</li>
+    </ul>
+
+    <h5 class="section-title">Materials Needed</h5>
+    <ul>
+      <li>Computer (Windows/macOS) or Android device</li>
+      <li>Internet connection</li>
+      <li>Web browser (Chrome, Firefox, Safari)</li>
+      <li>Download link for <strong>XAMPP</strong> or <strong>KSWeb</strong></li>
+      <li>This lab guide and your LMS access</li>
+    </ul>
+
+    <h5 class="section-title">Instructional Video (Vlog Style)</h5>
+    <div class="video-container mb-4">
+      <iframe src="https://www.youtube.com/embed/h6DEDm7C37A" title="Installing XAMPP Tutorial" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <h5 class="section-title">Step-by-Step Procedure</h5>
+    <ol>
+      <li>Go to the official XAMPP website: <a href="https://www.apachefriends.org" target="_blank">https://www.apachefriends.org</a></li>
+      <li>Choose the installer version for your OS (Windows/macOS) and download it.</li>
+      <li>Run the installer and allow admin privileges if prompted.</li>
+      <li>Select components: Apache, MySQL, phpMyAdmin (others optional).</li>
+      <li>Wait for the installation to complete and launch the Control Panel.</li>
+      <li>If you're using an Android device, install KSWeb (provided by SirLavz) <a href="https://drive.google.com/file/d/1G7U2NyLVVQaMxCsSnW-6558pdz8K6iFH/view?usp=drivesdk">Sample Video</a>.</li>
+      <li>Start Apache and MySQL inside the app.</li>
+      <li>Access <code>http://localhost</code> or <code>127.0.0.1</code> on your browser to verify the server is running.</li>
+    </ol>
+
+    <h5 class="section-title">Student Activity Checklist</h5>
+    <ul>
+      <li>✔ Successfully downloaded XAMPP/KSWeb</li>
+      <li>✔ Completed installation</li>
+      <li>✔ Started Apache and MySQL</li>
+      <li>✔ Verified local server access</li>
+    </ul>
+
+    <h5 class="section-title">Submission Instructions</h5>
+    <ul>
+      <li>Take screenshots showing:</li>
+      <ul>
+        <li>The installation interface</li>
+        <li>XAMPP/KSWeb running with Apache & MySQL active</li>
+        <li>Browser showing localhost or KSWeb start page</li>
+      </ul>
+      <li>Write a short reflection on any issues encountered and how you resolved them.</li>
+      <li>Submit via your LMS account.</li>
+    </ul>
+
+    <div class="text-center mt-4">
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#rubricModal">
+        View Rubric for Grading
+      </button>
+    </div>
+
+    <!-- Rubric Modal -->
+    <div class="modal fade" id="rubricModal" tabindex="-1" aria-labelledby="rubricModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="rubricModalLabel">Grading Rubric</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-bordered table-striped">
+              <thead class="table-primary">
+                <tr>
+                  <th>Criteria</th>
+                  <th>Excellent (5)</th>
+                  <th>Good (4)</th>
+                  <th>Satisfactory (3)</th>
+                  <th>Needs Improvement (1–2)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Installer Download</td>
+                  <td>Correct installer selected and downloaded</td>
+                  <td>Minor delay or incorrect version initially</td>
+                  <td>Required guidance</td>
+                  <td>Not downloaded or incorrect version used</td>
+                </tr>
+                <tr>
+                  <td>Installation Process</td>
+                  <td>Installed without issues</td>
+                  <td>Minor installation issue resolved</td>
+                  <td>Needed help</td>
+                  <td>Installation incomplete</td>
+                </tr>
+                <tr>
+                  <td>Service Activation</td>
+                  <td>Apache & MySQL started correctly</td>
+                  <td>Minor service issue resolved</td>
+                  <td>Help required to start services</td>
+                  <td>Services not started</td>
+                </tr>
+                <tr>
+                  <td>Verification</td>
+                  <td>Successfully opened localhost</td>
+                  <td>Opened with delay or browser setting fix</td>
+                  <td>Assistance needed to verify</td>
+                  <td>Verification not done</td>
+                </tr>
+                <tr>
+                  <td>Submission</td>
+                  <td>All screenshots and reflection submitted</td>
+                  <td>One part missing</td>
+                  <td>Multiple parts missing</td>
+                  <td>No submission or incomplete</td>
+                </tr>
+              </tbody>
+            </table>
+            <p><strong>Total: /25</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  </div>  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script></body>
+</html>

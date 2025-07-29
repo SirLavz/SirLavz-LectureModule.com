@@ -1,0 +1,191 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IS 311 - Laboratory Activity 1.2</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #f4f6f9;
+      padding-bottom: 80px;
+    }
+    .modal-lg {
+      max-width: 90%;
+    }
+    .section-title {
+      border-left: 5px solid #0d6efd;
+      padding-left: 10px;
+      margin-top: 40px;
+    }
+    .step-image {
+      width: 100%;
+      max-width: 600px;
+      border: 1px solid #ddd;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="card shadow-lg">
+      <div class="card-body">
+        <h2 class="text-center text-primary">IS 311 – Information Management (DB/SQL)</h2>
+        <h4 class="text-center mb-4">Laboratory Activity 1.2: Familiarization of XAMPP MySQL UI</h4><h5 class="section-title">Learning Objectives</h5>
+    <ul>
+      <li>Identify the components and interface of XAMPP Control Panel and phpMyAdmin.</li>
+      <li>Start and configure Apache and MySQL services using XAMPP.</li>
+      <li>Navigate and explore the phpMyAdmin interface for managing MySQL databases.</li>
+      <li>Create, view, and delete a simple database and table using the UI.</li>
+      <li>Execute basic SQL queries using the SQL tab in phpMyAdmin.</li>
+    </ul>
+
+    <h5 class="section-title">Materials Needed</h5>
+    <ul>
+      <li>Laptop or desktop computer</li>
+      <li>Installed <strong>XAMPP</strong> software</li>
+      <li>Web browser (Chrome, Firefox, Edge)</li>
+      <li>Activity worksheet (provided by instructor)</li>
+    </ul>
+
+    <h5 class="section-title">Step-by-Step Procedures</h5>
+    <ol>
+      <li>
+        Open XAMPP Control Panel and start Apache & MySQL services.<br>
+        <img src="https://i.imgur.com/yGzyHkz.png" alt="XAMPP Control Panel" class="step-image">
+      </li>
+      <li>
+        Open a browser and go to <code>http://localhost/phpmyadmin</code>.<br>
+        <img src="https://i.imgur.com/UT6e1v5.png" alt="phpMyAdmin Login" class="step-image">
+      </li>
+      <li>
+        Explore phpMyAdmin interface: dashboard, tabs, database list.<br>
+        <img src="https://i.imgur.com/xUzq7Fu.png" alt="phpMyAdmin Dashboard" class="step-image">
+      </li>
+      <li>
+        Create a new database named <code>student_db</code>.<br>
+        <img src="https://i.imgur.com/Jp0aW2U.png" alt="Create Database" class="step-image">
+      </li>
+      <li>
+        Create a table named <code>students</code> with 4 fields: id, first_name, last_name, course.<br>
+        <img src="https://i.imgur.com/4pHTXqY.png" alt="Create Table" class="step-image">
+      </li>
+      <li>
+        Insert one record using the Insert tab.<br>
+        <img src="https://i.imgur.com/dv9Pf6F.png" alt="Insert Record" class="step-image">
+      </li>
+      <li>
+        Browse the table to view the inserted record.<br>
+        <img src="https://i.imgur.com/mP3uKTP.png" alt="Browse Records" class="step-image">
+      </li>
+      <li>
+        Use the SQL tab to run: <code>SELECT * FROM students;</code><br>
+        <img src="https://i.imgur.com/3m7DL8r.png" alt="SQL Query" class="step-image">
+      </li>
+    </ol>
+
+    <h5 class="section-title">Student Activity Checklist</h5>
+    <ul>
+      <li>✔ XAMPP running (Apache & MySQL)</li>
+      <li>✔ Accessed phpMyAdmin</li>
+      <li>✔ Created <code>student_db</code></li>
+      <li>✔ Created <code>students</code> table</li>
+      <li>✔ Inserted one record</li>
+      <li>✔ Executed SQL query</li>
+    </ul>
+
+    <h5 class="section-title">Submission Instructions</h5>
+    <ul>
+      <li>Take screenshots of: XAMPP running, phpMyAdmin dashboard, inserted record, and SQL result.</li>
+      <li>Write a reflection on challenges faced during the activity.</li>
+      <li>Submit via your LMS account.</li>
+    </ul>
+
+    <div class="text-center mt-5">
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#rubricModal">
+        View Rubric for Grading
+      </button>
+    </div>
+
+    <!-- Rubric Modal -->
+    <div class="modal fade" id="rubricModal" tabindex="-1" aria-labelledby="rubricModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="rubricModalLabel">Grading Rubric</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-bordered table-striped">
+              <thead class="table-primary">
+                <tr>
+                  <th>Criteria</th>
+                  <th>Excellent (5)</th>
+                  <th>Good (4)</th>
+                  <th>Satisfactory (3)</th>
+                  <th>Needs Improvement (1–2)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>XAMPP Setup</td>
+                  <td>Correct setup & services running</td>
+                  <td>Minor delay in setup</td>
+                  <td>With assistance</td>
+                  <td>Failed or not attempted</td>
+                </tr>
+                <tr>
+                  <td>Database Creation</td>
+                  <td>Database correctly created</td>
+                  <td>Minor issues</td>
+                  <td>Help required</td>
+                  <td>Not created</td>
+                </tr>
+                <tr>
+                  <td>Table Design</td>
+                  <td>Correct structure with PK</td>
+                  <td>Minor errors</td>
+                  <td>Missing PK or types</td>
+                  <td>Not created</td>
+                </tr>
+                <tr>
+                  <td>Data Insertion</td>
+                  <td>Accurate data input</td>
+                  <td>Minor data issue</td>
+                  <td>Help needed</td>
+                  <td>No data</td>
+                </tr>
+                <tr>
+                  <td>SQL Execution</td>
+                  <td>Correct query executed</td>
+                  <td>Minor syntax issue</td>
+                  <td>With assistance</td>
+                  <td>No query executed</td>
+                </tr>
+                <tr>
+                  <td>Navigation</td>
+                  <td>Fully explored</td>
+                  <td>Minor confusion</td>
+                  <td>Guided use</td>
+                  <td>No understanding</td>
+                </tr>
+                <tr>
+                  <td>Submission</td>
+                  <td>All clear, complete & on time</td>
+                  <td>Minor clarity issue</td>
+                  <td>Some missing parts</td>
+                  <td>Incomplete or no submission</td>
+                </tr>
+              </tbody>
+            </table>
+            <p><strong>Total: /35</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  </div>  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script></body>
+</html>
