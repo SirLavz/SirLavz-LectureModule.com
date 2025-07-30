@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> IT 311 SQL Practice</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+            color: #374151; /* Dark gray text */
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate; /* Use separate for rounded corners on cells */
+            border-spacing: 0;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 0.75rem; /* Rounded corners for the table */
+            overflow: hidden; /* Ensures rounded corners apply to content */
+        }
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb; /* Light gray border */
+        }
+        th {
+            background-color: #1f2937; /* Darker blue-gray for header */
+            color: #f9fafb; /* White text for header */
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        tr:last-child td {
+            border-bottom: none; /* No border for the last row */
+        }
+        tbody tr:nth-child(odd) {
+            background-color: #ffffff; /* White background for odd rows */
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9fafb; /* Lighter gray for even rows */
+        }
+        .query-section {
+            background-color: #ffffff;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            resize: vertical;
+            background-color: #f9fafb;
+            color: #1f2937;
+        }
+        .button {
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .button-primary {
+            background-color: #3b82f6; /* Blue */
+            color: white;
+        }
+        .button-primary:hover:not(:disabled) {
+            background-color: #2563eb; /* Darker blue */
+            transform: translateY(-1px);
+        }
+        .button-secondary {
+            background-color: #6b7280; /* Gray */
+            color: white;
+        }
+        .button-secondary:hover:not(:disabled) { /* Added :not(:disabled) */
+            background-color: #4b5563; /* Darker gray */
+            transform: translateY(-1px);
+        }
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        .correct-answer {
+            background-color: #e0f2fe; /* Light blue background */
+            color: #1e40af; /* Dark blue text */
+            padding: 0.75rem;
+            border-left: 4px solid #3b82f6;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            font-family: monospace;
+            white-space: pre-wrap; /* Preserve whitespace and wrap text */
+            word-break: break-all; /* Break long words */
+        }
+        .feedback-message {
+            margin-top: 0.5rem;
+            font-weight: 500;
+            color: #4b5563;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-8 mt-4">IT 311 SQL Practice</h1>
+        <h3 class="text-2xl font-bold text-center text-gray-800 mb-8 mt-4">RONALD T. LAVA, MSIT</h3>
+
+        <!-- Database Schema and Data Section -->
+        <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Database Schema and Sample Data</h2>
+
+            <!-- Customers Table -->
+            <h3 class="text-xl font-medium text-gray-600 mb-2">Customers Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>customer_id</th>
+                        <th>first_name</th>
+                        <th>last_name</th>
+                        <th>email</th>
+                        <th>city</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>Alice</td><td>Smith</td><td>alice.s@example.com</td><td>New York</td></tr>
+                    <tr><td>2</td><td>Bob</td><td>Johnson</td><td>bob.j@example.com</td><td>Los Angeles</td></tr>
+                    <tr><td>3</td><td>Carol</td><td>White</td><td>carol.w@example.com</td><td>Chicago</td></tr>
+                    <tr><td>4</td><td>David</td><td>Green</td><td>david.g@example.com</td><td>New York</td></tr>
+                </tbody>
+            </table>
+
+            <!-- Categories Table -->
+            <h3 class="text-xl font-medium text-gray-600 mb-2">Categories Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>category_id</th>
+                        <th>category_name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>101</td><td>Electronics</td></tr>
+                    <tr><td>102</td><td>Books</td></tr>
+                    <tr><td>103</td><td>Home Goods</td></tr>
+                    <tr><td>104</td><td>Apparel</td></tr>
+                </tbody>
+            </table>
+
+            <!-- Products Table -->
+            <h3 class="text-xl font-medium text-gray-600 mb-2">Products Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>product_id</th>
+                        <th>product_name</th>
+                        <th>description</th>
+                        <th>price</th>
+                        <th>stock_quantity</th>
+                        <th>category_id</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>Laptop Pro</td><td>High-performance laptop</td><td>1200</td><td>50</td><td>101</td></tr>
+                    <tr><td>2</td><td>Smartphone X</td><td>Latest model phone</td><td>800</td><td>120</td><td>101</td></tr>
+                    <tr><td>3</td><td>The Great Novel</td><td>Bestselling fiction</td><td>15</td><td>200</td><td>102</td></tr>
+                    <tr><td>4</td><td>Coffee Maker</td><td>Automatic drip maker</td><td>75</td><td>80</td><td>103</td></tr>
+                    <tr><td>5</td><td>T-Shirt (Large)</td><td>100% Cotton, Blue</td><td>25</td><td>150</td><td>104</td></tr>
+                    <tr><td>6</td><td>Wireless Earbuds</td><td>Noise-cancelling</td><td>150</td><td>90</td><td>101</td></tr>
+                </tbody>
+            </table>
+
+            <!-- Orders Table -->
+            <h3 class="text-xl font-medium text-gray-600 mb-2">Orders Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>order_id</th>
+                        <th>customer_id</th>
+                        <th>order_date</th>
+                        <th>total_amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1001</td><td>1</td><td>2024-03-10</td><td>1225</td></tr>
+                    <tr><td>1002</td><td>2</td><td>2024-03-11</td><td>800</td></tr>
+                    <tr><td>1003</td><td>1</td><td>2024-03-12</td><td>15</td></tr>
+                    <tr><td>1004</td><td>3</td><td>2024-03-12</td><td>75</td></tr>
+                    <tr><td>1005</td><td>4</td><td>2024-03-15</td><td>150</td></tr>
+                    <tr><td>1006</td><td>2</td><td>2024-03-16</td><td>25</td></tr>
+                </tbody>
+            </table>
+
+            <!-- Order_Items Table -->
+            <h3 class="text-xl font-medium text-gray-600 mb-2">Order_Items Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>order_item_id</th>
+                        <th>order_id</th>
+                        <th>product_id</th>
+                        <th>quantity</th>
+                        <th>price_at_time_of_order</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>1001</td><td>1</td><td>1</td><td>1200</td></tr>
+                    <tr><td>2</td><td>1001</td><td>5</td><td>1</td><td>25</td></tr>
+                    <tr><td>3</td><td>1002</td><td>2</td><td>1</td><td>800</td></tr>
+                    <tr><td>4</td><td>1003</td><td>3</td><td>1</td><td>15</td></tr>
+                    <tr><td>5</td><td>1004</td><td>4</td><td>1</td><td>75</td></tr>
+                    <tr><td>6</td><td>1005</td><td>6</td><td>1</td><td>150</td></tr>
+                    <tr><td>7</td><td>1006</td><td>5</td><td>1</td><td>25</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Queries Section -->
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Practice Queries</h2>
+
+        <!-- Customers Queries -->
+        <h3 class="text-2xl font-semibold text-gray-700 mb-4">Customers Table Queries</h3>
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">1. QUERY: **List all customers.**</p>
+            <textarea id="customer-query-1" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('customer-query-1', 'SELECT * FROM Customers;', 'customer-feedback-1', 'customer-correct-1')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('customer-correct-1')">Show Answer</button>
+            </div>
+            <div id="customer-feedback-1" class="feedback-message"></div>
+            <div id="customer-correct-1" class="correct-answer hidden">SELECT * FROM Customers;</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">2. QUERY: **Find the email address of the customer named 'Alice Smith'.**</p>
+            <textarea id="customer-query-2" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('customer-query-2', 'SELECT email FROM Customers WHERE first_name = \'Alice\' AND last_name = \'Smith\';', 'customer-feedback-2', 'customer-correct-2')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('customer-correct-2')">Show Answer</button>
+            </div>
+            <div id="customer-feedback-2" class="feedback-message"></div>
+            <div id="customer-correct-2" class="correct-answer hidden">SELECT email FROM Customers WHERE first_name = 'Alice' AND last_name = 'Smith';</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">3. QUERY: **Get the first name and last name of customers who live in 'New York'.**</p>
+            <textarea id="customer-query-3" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('customer-query-3', 'SELECT first_name, last_name FROM Customers WHERE city = \'New York\';', 'customer-feedback-3', 'customer-correct-3')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('customer-correct-3')">Show Answer</button>
+            </div>
+            <div id="customer-feedback-3" class="feedback-message"></div>
+            <div id="customer-correct-3" class="correct-answer hidden">SELECT first_name, last_name FROM Customers WHERE city = 'New York';</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">4. QUERY: **Count how many customers are there.**</p>
+            <textarea id="customer-query-4" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('customer-query-4', 'SELECT COUNT(customer_id) FROM Customers;', 'customer-feedback-4', 'customer-correct-4')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('customer-correct-4')">Show Answer</button>
+            </div>
+            <div id="customer-feedback-4" class="feedback-message"></div>
+            <div id="customer-correct-4" class="correct-answer hidden">SELECT COUNT(customer_id) FROM Customers;</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">5. QUERY: **List customers whose email ends with '@example.com'.**</p>
+            <textarea id="customer-query-5" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('customer-query-5', 'SELECT first_name, last_name, email FROM Customers WHERE email LIKE \'%@example.com\';', 'customer-feedback-5', 'customer-correct-5')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('customer-correct-5')">Show Answer</button>
+            </div>
+            <div id="customer-feedback-5" class="feedback-message"></div>
+            <div id="customer-correct-5" class="correct-answer hidden">SELECT first_name, last_name, email FROM Customers WHERE email LIKE '%@example.com';</div>
+        </div>
+
+        <!-- Categories Queries -->
+        <h3 class="text-2xl font-semibold text-gray-700 mb-4 mt-8">Categories Table Queries</h3>
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">1. QUERY: **List all available categories.**</p>
+            <textarea id="category-query-1" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('category-query-1', 'SELECT * FROM Categories;', 'category-feedback-1', 'category-correct-1')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('category-correct-1')">Show Answer</button>
+            </div>
+            <div id="category-feedback-1" class="feedback-message"></div>
+            <div id="category-correct-1" class="correct-answer hidden">SELECT * FROM Categories;</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">2. QUERY: **Find the category ID for 'Books'.**</p>
+            <textarea id="category-query-2" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('category-query-2', 'SELECT category_id FROM Categories WHERE category_name = \'Books\';', 'category-feedback-2', 'category-correct-2')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('category-correct-2')">Show Answer</button>
+            </div>
+            <div id="category-feedback-2" class="feedback-message"></div>
+            <div id="category-correct-2" class="correct-answer hidden">SELECT category_id FROM Categories WHERE category_name = 'Books';</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">3. QUERY: **Get the names of categories that have 'E' in their name.**</p>
+            <textarea id="category-query-3" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('category-query-3', 'SELECT category_name FROM Categories WHERE category_name LIKE \'%E%\';', 'category-feedback-3', 'category-correct-3')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('category-correct-3')">Show Answer</button>
+            </div>
+            <div id="category-feedback-3" class="feedback-message"></div>
+            <div id="category-correct-3" class="correct-answer hidden">SELECT category_name FROM Categories WHERE category_name LIKE '%E%';</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">4. QUERY: **Count how many distinct categories are there.**</p>
+            <textarea id="category-query-4" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('category-query-4', 'SELECT COUNT(category_id) FROM Categories;', 'category-feedback-4', 'category-correct-4')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('category-correct-4')">Show Answer</button>
+            </div>
+            <div id="category-feedback-4" class="feedback-message"></div>
+            <div id="category-correct-4" class="correct-answer hidden">SELECT COUNT(category_id) FROM Categories;</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">5. QUERY: **Select category names in alphabetical order.**</p>
+            <textarea id="category-query-5" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('category-query-5', 'SELECT category_name FROM Categories ORDER BY category_name ASC;', 'category-feedback-5', 'category-correct-5')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('category-correct-5')">Show Answer</button>
+            </div>
+            <div id="category-feedback-5" class="feedback-message"></div>
+            <div id="category-correct-5" class="correct-answer hidden">SELECT category_name FROM Categories ORDER BY category_name ASC;</div>
+        </div>
+
+        <!-- Products Queries -->
+        <h3 class="text-2xl font-semibold text-gray-700 mb-4 mt-8">Products Table Queries</h3>
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">1. QUERY: **List all products with their names and prices.**</p>
+            <textarea id="product-query-1" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('product-query-1', 'SELECT product_name, price FROM Products;', 'product-feedback-1', 'product-correct-1')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('product-correct-1')">Show Answer</button>
+            </div>
+            <div id="product-feedback-1" class="feedback-message"></div>
+            <div id="product-correct-1" class="correct-answer hidden">SELECT product_name, price FROM Products;</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">2. QUERY: **Find products that cost more than $100 and have more than 50 units in stock.**</p>
+            <textarea id="product-query-2" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('product-query-2', 'SELECT product_name, price, stock_quantity FROM Products WHERE price > 100 AND stock_quantity > 50;', 'product-feedback-2', 'product-correct-2')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('product-correct-2')">Show Answer</button>
+            </div>
+            <div id="product-feedback-2" class="feedback-message"></div>
+            <div id="product-correct-2" class="correct-answer hidden">SELECT product_name, price, stock_quantity FROM Products WHERE price > 100 AND stock_quantity > 50;</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">3. QUERY: **Get the names of products in the 'Electronics' category.**</p>
+            <textarea id="product-query-3" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('product-query-3', 'SELECT P.product_name FROM Products P JOIN Categories C ON P.category_id = C.category_id WHERE C.category_name = \'Electronics\';', 'product-feedback-3', 'product-correct-3')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('product-correct-3')">Show Answer</button>
+            </div>
+            <div id="product-feedback-3" class="feedback-message"></div>
+            <div id="product-correct-3" class="correct-answer hidden">SELECT P.product_name FROM Products P JOIN Categories C ON P.category_id = C.category_id WHERE C.category_name = 'Electronics';</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">4. QUERY: **What is the average price of all products?**</p>
+            <textarea id="product-query-4" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('product-query-4', 'SELECT AVG(price) FROM Products;', 'product-feedback-4', 'product-correct-4')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('product-correct-4')">Show Answer</button>
+            </div>
+            <div id="product-feedback-4" class="feedback-message"></div>
+            <div id="product-correct-4" class="correct-answer hidden">SELECT AVG(price) FROM Products;</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">5. QUERY: **List products that are currently out of stock (stock quantity is 0).**</p>
+            <textarea id="product-query-5" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('product-query-5', 'SELECT product_name FROM Products WHERE stock_quantity = 0;', 'product-feedback-5', 'product-correct-5')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('product-correct-5')">Show Answer</button>
+            </div>
+            <div id="product-feedback-5" class="feedback-message"></div>
+            <div id="product-correct-5" class="correct-answer hidden">SELECT product_name FROM Products WHERE stock_quantity = 0;</div>
+        </div>
+
+        <!-- Orders Queries -->
+        <h3 class="text-2xl font-semibold text-gray-700 mb-4 mt-8">Orders Table Queries</h3>
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">1. QUERY: **List all orders with their order ID, customer ID, and total amount.**</p>
+            <textarea id="order-query-1" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('order-query-1', 'SELECT order_id, customer_id, total_amount FROM Orders;', 'order-feedback-1', 'order-correct-1')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('order-correct-1')">Show Answer</button>
+            </div>
+            <div id="order-feedback-1" class="feedback-message"></div>
+            <div id="order-correct-1" class="correct-answer hidden">SELECT order_id, customer_id, total_amount FROM Orders;</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">2. QUERY: **Find all orders placed by the customer with ID 1.**</p>
+            <textarea id="order-query-2" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('order-query-2', 'SELECT * FROM Orders WHERE customer_id = 1;', 'order-feedback-2', 'order-correct-2')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('order-correct-2')">Show Answer</button>
+            </div>
+            <div id="order-feedback-2" class="feedback-message"></div>
+            <div id="order-correct-2" class="correct-answer hidden">SELECT * FROM Orders WHERE customer_id = 1;</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">3. QUERY: **Get the total revenue generated from all orders.**</p>
+            <textarea id="order-query-3" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('order-query-3', 'SELECT SUM(total_amount) FROM Orders;', 'order-feedback-3', 'order-correct-3')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('order-correct-3')">Show Answer</button>
+            </div>
+            <div id="order-feedback-3" class="feedback-message"></div>
+            <div id="order-correct-3" class="correct-answer hidden">SELECT SUM(total_amount) FROM Orders;</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">4. QUERY: **List orders placed on '2024-03-12'.**</p>
+            <textarea id="order-query-4" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('order-query-4', 'SELECT order_id, customer_id, total_amount FROM Orders WHERE order_date = \'2024-03-12\';', 'order-feedback-4', 'order-correct-4')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('order-correct-4')">Show Answer</button>
+            </div>
+            <div id="order-feedback-4" class="feedback-message"></div>
+            <div id="order-correct-4" class="correct-answer hidden">SELECT order_id, customer_id, total_amount FROM Orders WHERE order_date = '2024-03-12';</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">5. QUERY: **Show the order ID and customer's first name for each order.**</p>
+            <textarea id="order-query-5" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('order-query-5', 'SELECT O.order_id, C.first_name FROM Orders O JOIN Customers C ON O.customer_id = C.customer_id;', 'order-feedback-5', 'order-correct-5')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('order-correct-5')">Show Answer</button>
+            </div>
+            <div id="order-feedback-5" class="feedback-message"></div>
+            <div id="order-correct-5" class="correct-answer hidden">SELECT O.order_id, C.first_name FROM Orders O JOIN Customers C ON O.customer_id = C.customer_id;</div>
+        </div>
+
+        <!-- Order_Items Queries -->
+        <h3 class="text-2xl font-semibold text-gray-700 mb-4 mt-8">Order_Items Table Queries</h3>
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">1. QUERY: **List all items in order ID 1001.**</p>
+            <textarea id="order-item-query-1" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('order-item-query-1', 'SELECT product_id, quantity FROM Order_Items WHERE order_id = 1001;', 'order-item-feedback-1', 'order-item-correct-1')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('order-item-correct-1')">Show Answer</button>
+            </div>
+            <div id="order-item-feedback-1" class="feedback-message"></div>
+            <div id="order-item-correct-1" class="correct-answer hidden">SELECT product_id, quantity FROM Order_Items WHERE order_id = 1001;</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">2. QUERY: **Find the total quantity of 'T-Shirt (Large)' ever ordered.**</p>
+            <textarea id="order-item-query-2" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('order-item-query-2', 'SELECT SUM(OI.quantity) FROM Order_Items OI JOIN Products P ON OI.product_id = P.product_id WHERE P.product_name = \'T-Shirt (Large)\';', 'order-item-feedback-2', 'order-item-correct-2')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('order-item-correct-2')">Show Answer</button>
+            </div>
+            <div id="order-item-feedback-2" class="feedback-message"></div>
+            <div id="order-item-correct-2" class="correct-answer hidden">SELECT SUM(OI.quantity) FROM Order_Items OI JOIN Products P ON OI.product_id = P.product_id WHERE P.product_name = 'T-Shirt (Large)';</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">3. QUERY: **Get the product name and quantity for each item in order 1001.**</p>
+            <textarea id="order-item-query-3" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('order-item-query-3', 'SELECT P.product_name, OI.quantity FROM Order_Items OI JOIN Products P ON OI.product_id = P.product_id WHERE OI.order_id = 1001;', 'order-item-feedback-3', 'order-item-correct-3')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('order-item-correct-3')">Show Answer</button>
+            </div>
+            <div id="order-item-feedback-3" class="feedback-message"></div>
+            <div id="order-item-correct-3" class="correct-answer hidden">SELECT P.product_name, OI.quantity FROM Order_Items OI JOIN Products P ON OI.product_id = P.product_id WHERE OI.order_id = 1001;</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">4. QUERY: **Count how many distinct products have been ordered.**</p>
+            <textarea id="order-item-query-4" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('order-item-query-4', 'SELECT COUNT(DISTINCT product_id) FROM Order_Items;', 'order-item-feedback-4', 'order-item-correct-4')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('order-item-correct-4')">Show Answer</button>
+            </div>
+            <div id="order-item-feedback-4" class="feedback-message"></div>
+            <div id="order-item-correct-4" class="correct-answer hidden">SELECT COUNT(DISTINCT product_id) FROM Order_Items;</div>
+        </div>
+
+        <div class="query-section">
+            <p class="text-lg font-medium mb-2">5. QUERY: **Show the order ID and the product name for every item in all orders.**</p>
+            <textarea id="order-item-query-5" class="sql-textarea" placeholder="Write your SQL query here..."></textarea>
+            <div class="flex space-x-4 mt-4">
+                <button class="button button-primary check-button" disabled onclick="checkAnswer('order-item-query-5', 'SELECT OI.order_id, P.product_name, OI.quantity FROM Order_Items OI JOIN Products P ON OI.product_id = P.product_id ORDER BY OI.order_id, P.product_name;', 'order-item-feedback-5', 'order-item-correct-5')">Check Answer</button>
+                <button class="button button-secondary show-answer-button" disabled onclick="showAnswer('order-item-correct-5')">Show Answer</button>
+            </div>
+            <div id="order-item-feedback-5" class="feedback-message"></div>
+            <div id="order-item-correct-5" class="correct-answer hidden">SELECT OI.order_id, P.product_name, OI.quantity FROM Order_Items OI JOIN Products P ON OI.product_id = P.product_id ORDER BY OI.order_id, P.product_name;</div>
+        </div>
+
+    </div>
+
+    <script>
+        // Function to check if all SQL text areas have content
+        function areAllQueriesAnswered() {
+            const textareas = document.querySelectorAll('.sql-textarea');
+            for (const textarea of textareas) {
+                if (textarea.value.trim() === '') {
+                    return false; // Found an empty textarea
+                }
+            }
+            return true; // All textareas have content
+        }
+
+        // Function to enable/disable all "Check Answer" and "Show Answer" buttons
+        function toggleActionButtons() {
+            const allAnswered = areAllQueriesAnswered();
+
+            const checkButtons = document.querySelectorAll('.check-button');
+            checkButtons.forEach(button => {
+                button.disabled = !allAnswered;
+            });
+
+            const showAnswerButtons = document.querySelectorAll('.show-answer-button');
+            showAnswerButtons.forEach(button => {
+                button.disabled = !allAnswered;
+            });
+        }
+
+        // Add event listeners to all textareas
+        document.addEventListener('DOMContentLoaded', () => {
+            const textareas = document.querySelectorAll('.sql-textarea');
+            textareas.forEach(textarea => {
+                textarea.addEventListener('input', toggleActionButtons);
+            });
+            // Initial check on page load
+            toggleActionButtons();
+        });
+
+        function checkAnswer(textareaId, correctAnswer, feedbackId, correctDivId) {
+            const userAnswer = document.getElementById(textareaId).value.trim();
+            const feedbackElement = document.getElementById(feedbackId);
+            const correctDivElement = document.getElementById(correctDivId);
+
+            // Basic check: convert both to lowercase and remove extra spaces for a lenient comparison
+            const normalizedUserAnswer = userAnswer.replace(/\s+/g, ' ').toLowerCase();
+            const normalizedCorrectAnswer = correctAnswer.replace(/\s+/g, ' ').toLowerCase();
+
+            if (normalizedUserAnswer === normalizedCorrectAnswer) {
+                feedbackElement.textContent = 'Correct! Well done.';
+                feedbackElement.style.color = '#10b981'; // Green
+            } else {
+                feedbackElement.textContent = 'Incorrect. Keep trying or click "Show Answer".';
+                feedbackElement.style.color = '#ef4444'; // Red
+            }
+            correctDivElement.classList.add('hidden'); // Hide correct answer if it was shown
+        }
+
+        function showAnswer(correctDivId) {
+            const correctDivElement = document.getElementById(correctDivId);
+            correctDivElement.classList.remove('hidden');
+            // Optionally clear feedback when showing answer
+            const feedbackId = correctDivId.replace('correct', 'feedback');
+            document.getElementById(feedbackId).textContent = 'Answer revealed.';
+            document.getElementById(feedbackId).style.color = '#4b5563'; // Gray
+        }
+    </script>
+</body>
+</html>
