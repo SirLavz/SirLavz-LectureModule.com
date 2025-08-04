@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DBMS Architecture Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    function toggleSection(id) {
+      const el = document.getElementById(id);
+      el.classList.toggle('hidden');
+    }
+  </script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans p-6">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-4xl font-bold text-center mb-8">DBMS Architecture Guide</h1><!-- Section: Overview -->
+<div class="bg-white rounded-xl shadow p-6 mb-6">
+  <button onclick="toggleSection('overview')" class="text-xl font-semibold text-blue-600">▶ What is DBMS Architecture?</button>
+  <div id="overview" class="mt-4 hidden">
+    <p class="mb-2">DBMS Architecture is the structural design of a database management system that defines how users interact with the system, how data is processed, and how it is stored and retrieved. It helps manage data efficiently and ensures scalability, security, and performance.</p>
+  </div>
+</div>
+
+<!-- Section: Types of Architectures -->
+<div class="bg-white rounded-xl shadow p-6 mb-6">
+  <button onclick="toggleSection('types')" class="text-xl font-semibold text-blue-600">▶ Types of DBMS Architecture</button>
+  <div id="types" class="mt-4 hidden">
+    <ul class="list-disc pl-5">
+      <li><strong>1-Tier Architecture</strong>: All components on a single machine.</li>
+      <li><strong>2-Tier Architecture</strong>: Client directly connects to the database server.</li>
+      <li><strong>3-Tier Architecture</strong>: Client → Application Server → Database Server.</li>
+    </ul>
+    <img src="https://i.imgur.com/RVLMh8Z.png" alt="DBMS Architectures" class="mt-4 w-full rounded shadow"/>
+  </div>
+</div>
+
+<!-- Section: Detailed Architecture -->
+<div class="bg-white rounded-xl shadow p-6 mb-6">
+  <button onclick="toggleSection('details')" class="text-xl font-semibold text-blue-600">▶ Detailed Architecture Explanation</button>
+  <div id="details" class="mt-4 hidden">
+    <h3 class="text-lg font-semibold">1-Tier</h3>
+    <p class="mb-2">Used in standalone applications like MS Access. Simple and local.</p>
+
+    <h3 class="text-lg font-semibold mt-4">2-Tier</h3>
+    <p class="mb-2">Client application communicates with the database server directly. Common in LAN setups.</p>
+
+    <h3 class="text-lg font-semibold mt-4">3-Tier</h3>
+    <p class="mb-2">Modern architecture for web/mobile apps. Involves a client, application server, and database server.</p>
+    <img src="https://i.imgur.com/0a6yOaj.png" alt="3-Tier Architecture" class="mt-4 w-full rounded shadow"/>
+  </div>
+</div>
+
+<!-- Section: Real-World Example -->
+<div class="bg-white rounded-xl shadow p-6 mb-6">
+  <button onclick="toggleSection('realworld')" class="text-xl font-semibold text-blue-600">▶ Real-World Application: Airline Booking System</button>
+  <div id="realworld" class="mt-4 hidden">
+    <ul class="list-disc pl-5">
+      <li><strong>Client:</strong> ReactJS frontend</li>
+      <li><strong>App Server:</strong> Node.js or Java Spring Boot</li>
+      <li><strong>Database:</strong> PostgreSQL/MySQL</li>
+    </ul>
+    <p class="mt-2">This setup ensures scalability, performance, and security in a real-world airline reservation system.</p>
+  </div>
+</div>
+
+<!-- Section: Comparison Table -->
+<div class="bg-white rounded-xl shadow p-6 mb-6">
+  <button onclick="toggleSection('comparison')" class="text-xl font-semibold text-blue-600">▶ Architecture Comparison Table</button>
+  <div id="comparison" class="mt-4 hidden overflow-x-auto">
+    <table class="table-auto border w-full">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="px-4 py-2 border">Feature</th>
+          <th class="px-4 py-2 border">1-Tier</th>
+          <th class="px-4 py-2 border">2-Tier</th>
+          <th class="px-4 py-2 border">3-Tier</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="border px-4 py-2">Deployment</td>
+          <td class="border px-4 py-2">Single machine</td>
+          <td class="border px-4 py-2">Client-Server</td>
+          <td class="border px-4 py-2">Distributed</td>
+        </tr>
+        <tr>
+          <td class="border px-4 py-2">Security</td>
+          <td class="border px-4 py-2">Low</td>
+          <td class="border px-4 py-2">Medium</td>
+          <td class="border px-4 py-2">High</td>
+        </tr>
+        <tr>
+          <td class="border px-4 py-2">Scalability</td>
+          <td class="border px-4 py-2">Low</td>
+          <td class="border px-4 py-2">Medium</td>
+          <td class="border px-4 py-2">High</td>
+        </tr>
+        <tr>
+          <td class="border px-4 py-2">Maintenance</td>
+          <td class="border px-4 py-2">Easy</td>
+          <td class="border px-4 py-2">Medium</td>
+          <td class="border px-4 py-2">Modular</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Section: Summary -->
+<div class="bg-white rounded-xl shadow p-6 mb-6">
+  <button onclick="toggleSection('summary')" class="text-xl font-semibold text-blue-600">▶ Summary</button>
+  <div id="summary" class="mt-4 hidden">
+    <ul class="list-disc pl-5">
+      <li>DBMS Architecture defines how components of a database interact.</li>
+      <li>1-Tier is local, 2-Tier is for LAN apps, 3-Tier is for scalable web apps.</li>
+      <li>3-Tier architecture is the most widely used in real-world enterprise systems.</li>
+    </ul>
+  </div>
+</div>
+
+  </div>
+</body>
+</html>
