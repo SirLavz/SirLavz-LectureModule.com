@@ -1,0 +1,573 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBMS Concepts Identification Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 900px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .quiz-container, .review-container {
+            display: none;
+        }
+
+        .quiz-container ol {
+            list-style-type: decimal;
+            padding-left: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .quiz-question {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            line-height: 1.6;
+            cursor: pointer;
+            padding: 5px;
+            border: 1px solid transparent;
+            transition: background-color 0.2s;
+        }
+        
+        .quiz-question:hover, .quiz-question.active {
+            background-color: #eaf6ff;
+            border: 1px dashed #3498db;
+        }
+        
+        .quiz-question:hover .answer-placeholder {
+            background-color: #d1eaff;
+        }
+
+        .answer-placeholder {
+            display: inline-block;
+            min-width: 150px;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+        
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button.review-btn {
+            background-color: #27ae60;
+        }
+        
+        button.download-btn {
+            background-color: #f39c12;
+        }
+
+        button.review-btn:hover {
+            background-color: #229954;
+        }
+
+        button.download-btn:hover {
+            background-color: #e67e22;
+        }
+
+        .certificate-container {
+            display: none;
+            text-align: center;
+            border: 5px solid #2c3e50;
+            padding: 50px 30px;
+            background-color: #ecf0f1;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .certificate-container h2 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .certificate-container h3 {
+            font-size: 1.5em;
+            margin: 0;
+            color: #3498db;
+        }
+
+        .certificate-container p {
+            font-size: 1.2em;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+
+        .certificate-container .score-display {
+            font-size: 2em;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 20px;
+        }
+
+        .signature {
+            margin-top: 50px;
+            font-style: italic;
+        }
+        
+        .review-container {
+            text-align: left;
+        }
+
+        .review-container .review-item {
+            border-bottom: 1px solid #ccc;
+            padding: 15px 0;
+        }
+
+        .review-item h4 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        .review-item p {
+            margin: 5px 0 0 0;
+            font-size: 1em;
+        }
+
+        .correct {
+            color: #27ae60;
+        }
+
+        .incorrect {
+            color: #e74c3c;
+        }
+
+        .timer-container {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .timer-container .timer {
+            color: #e74c3c;
+            font-size: 1.2em;
+        }
+
+        .answer-choices-container {
+            margin-top: 30px;
+            border-top: 2px dashed #ccc;
+            padding-top: 20px;
+            text-align: center;
+        }
+
+        #answer-choices {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .answer-choice {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s, opacity 0.2s;
+            font-size: 0.9em;
+            text-align: center;
+            flex-grow: 1;
+            flex-basis: 150px;
+        }
+
+        .answer-choice:hover {
+            background-color: #2980b9;
+        }
+        
+        .answer-choice.used {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="registration-form">
+            <h2>Quiz Registration</h2>
+            <div class="form-group">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="section">Section:</label>
+                <input type="text" id="section" required>
+            </div>
+            <div class="button-container">
+                <button onclick="startQuiz()">Start Quiz</button>
+            </div>
+        </div>
+
+        <div id="quiz-container" class="quiz-container">
+            <div class="timer-container">
+                Time Remaining: <span id="timer" class="timer">30:00</span>
+            </div>
+            <h2>IT-311 Prelim Quiz No.1</h2>
+            <p style="text-align: center;">Click on a question to select it, then click an answer from the box below to fill it in. Click on an already-answered question to remove the answer and choose a new one.</p>
+            <ol id="quiz-questions"></ol>
+            
+            <div class="answer-choices-container">
+                <h3>Answer Choices</h3>
+                <div id="answer-choices"></div>
+            </div>
+
+            <div class="button-container">
+                <button type="submit" onclick="submitQuiz()">Submit Quiz</button>
+            </div>
+        </div>
+
+        <div id="certificate-container" class="certificate-container">
+            <h2>CERTIFICATE OF COMPLETION</h2>
+            <h3>This certifies that</h3>
+            <p id="cert-name" style="font-size: 1.8em; font-weight: bold; text-transform: uppercase; margin-bottom: 5px;"></p>
+            <p id="cert-section" style="font-style: italic; margin-top: 0;"></p>
+            <p>has successfully completed the</p>
+            <p style="font-size: 1.4em; font-weight: bold;">IT 311 Prelim Quiz 1</p>
+            <div class="score-display">
+                Score: <span id="cert-score"></span>
+            </div>
+            <p class="signature">Signed, Ronald T. Lava</p>
+            <div class="button-container">
+                <button onclick="downloadCertificate()" class="download-btn">Download Certificate</button>
+                <button onclick="reviewAnswers()" class="review-btn">Review Answers</button>
+            </div>
+        </div>
+
+        <div id="review-container" class="review-container">
+            <h2>Quiz Review</h2>
+            <div id="review-list"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        // Quiz Data - Questions and Answers
+        const quizData = [
+            { question: "A software system used to create, manage, and interact with databases is known as a...", answer: "Database Management System (DBMS)" },
+            { question: "The logical design of the database, including its tables, views, and relationships, is called the...", answer: "Schema" },
+            { question: "This type of data model represents data in the form of tables with rows and columns.", answer: "Relational model" },
+            { question: "A set of statements or operations that are treated as a single, indivisible unit of work is called a...", answer: "Transaction" },
+            { question: "The ability to modify the schema (logical data independence) without changing the application programs is a key feature of a DBMS known as...", answer: "Data independence" },
+            { question: "In a relational database, what is the term for a single row in a table?", answer: "Tuple|Record" },
+            { question: "A column or set of columns in a table that uniquely identifies each row is called the...", answer: "Primary key" },
+            { question: "A column or a set of columns in one table that refers to the primary key of another table is known as a...", answer: "Foreign key" },
+            { question: "The process of organizing data to minimize redundancy and dependency is called...", answer: "Normalization" },
+            { question: "The rule that a foreign key must have a matching primary key in the parent table or be null is known as...", answer: "Referential integrity" },
+            { question: "Which SQL keyword is used to retrieve data from a database?", answer: "SELECT" },
+            { question: "To add a new record to a table, which SQL statement would you use?", answer: "INSERT INTO" },
+            { question: "Which clause is used in a SELECT statement to filter records and extract only those that fulfill a specified condition?", answer: "WHERE" },
+            { question: "Which SQL statement is used to modify existing records in a table?", answer: "UPDATE" },
+            { question: "To remove a record from a table, which SQL statement would you use?", answer: "DELETE" },
+            { question: "Which SQL clause is used to sort the result set in ascending or descending order?", answer: "ORDER BY" },
+            { question: "The SQL clause used to aggregate rows that have the same values into summary rows is the...", answer: "GROUP BY" },
+            { question: "In a relational database, what is the term for a specific characteristic or property of a table, represented by a column?", answer: "Attribute|Field" },
+            { question: "This type of key is a minimal set of attributes that uniquely identifies a tuple in a relation.", answer: "Candidate key" },
+            { question: "In SQL, the keyword used to specify a condition on groups of rows is...", answer: "HAVING" },
+            { question: "A system that allows multiple users to access and modify data in the database simultaneously is referred to as having...", answer: "Concurrency control" },
+            { question: "Which of the following is an example of a Data Definition Language (DDL) command?", answer: "CREATE|ALTER|DROP" },
+            { question: "A data dictionary is a repository of metadata, which is...", answer: "Data about data" },
+            { question: "A type of join that returns all rows from the left table, and the matched rows from the right table, is called a...", answer: "LEFT JOIN|LEFT OUTER JOIN" },
+            { question: "In SQL, the `AS` keyword is used for...", answer: "Aliasing" }
+        ];
+
+        let userName = "";
+        let userSection = "";
+        let userAnswers = [];
+        let timerInterval;
+        const totalTime = 30 * 60; // 30 minutes in seconds
+
+        let activeQuestionIndex = null;
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startQuiz() {
+            userName = document.getElementById('name').value.trim();
+            userSection = document.getElementById('section').value.trim();
+
+            if (userName === "" || userSection === "") {
+                alert("Please enter your name and section to start the quiz.");
+                return;
+            }
+
+            const completionKey = `quiz-completed-${userName}-${userSection}`;
+            if (localStorage.getItem(completionKey)) {
+                alert("You have already completed this quiz. You cannot take it again.");
+                return;
+            }
+
+            document.getElementById('registration-form').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            generateQuizQuestions();
+            generateAnswerChoices();
+            startTimer();
+        }
+
+        function generateQuizQuestions() {
+            const quizList = document.getElementById('quiz-questions');
+            quizList.innerHTML = '';
+            quizData.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'quiz-question';
+                li.setAttribute('data-index', index);
+                li.onclick = () => selectQuestion(index);
+                li.innerHTML = `
+                    <span>${item.question}</span>
+                    <span class="answer-placeholder">[Click to Answer]</span>
+                `;
+                quizList.appendChild(li);
+            });
+        }
+        
+        function generateAnswerChoices() {
+            const answerChoicesContainer = document.getElementById('answer-choices');
+            answerChoicesContainer.innerHTML = '';
+            
+            const answers = quizData.map(item => item.answer.split('|')[0]);
+            const shuffledAnswers = shuffle(answers);
+
+            shuffledAnswers.forEach((answer, index) => {
+                const div = document.createElement('div');
+                div.className = 'answer-choice';
+                div.textContent = answer;
+                div.setAttribute('data-text', answer);
+                div.onclick = () => selectAnswer(div);
+                answerChoicesContainer.appendChild(div);
+            });
+        }
+        
+        function selectQuestion(index) {
+            // Deselect previous active question
+            const currentActive = document.querySelector('.quiz-question.active');
+            if (currentActive) {
+                currentActive.classList.remove('active');
+            }
+            
+            const questionElement = document.querySelector(`[data-index="${index}"]`);
+            const placeholder = questionElement.querySelector('.answer-placeholder');
+
+            // If a question with an existing answer is clicked, return the answer to the pool
+            if (placeholder.textContent !== '[Click to Answer]') {
+                const answerText = placeholder.textContent;
+                const answerChoice = document.querySelector(`.answer-choice[data-text="${answerText}"]`);
+                if (answerChoice) {
+                    answerChoice.classList.remove('used');
+                }
+                placeholder.textContent = '[Click to Answer]';
+                placeholder.removeAttribute('data-answer');
+            }
+
+            questionElement.classList.add('active');
+            activeQuestionIndex = index;
+        }
+
+        function selectAnswer(answerElement) {
+            if (activeQuestionIndex === null) {
+                alert("Please click on a question first to select it.");
+                return;
+            }
+
+            if (answerElement.classList.contains('used')) {
+                return;
+            }
+
+            const activeQuestionElement = document.querySelector(`[data-index="${activeQuestionIndex}"]`);
+            const placeholder = activeQuestionElement.querySelector('.answer-placeholder');
+
+            placeholder.textContent = answerElement.textContent;
+            placeholder.setAttribute('data-answer', answerElement.textContent);
+            activeQuestionElement.classList.remove('active');
+
+            answerElement.classList.add('used');
+            activeQuestionIndex = null;
+        }
+
+        function startTimer() {
+            let timeLeft = totalTime;
+            const timerElement = document.getElementById('timer');
+
+            function updateTimer() {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Time's up! The quiz will now be submitted.");
+                    submitQuiz();
+                }
+
+                timeLeft--;
+            }
+
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            
+            let score = 0;
+            const totalQuestions = quizData.length;
+            userAnswers = [];
+
+            quizData.forEach((item, index) => {
+                const placeholder = document.querySelector(`[data-index="${index}"] .answer-placeholder`);
+                const userAnswer = placeholder ? placeholder.textContent : '';
+                const correctAnswers = item.answer.toLowerCase().split('|').map(ans => ans.trim());
+                
+                let isCorrect = false;
+                if (correctAnswers.includes(userAnswer.toLowerCase().trim())) {
+                    isCorrect = true;
+                }
+
+                if (isCorrect) {
+                    score++;
+                }
+
+                userAnswers.push({
+                    question: item.question,
+                    userAnswer: userAnswer,
+                    correctAnswer: item.answer,
+                    isCorrect: isCorrect
+                });
+            });
+            
+            const finalScore = `${score} / ${totalQuestions}`;
+
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('certificate-container').style.display = 'block';
+
+            document.getElementById('cert-name').textContent = userName;
+            document.getElementById('cert-section').textContent = `Section: ${userSection}`;
+            document.getElementById('cert-score').textContent = finalScore;
+
+            const completionKey = `quiz-completed-${userName}-${userSection}`;
+            const completionData = {
+                name: userName,
+                section: userSection,
+                score: finalScore,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem(completionKey, JSON.stringify(completionData));
+        }
+
+        function reviewAnswers() {
+            document.getElementById('certificate-container').style.display = 'none';
+            document.getElementById('review-container').style.display = 'block';
+            
+            const reviewList = document.getElementById('review-list');
+            reviewList.innerHTML = '';
+
+            userAnswers.forEach((item, index) => {
+                const reviewItem = document.createElement('div');
+                reviewItem.className = 'review-item';
+                
+                const questionNumber = index + 1;
+                
+                reviewItem.innerHTML = `
+                    <h4>${questionNumber}. ${item.question}</h4>
+                    <p>Your Answer: <span class="${item.isCorrect ? 'correct' : 'incorrect'}">${item.userAnswer || '[No Answer]'}</span></p>
+                    ${!item.isCorrect ? `<p>Correct Answer: <span class="correct">${item.correctAnswer}</span></p>` : ''}
+                `;
+                
+                reviewList.appendChild(reviewItem);
+            });
+        }
+
+        function downloadCertificate() {
+            const certificateContainer = document.getElementById('certificate-container');
+            const downloadButton = certificateContainer.querySelector('.download-btn');
+            const reviewButton = certificateContainer.querySelector('.review-btn');
+            
+            // Hide buttons before generating the image
+            downloadButton.style.display = 'none';
+            reviewButton.style.display = 'none';
+
+            html2canvas(certificateContainer).then(canvas => {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = `Quiz_Certificate_${userName}.png`;
+                link.click();
+                
+                // Show buttons again after generating the image
+                downloadButton.style.display = 'inline-block';
+                reviewButton.style.display = 'inline-block';
+            });
+        }
+    </script>
+</body>
+</html>
