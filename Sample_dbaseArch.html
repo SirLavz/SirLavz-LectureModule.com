@@ -1,0 +1,84 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DBMS Architecture: Shopee/Lazada</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 p-6">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl font-bold text-blue-700 mb-4">🛒 DBMS Architecture Activity</h1>
+    <h2 class="text-xl font-semibold mb-2">📘 Application: Shopee / Lazada (E-Commerce)</h2>
+
+    <div class="mb-6">
+      <p>An example activity output using a three-tier database architecture for an e-commerce platform like Shopee or Lazada. Students should analyze how data flows through each layer.</p>
+    </div>
+
+    <!-- Collapsible Section 1 -->
+    <details class="mb-4 bg-white shadow-md p-4 rounded-lg">
+      <summary class="font-semibold cursor-pointer text-blue-600">📊 Architecture Diagram Overview</summary>
+      <pre class="mt-4 bg-gray-100 p-3 rounded text-sm overflow-x-auto">
++-----------------------------+
+|     Presentation Layer      |
+|  (Mobile App / Web Browser) |
++-----------------------------+
+            ⇅
++-----------------------------+
+|      Application Layer      |
+|   (Business Logic Server)   |
+| - User Auth & Session Mgmt  |
+| - Product Search/Filters    |
+| - Cart & Order Processing   |
+| - Payment Integration       |
++-----------------------------+
+            ⇅
++-----------------------------+
+|        Database Layer       |
+|     (MySQL/PostgreSQL)      |
+| - Users, Products, Orders   |
+| - Payments Tables           |
++-----------------------------+
+      </pre>
+    </details>
+
+    <!-- Collapsible Section 2 -->
+    <details class="mb-4 bg-white shadow-md p-4 rounded-lg">
+      <summary class="font-semibold cursor-pointer text-blue-600">🔍 Layer Descriptions with Real Use-Case</summary>
+      <div class="mt-4 space-y-2">
+        <h3 class="font-bold text-lg">1. Presentation Layer</h3>
+        <p>Interface accessed by users through mobile apps or browsers. E.g., a customer opens the Shopee app to search for “wireless earbuds”.</p>
+
+        <h3 class="font-bold text-lg">2. Application Layer</h3>
+        <p>Processes business logic like search filters, cart handling, and payments. It handles the user request and decides what to send to or fetch from the database.</p>
+
+        <h3 class="font-bold text-lg">3. Database Layer</h3>
+        <p>Stores data like users, products, orders, and payment logs. For instance, orders are inserted and inventory is updated when a purchase is made.</p>
+      </div>
+    </details>
+
+    <!-- Collapsible Section 3 -->
+    <details class="mb-4 bg-white shadow-md p-4 rounded-lg">
+      <summary class="font-semibold cursor-pointer text-blue-600">🔁 Example Flow: Buying an Item</summary>
+      <ul class="list-disc ml-6 mt-4 space-y-1">
+        <li>User taps "Add to Cart" for a phone case on the Shopee app.</li>
+        <li>The app sends a request to the application server.</li>
+        <li>Application layer checks item availability and creates a new order.</li>
+        <li>Database updates inventory, stores order, and logs payment.</li>
+      </ul>
+    </details>
+
+    <!-- Collapsible Section 4 -->
+    <details class="mb-4 bg-white shadow-md p-4 rounded-lg">
+      <summary class="font-semibold cursor-pointer text-blue-600">✅ Justification for Using 3-Tier Architecture</summary>
+      <ul class="list-disc ml-6 mt-4 space-y-1">
+        <li><strong>Scalability:</strong> Layers can be scaled independently.</li>
+        <li><strong>Security:</strong> The database is only accessible via the app layer.</li>
+        <li><strong>Maintainability:</strong> Easy to modify UI or backend logic separately.</li>
+      </ul>
+    </details>
+
+   
+     
+  </div>
+</body>
+</html>
