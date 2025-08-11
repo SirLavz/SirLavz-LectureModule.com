@@ -1,0 +1,530 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT311_LabAct4</title>
+    <style>
+        /* General body styling for a clean, modern look */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5; /* Light gray background */
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Container for main content, centered and styled */
+        .container {
+            max-width: 960px; /* Slightly wider for better content display */
+            margin: 30px auto; /* More margin on top/bottom */
+            background: #ffffff;
+            padding: 30px 50px; /* Increased padding */
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1); /* Softer, larger shadow */
+            border-radius: 12px; /* More rounded corners */
+        }
+
+        /* Headings styling for visual hierarchy */
+        h1, h2, h3 {
+            color: #2c3e50;
+            font-weight: 600; /* Slightly bolder headings */
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.2em; /* Larger main title */
+            margin-bottom: 30px;
+            color: #1a237e; /* Deeper blue for main title */
+        }
+        h2 {
+            border-bottom: 2px solid #3498db; /* Blue underline */
+            padding-bottom: 12px;
+            margin-top: 40px; /* More space above sections */
+            font-size: 1.8em;
+            color: #3f51b5; /* Medium blue */
+        }
+        h3 {
+            color: #4a6572; /* Darker gray-blue for subheadings */
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        /* Table styling for readability and aesthetics */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0; /* More vertical spacing */
+            font-size: 1em; /* Standard font size */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Subtle table shadow */
+            border-radius: 8px; /* Rounded table corners */
+            overflow: hidden; /* Ensures rounded corners apply to content */
+        }
+        th, td {
+            border: 1px solid #e0e0e0; /* Lighter border color */
+            padding: 14px; /* More padding in cells */
+            text-align: left;
+        }
+        th {
+            background-color: #e3f2fd; /* Light blue header background */
+            font-weight: 700; /* Bolder headers */
+            color: #283593; /* Dark blue text for headers */
+            text-transform: uppercase; /* Uppercase headers */
+            letter-spacing: 0.5px;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #fdfdfe; /* Slightly different shade for even rows */
+        }
+        tbody tr:hover {
+            background-color: #eef7fc; /* Highlight on hover */
+            cursor: default;
+        }
+
+        /* Code block styling */
+        pre {
+            background: lightgoldenrodyellow; /* Dark background for code */
+            color: #abb2bf; /* Light gray text for code */
+            padding: 20px;
+            border-radius: 8px; /* Rounded code block corners */
+            overflow-x: auto; /* Enable horizontal scrolling for long lines */
+            font-family: 'Fira Code', 'Courier New', Courier, monospace; /* Monospace font for code */
+            font-size: 0.95em;
+            line-height: 1.5;
+            white-space: pre-wrap; /* Wrap long lines */
+            word-wrap: break-word; /* Break words if necessary */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15); /* Code block shadow */
+            margin-bottom: 25px; /* Spacing after code blocks */
+        }
+        code {
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+             
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.95em;
+            color: #c7254e; /* Reddish color for inline code */
+        }
+
+        /* Explanation box styling */
+        .explanation {
+            background-color: #e8f4f8; /* Light blue background */
+            border-left: 5px solid #2196f3; /* Stronger blue border */
+            padding: 15px 20px; /* More padding */
+            margin: 20px 0;
+            border-radius: 8px;
+            font-size: 0.95em;
+            color: #336699; /* Darker blue text */
+        }
+        .explanation strong {
+            color: #1976d2; /* Darker blue for bold text in explanation */
+        }
+
+        /* Horizontal rule styling */
+        hr {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0));
+            margin: 50px 0; /* More vertical space around HR */
+        }
+    </style>
+    <!-- Google Font for Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <h1>IT 311: Laboratory Activity 4 </h1>
+
+        <hr>
+
+        <h2>Sample Tables and Data</h2>
+
+        <!-- Passengers Table -->
+        <h3>👥 Passengers Table</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>passenger_id</th>
+                    <th>first_name</th>
+                    <th>last_name</th>
+                    <th>email</th>
+                    <th>phone_number</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>101</td><td>John</td><td>Doe</td><td>john.doe@example.com</td><td>111-222-3333</td></tr>
+                <tr><td>102</td><td>Jane</td><td>Smith</td><td>jane.smith@example.com</td><td>444-555-6666</td></tr>
+                <tr><td>103</td><td>Robert</td><td>Johnson</td><td>robert.j@example.com</td><td>777-888-9999</td></tr>
+                <tr><td>104</td><td>Emily</td><td>Brown</td><td>emily.b@example.com</td><td>123-456-7890</td></tr>
+                <tr><td>105</td><td>Michael</td><td>Davis</td><td>michael.d@example.com</td><td>987-654-3210</td></tr>
+                <tr><td>106</td><td>Olivia</td><td>Miller</td><td>olivia.m@example.com</td><td>555-123-4567</td></tr>
+            </tbody>
+        </table>
+
+        <!-- Flights Table -->
+        <h3>✈️ Flights Table</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>flight_id</th>
+                    <th>flight_number</th>
+                    <th>departure_city</th>
+                    <th>arrival_city</th>
+                    <th>departure_time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>201</td><td>AA101</td><td>New York</td><td>Los Angeles</td><td>2025-09-01 08:00:00</td></tr>
+                <tr><td>202</td><td>UA202</td><td>Los Angeles</td><td>Chicago</td><td>2025-09-01 10:30:00</td></tr>
+                <tr><td>203</td><td>DL303</td><td>Chicago</td><td>Miami</td><td>2025-09-02 14:00:00</td></tr>
+                <tr><td>204</td><td>BA404</td><td>London</td><td>New York</td><td>2025-09-03 07:00:00</td></tr>
+                <tr><td>205</td><td>AF505</td><td>Paris</td><td>Tokyo</td><td>2025-09-04 22:00:00</td></tr>
+                <tr><td>206</td><td>SQ606</td><td>Tokyo</td><td>Singapore</td><td>2025-09-05 09:00:00</td></tr>
+                <tr><td>207</td><td>LH707</td><td>Frankfurt</td><td>London</td><td>2025-09-06 11:00:00</td></tr>
+                <tr><td>208</td><td>KL808</td><td>Amsterdam</td><td>Paris</td><td>2025-09-07 16:00:00</td></tr>
+            </tbody>
+        </table>
+
+        <!-- Bookings Table -->
+        <h3>🎫 Bookings Table</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>booking_id</th>
+                    <th>passenger_id</th>
+                    <th>flight_id</th>
+                    <th>booking_date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>3001</td><td>101</td><td>201</td><td>2025-08-01</td></tr>
+                <tr><td>3002</td><td>102</td><td>201</td><td>2025-08-01</td></tr>
+                <tr><td>3003</td><td>101</td><td>202</td><td>2025-08-02</td></tr>
+                <tr><td>3004</td><td>103</td><td>203</td><td>2025-08-03</td></tr>
+                <tr><td>3005</td><td>104</td><td>204</td><td>2025-08-04</td></tr>
+                <tr><td>3006</td><td>105</td><td>205</td><td>2025-08-05</td></tr>
+                <tr><td>3007</td><td>101</td><td>204</td><td>2025-08-06</td></tr>
+                <tr><td>3008</td><td>103</td><td>205</td><td>2025-08-07</td></tr>
+                <tr><td>3009</td><td>104</td><td>206</td><td>2025-08-08</td></tr>
+                <tr><td>3010</td><td>105</td><td>208</td><td>2025-08-09</td></tr>
+            </tbody>
+        </table>
+
+        <hr>
+
+        <h2>SQL Queries and Solutions</h2>
+
+        <!-- Part 1: Subqueries -->
+        <h2>Part 1: Subqueries</h2>
+        
+        <h3>Task 1.1: Single-Row Subquery</h3>
+        <pre><code>SELECT
+    first_name,
+    last_name
+FROM
+    Passengers
+WHERE
+    passenger_id = (
+        SELECT
+            passenger_id
+        FROM
+            Bookings
+        WHERE
+            booking_date = (
+                SELECT
+                    MAX(booking_date)
+                FROM
+                    Bookings
+            )
+    );</code></pre>
+        <p class="explanation"><strong>Explanation:</strong> The innermost subquery finds the latest <code>booking_date</code>. The middle subquery then finds the <code>passenger_id</code> associated with that date. The outer query uses this <code>passenger_id</code> to retrieve the passenger's name.</p>
+        
+        <h3>Task 1.2: Multi-Row Subquery</h3>
+        <pre><code>SELECT
+    flight_number
+FROM
+    Flights
+WHERE
+    flight_id IN (
+        SELECT
+            flight_id
+        FROM
+            Bookings
+        WHERE
+            passenger_id IN (
+                SELECT
+                    passenger_id
+                FROM
+                    Passengers
+                WHERE
+                    first_name = 'John'
+            )
+    );</code></pre>
+        <p class="explanation"><strong>Explanation:</strong> The innermost subquery finds all <code>passenger_id</code>s for passengers named 'John'. The middle subquery gets all <code>flight_id</code>s associated with those passengers. The outer query then retrieves the <code>flight_number</code> for those <code>flight_id</code>s. The <code>IN</code> operator is crucial here as the subqueries can return multiple values.</p>
+
+        <h3>Task 1.3: Correlated Subquery</h3>
+        <pre><code>SELECT
+    p.first_name,
+    p.last_name,
+    f.flight_number
+FROM
+    Passengers AS p
+JOIN
+    Bookings AS b ON p.passenger_id = b.passenger_id
+JOIN
+    Flights AS f ON b.flight_id = f.flight_id
+WHERE
+    b.booking_date = (
+        SELECT
+            MAX(booking_date)
+        FROM
+            Bookings
+        WHERE
+            passenger_id = p.passenger_id
+    );</code></pre>
+        <p class="explanation"><strong>Explanation:</strong> This query joins the three tables and uses a correlated subquery in the <code>WHERE</code> clause. The subquery finds the maximum booking date <em>for each individual passenger</em> (<code>passenger_id = p.passenger_id</code>) and the outer query only returns the rows that match that condition.</p>
+
+        <hr>
+
+        <!-- Part 2: JOINS -->
+        <h2>Part 2: JOINS</h2>
+        
+        <h3>Task 2.1: INNER JOIN</h3>
+        <pre><code>SELECT
+    f.flight_number,
+    p.email
+FROM
+    Bookings AS b
+JOIN
+    Passengers AS p ON b.passenger_id = p.passenger_id
+JOIN
+    Flights AS f ON b.flight_id = f.flight_id;</code></pre>
+        <p class="explanation"><strong>Explanation:</strong> An <code>INNER JOIN</code> returns rows when there is at least one match in both tables. This query links <code>Bookings</code> to <code>Passengers</code> and <code>Flights</code> to combine the necessary data from all three tables.</p>
+
+        <h3>Task 2.2: LEFT JOIN</h3>
+        <pre><code>SELECT
+    p.first_name,
+    p.last_name,
+    b.booking_date
+FROM
+    Passengers AS p
+LEFT JOIN
+    Bookings AS b ON p.passenger_id = b.passenger_id;</code></pre>
+        <p class="explanation"><strong>Explanation:</strong> A <code>LEFT JOIN</code> returns all rows from the left table (<code>Passengers</code>), even if there are no matches in the right table (<code>Bookings</code>). For passenger Olivia Miller (ID 106), who has no bookings, the <code>booking_date</code> column will be <code>NULL</code>.</p>
+
+        <h3>Task 2.3: RIGHT JOIN</h3>
+        <pre><code>SELECT
+    f.flight_number,
+    p.first_name
+FROM
+    Bookings AS b
+RIGHT JOIN
+    Flights AS f ON b.flight_id = f.flight_id
+LEFT JOIN
+    Passengers AS p ON b.passenger_id = p.passenger_id;</code></pre>
+        <p class="explanation"><strong>Explanation:</strong> A <code>RIGHT JOIN</code> returns all rows from the right table (<code>Flights</code>), even if there are no matches in the left table (<code>Bookings</code>). The flight from Frankfurt to London (flight ID 207) has no bookings, so its <code>flight_number</code> will be shown with a <code>NULL</code> passenger name.</p>
+
+        <h3>Task 2.4: JOIN with a Subquery</h3>
+        <pre><code>SELECT
+    p.first_name,
+    p.last_name
+FROM
+    Passengers AS p
+JOIN
+    Bookings AS b ON p.passenger_id = b.passenger_id
+WHERE
+    b.flight_id IN (
+        SELECT
+            flight_id
+        FROM
+            Flights
+        WHERE
+            departure_city = 'New York'
+    );</code></pre>
+        <p class="explanation"><strong>Explanation:</strong> This query first finds the <code>flight_id</code>s for flights departing from 'New York' using a subquery. It then joins the <code>Passengers</code> and <code>Bookings</code> tables and filters the results using the <code>IN</code> operator to match the <code>flight_id</code>s from the subquery.</p>
+
+        <hr>
+
+        <!-- Part 3: Set Operators -->
+        <h2>Part 3: Set Operators</h2>
+
+        <h3>Task 3.1: UNION</h3>
+        <pre><code>SELECT
+    first_name,
+    last_name
+FROM
+    Passengers
+UNION
+SELECT
+    departure_city,
+    arrival_city
+FROM
+    Flights;</code></pre>
+        <p class="explanation"><strong>Explanation:</strong> <code>UNION</code> combines the result sets of two or more <code>SELECT</code> statements. The queries must have the same number of columns with compatible data types. Here, we combine the passenger names and the flight cities into a single list.</p>
+
+        <h3>Task 3.2: INTERSECT</h3>
+        <pre><code>SELECT
+    passenger_id
+FROM
+    Bookings
+WHERE
+    flight_id IN (
+        SELECT
+            flight_id
+        FROM
+            Flights
+        WHERE
+            departure_city = 'London'
+    )
+INTERSECT
+SELECT
+    passenger_id
+FROM
+    Bookings
+WHERE
+    flight_id IN (
+        SELECT
+            flight_id
+        FROM
+            Flights
+        WHERE
+            departure_city = 'Paris'
+    );</code></pre>
+        <p class="explanation"><strong>Explanation:</strong> <code>INTERSECT</code> returns only the rows that are present in both result sets. This query finds the <code>passenger_id</code>s for all bookings from London, finds the <code>passenger_id</code>s for all bookings from Paris, and then returns only the IDs that appear in both lists.</p>
+
+        <h3>Task 3.3: EXCEPT</h3>
+        <pre><code>SELECT
+    passenger_id
+FROM
+    Bookings
+WHERE
+    flight_id IN (
+        SELECT
+            flight_id
+        FROM
+            Flights
+        WHERE
+            departure_city = 'Tokyo'
+    )
+EXCEPT
+SELECT
+    passenger_id
+FROM
+    Bookings
+WHERE
+    flight_id IN (
+        SELECT
+            flight_id
+        FROM
+            Flights
+        WHERE
+            departure_city = 'Osaka'
+    );</code></pre>
+        <p class="explanation"><strong>Explanation:</strong> <code>EXCEPT</code> returns all rows from the first <code>SELECT</code> statement that are not in the second <code>SELECT</code> statement. This query first gets all passengers who booked a flight from Tokyo and then subtracts any passengers who also booked a flight from Osaka.</p>
+
+        <hr>
+
+        <h2>Part 4: Assessment Queries</h2>
+
+        <h3>Task 4.1: Subquery and JOIN Combination</h3>
+        <p>Find the <code>first_name</code> and <code>last_name</code> of passengers who have *not* booked any flights departing from 'Los Angeles'.</p>
+        <pre><code>SELECT
+    p.first_name,
+    p.last_name
+FROM
+    Passengers AS p
+WHERE
+    p.passenger_id NOT IN (
+        SELECT DISTINCT
+            b.passenger_id
+        FROM
+            Bookings AS b
+        JOIN
+            Flights AS f ON b.flight_id = f.flight_id
+        WHERE
+            f.departure_city = 'Los Angeles'
+    );</code></pre>
+        <p class="explanation"><strong>Explanation:</strong> The subquery first identifies all unique <code>passenger_id</code>s who *have* booked a flight departing from 'Los Angeles'. The outer query then selects passengers whose IDs are *not* in this list, effectively finding those who haven't booked such flights.</p>
+
+        <h3>Task 4.2: Multiple JOINS and Aggregation</h3>
+        <p>For each flight, count how many passengers have booked it. Display the <code>flight_number</code> and the total count. Include flights with zero bookings.</p>
+        <pre><code>SELECT
+    f.flight_number,
+    COUNT(b.booking_id) AS total_bookings
+FROM
+    Flights AS f
+LEFT JOIN
+    Bookings AS b ON f.flight_id = b.flight_id
+GROUP BY
+    f.flight_number
+ORDER BY
+    f.flight_number;</code></pre>
+        <p class="explanation"><strong>Explanation:</strong> We use a <code>LEFT JOIN</code> to ensure all flights are included, even those with no bookings. <code>COUNT(b.booking_id)</code> counts only non-NULL booking IDs, so flights without bookings will correctly show a count of 0. The results are grouped by <code>flight_number</code> to aggregate counts for each flight.</p>
+
+        <h3>Task 4.3: UNION ALL and Specific Filtering</h3>
+        <p>List the <code>email</code> addresses of passengers who have booked a flight arriving in 'New York' AND the <code>email</code> addresses of passengers who have booked a flight arriving in 'Chicago'. Allow for duplicate emails (if a passenger booked flights to both cities).
+        </p>
+        <pre><code>SELECT
+    p.email
+FROM
+    Passengers AS p
+JOIN
+    Bookings AS b ON p.passenger_id = b.passenger_id
+JOIN
+    Flights AS f ON b.flight_id = f.flight_id
+WHERE
+    f.arrival_city = 'New York'
+UNION ALL
+SELECT
+    p.email
+FROM
+    Passengers AS p
+JOIN
+    Bookings AS b ON p.passenger_id = b.passenger_id
+JOIN
+    Flights AS f ON b.flight_id = f.flight_id
+WHERE
+    f.arrival_city = 'Chicago';</code></pre>
+        <p class="explanation"><strong>Explanation:</strong> <code>UNION ALL</code> combines the results of two or more <code>SELECT</code> statements, retaining all duplicate rows. The first <code>SELECT</code> retrieves emails for passengers who booked flights arriving in 'New York', and the second retrieves emails for passengers who booked flights arriving in 'Chicago'. <code>UNION ALL</code> ensures that if a passenger's email appears in both lists, it will be listed twice.</p>
+
+        <h3>Task 4.4: Advanced INTERSECT (or Equivalent)</h3>
+        <p>Find the <code>passenger_id</code>s of passengers who have booked *both* an 'AA101' flight *and* a 'BA404' flight.</p>
+        <pre><code>SELECT
+    b.passenger_id
+FROM
+    Bookings AS b
+JOIN
+    Flights AS f ON b.flight_id = f.flight_id
+WHERE
+    f.flight_number = 'AA101'
+INTERSECT
+SELECT
+    b2.passenger_id
+FROM
+    Bookings AS b2
+JOIN
+    Flights AS f2 ON b2.flight_id = f2.flight_id
+WHERE
+    f2.flight_number = 'BA404';</code></pre>
+        <p class="explanation"><strong>Explanation:</strong> This uses <code>INTERSECT</code> to find <code>passenger_id</code>s that are common to both sets: those who booked 'AA101' and those who booked 'BA404'. This effectively means the passenger must have booked both flight numbers.</p>
+        <p class="explanation"><strong>Note for MySQL Users:</strong> MySQL does not directly support <code>INTERSECT</code>. You would typically achieve this using <code>INNER JOIN</code> with subqueries or by checking for existence, like this:</p>
+        <pre><code>SELECT DISTINCT
+    b.passenger_id
+FROM
+    Bookings AS b
+JOIN
+    Flights AS f ON b.flight_id = f.flight_id
+WHERE
+    f.flight_number = 'AA101'
+AND EXISTS (
+    SELECT 1
+    FROM Bookings AS b2
+    JOIN Flights AS f2 ON b2.flight_id = f2.flight_id
+    WHERE b2.passenger_id = b.passenger_id AND f2.flight_number = 'BA404'
+);</code></pre>
+
+    </div>
+
+</body>
+</html>
