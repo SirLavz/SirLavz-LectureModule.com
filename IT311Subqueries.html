@@ -1,0 +1,544 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT 311 - Subqueries</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #374151;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1024px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        pre {
+            background-color: #1f2937; /* Darker background for code */
+            color: #e5e7eb; /* Light text for code */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        code {
+            font-family: monospace;
+            background-color: #e2e8f0;
+            padding: 0.2em 0.4em;
+            border-radius: 0.25rem;
+            color: #334155;
+        }
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+            color: #e5e7eb;
+        }
+        h1, h2, h3, h4 {
+            color: #111827;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+        }
+        h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        p {
+            margin-bottom: 1rem;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        ol {
+            list-style-type: decimal;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        strong {
+            font-weight: 700;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #e5e7eb;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-700">
+    <div class="container bg-white p-8 rounded-lg shadow-xl my-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2">Hands-On Activity: Mastering MySQL Subqueries</h1>
+            
+        </header>
+
+        <section class="card">
+            <h2>Learning Objectives</h2>
+            <ul>
+                <li><strong>Understand</strong> the concept and characteristics of MySQL subqueries.</li>
+                <li><strong>Identify</strong> different types of subqueries based on their placement and return values.</li>
+                <li><strong>Write and execute</strong> <code>SELECT</code> statements using subqueries in <code>WHERE</code>, <code>FROM</code>, <code>SELECT</code>, and <code>HAVING</code> clauses.</li>
+                <li><strong>Utilize</strong> subqueries with operators like <code>IN</code>, <code>NOT IN</code>, <code>EXISTS</code>, <code>NOT EXISTS</code>, <code>ANY</code>, and <code>ALL</code>.</li>
+                <li><strong>Apply</strong> subqueries within <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> statements to perform data manipulation.</li>
+                <li><strong>Differentiate</strong> between scenarios where subqueries or JOINs are more appropriate.</li>
+            </ul>
+        </section>
+
+        <hr>
+
+        <section class="card">
+            <h2>Prerequisites</h2>
+            <p>To successfully complete this activity, you will need:</p>
+            <ul>
+                <li>Basic understanding of SQL <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> statements.</li>
+                <li>Access to a MySQL database server (e.g., via MySQL Workbench, PHPMyAdmin, or the command line).</li>
+            </ul>
+        </section>
+
+        <hr>
+
+        <section class="card">
+            <h2>Database Setup</h2>
+            <p>First, let's set up the necessary tables and populate them with sample data. This will provide the foundation for all the exercises in this activity.</p>
+            <h3>Step 1: Execute the following SQL script to create your tables and insert data.</h3>
+            <pre><code>
+-- Disable foreign key checks temporarily if you are re-creating tables
+-- SET FOREIGN_KEY_CHECKS = 0;
+
+-- Drop tables if they already exist to ensure a clean slate
+DROP TABLE IF EXISTS SalariesArchive;
+DROP TABLE IF EXISTS Employees;
+DROP TABLE IF EXISTS Departments;
+
+--
+-- Table structure for table `Departments`
+--
+CREATE TABLE Departments (
+    department_id INT PRIMARY KEY,
+    department_name VARCHAR(50),
+    location VARCHAR(50)
+);
+
+--
+-- Data for table `Departments`
+--
+INSERT INTO Departments (department_id, department_name, location) VALUES
+(101, 'Sales', 'New York'),
+(102, 'Marketing', 'London'),
+(103, 'IT', 'San Francisco'),
+(104, 'HR', 'New York');
+
+--
+-- Table structure for table `Employees`
+--
+CREATE TABLE Employees (
+    employee_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    department_id INT,
+    salary DECIMAL(10, 2),
+    -- Add a foreign key constraint to link with the Departments table
+    FOREIGN KEY (department_id) REFERENCES Departments(department_id)
+);
+
+--
+-- Data for table `Employees`
+--
+INSERT INTO Employees (employee_id, first_name, last_name, department_id, salary) VALUES
+(1, 'Alice', 'Smith', 101, 60000.00),
+(2, 'Bob', 'Johnson', 102, 75000.00),
+(3, 'Charlie', 'Brown', 101, 55000.00),
+(4, 'Diana', 'Prince', 103, 90000.00),
+(5, 'Eve', 'Davis', 102, 70000.00),
+(6, 'Frank', 'White', 101, 62000.00);
+
+--
+-- Table structure for table `SalariesArchive`
+--
+CREATE TABLE SalariesArchive (
+    archive_id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id INT,
+    salary DECIMAL(10, 2),
+    archive_date DATE,
+    -- Add a foreign key constraint, though not strictly necessary for the subquery examples,
+    -- it's good practice if this table relates to Employees
+    FOREIGN KEY (employee_id) REFERENCES Employees(employee_id)
+);
+
+-- Re-enable foreign key checks
+-- SET FOREIGN_KEY_CHECKS = 1;
+            </code></pre>
+        </section>
+
+        <hr>
+
+        <section class="card">
+            <h2>Subquery Exercises</h2>
+            <p>For each exercise, read the problem statement, try to solve it on your own, then compare your solution with the provided answer and explanation.</p>
+
+            <h3>Section 1: Subqueries in <code>SELECT</code> Statements</h3>
+
+            <h4>1.1 Subquery in the <code>WHERE</code> Clause (Scalar Subquery)</h4>
+            <ul>
+                <li><strong>Problem Statement:</strong> Find the <code>first_name</code>, <code>last_name</code>, and <code>salary</code> of all employees who earn more than the average salary of <strong>all</strong> employees.</li>
+                <li><strong>Hint:</strong> You'll need to calculate the overall average salary in the subquery.</li>
+                <li><strong>Solution:</strong>
+                    <pre><code>
+SELECT
+    first_name,
+    last_name,
+    salary
+FROM
+    Employees
+WHERE
+    salary > (SELECT AVG(salary) FROM Employees);
+                    </code></pre>
+                </li>
+                <li><strong>Expected Output (approximate):</strong>
+                    <pre><code>
+first_name | last_name | salary
+-----------|-----------|--------
+Bob        | Johnson   | 75000.00
+Diana      | Prince    | 90000.00
+Eve        | Davis     | 70000.00
+Frank      | White     | 62000.00
+                    </code></pre>
+                    <p><em>(Note: The exact list might vary slightly if the average changes based on future data, but it will be employees above ~62000.00)</em></p>
+                </li>
+                <li><strong>Discussion:</strong> The inner query <code>(SELECT AVG(salary) FROM Employees)</code> returns a single value (the average salary), which the outer query uses for comparison in its <code>WHERE</code> clause.</li>
+            </ul>
+
+            <hr>
+
+            <h4>1.2 Subquery with <code>IN</code></h4>
+            <ul>
+                <li><strong>Problem Statement:</strong> Retrieve the <code>first_name</code>, <code>last_name</code>, and <code>department_id</code> of all employees who work in departments located in 'New York'.</li>
+                <li><strong>Hint:</strong> The subquery should return a list of department IDs.</li>
+                <li><strong>Solution:</strong>
+                    <pre><code>
+SELECT
+    first_name,
+    last_name,
+    department_id
+FROM
+    Employees
+WHERE
+    department_id IN (SELECT department_id FROM Departments WHERE location = 'New York');
+                    </code></pre>
+                </li>
+                <li><strong>Expected Output:</strong>
+                    <pre><code>
+first_name | last_name | department_id
+-----------|-----------|--------------
+Alice      | Smith     | 101
+Charlie    | Brown     | 101
+Frank      | White     | 101
+                    </code></pre>
+                </li>
+                <li><strong>Discussion:</strong> The subquery identifies <code>department_id</code>s corresponding to 'New York' locations. The <code>IN</code> operator checks if an employee's <code>department_id</code> matches any value in the list returned by the subquery.</li>
+            </ul>
+
+            <hr>
+
+            <h4>1.3 Subquery with <code>EXISTS</code></h4>
+            <ul>
+                <li><strong>Problem Statement:</strong> List the <code>department_name</code> for any department that currently has at least one employee assigned to it.</li>
+                <li><strong>Hint:</strong> <code>EXISTS</code> checks for the presence of <em>any</em> row returned by the subquery.</li>
+                <li><strong>Solution:</strong>
+                    <pre><code>
+SELECT
+    department_name
+FROM
+    Departments d
+WHERE
+    EXISTS (SELECT 1 FROM Employees e WHERE e.department_id = d.department_id);
+                    </code></pre>
+                </li>
+                <li><strong>Expected Output:</strong>
+                    <pre><code>
+department_name
+----------------
+Sales
+Marketing
+IT
+                    </code></pre>
+                </li>
+                <li><strong>Discussion:</strong> For each row in <code>Departments</code> (aliased as <code>d</code>), the <code>EXISTS</code> subquery checks if there's a corresponding row in <code>Employees</code> (aliased as <code>e</code>). If a match is found (meaning the department has employees), the department name is included in the result.</li>
+            </ul>
+
+            <hr>
+
+            <h4>1.4 Subquery in the <code>FROM</code> Clause (Derived Table)</h4>
+            <ul>
+                <li><strong>Problem Statement:</strong> Find the <code>first_name</code>, <code>last_name</code>, and <code>department_name</code> for each employee, but only for departments where the average salary is greater than $65,000.</li>
+                <li><strong>Hint:</strong> You'll need to calculate average salaries per department in a subquery and then join with that result.</li>
+                <li><strong>Solution:</strong>
+                    <pre><code>
+SELECT
+    e.first_name,
+    e.last_name,
+    d.department_name
+FROM
+    Employees e
+JOIN
+    Departments d ON e.department_id = d.department_id
+JOIN
+    (SELECT department_id, AVG(salary) AS avg_dept_salary FROM Employees GROUP BY department_id HAVING AVG(salary) > 65000) AS HighPayingDepartments
+ON
+    e.department_id = HighPayingDepartments.department_id;
+                    </code></pre>
+                </li>
+                <li><strong>Expected Output:</strong>
+                    <pre><code>
+first_name | last_name | department_name
+-----------|-----------|----------------
+Bob        | Johnson   | Marketing
+Eve        | Davis     | Marketing
+Diana      | Prince    | IT
+                    </code></pre>
+                </li>
+                <li><strong>Discussion:</strong> The subquery creates a temporary table <code>HighPayingDepartments</code> containing <code>department_id</code>s that have an average salary over $65,000. The outer query then joins <code>Employees</code>, <code>Departments</code>, and this derived table to filter and display the desired employee information.</li>
+            </ul>
+
+            <hr>
+
+            <h4>1.5 Subquery in the <code>SELECT</code> Clause (Scalar Subquery)</h4>
+            <ul>
+                <li><strong>Problem Statement:</strong> Display each employee's <code>first_name</code>, <code>last_name</code>, <code>salary</code>, and their corresponding <code>department_name</code> in the same row.</li>
+                <li><strong>Hint:</strong> The subquery will run for each row of the outer query.</li>
+                <li><strong>Solution:</strong>
+                    <pre><code>
+SELECT
+    e.first_name,
+    e.last_name,
+    e.salary,
+    (SELECT d.department_name FROM Departments d WHERE d.department_id = e.department_id) AS department_name
+FROM
+    Employees e;
+                    </code></pre>
+                </li>
+                <li><strong>Expected Output:</strong>
+                    <pre><code>
+first_name | last_name | salary   | department_name
+-----------|-----------|----------|----------------
+Alice      | Smith     | 60000.00 | Sales
+Bob        | Johnson   | 75000.00 | Marketing
+Charlie    | Brown     | 55000.00 | Sales
+Diana      | Prince    | 90000.00 | IT
+Eve        | Davis     | 70000.00 | Marketing
+Frank      | White     | 62000.00 | Sales
+                    </code></pre>
+                </li>
+                <li><strong>Discussion:</strong> For each employee, the subquery is executed to find the <code>department_name</code> based on their <code>department_id</code>. This is a <em>scalar</em> subquery because it returns a single value for each row processed by the outer query.</li>
+            </ul>
+
+            <hr>
+
+            <h4>1.6 Subquery with <code>ALL</code></h4>
+            <ul>
+                <li><strong>Problem Statement:</strong> Find employees whose <code>salary</code> is higher than <strong>all</strong> salaries in the 'Sales' department.</li>
+                <li><strong>Hint:</strong> You need to compare an employee's salary against <em>every</em> salary from the 'Sales' department.</li>
+                <li><strong>Solution:</strong>
+                    <pre><code>
+SELECT
+    first_name,
+    last_name,
+    salary
+FROM
+    Employees
+WHERE
+    salary > ALL (SELECT salary FROM Employees WHERE department_id = (SELECT department_id FROM Departments WHERE department_name = 'Sales'));
+                    </code></pre>
+                </li>
+                <li><strong>Expected Output:</strong>
+                    <pre><code>
+first_name | last_name | salary
+-----------|-----------|--------
+Bob        | Johnson   | 75000.00
+Diana      | Prince    | 90000.00
+Eve        | Davis     | 70000.00
+                    </code></pre>
+                    <p><em>(Note: Sales salaries are 60000, 55000, 62000. So, employees with salary &gt; 62000 will be selected)</em></p>
+                </li>
+                <li><strong>Discussion:</strong> The inner subquery returns a list of salaries from the 'Sales' department. The <code>&gt; ALL</code> operator ensures that an employee's salary is greater than the maximum value in that list.</li>
+            </ul>
+
+            <hr>
+
+            <h4>1.7 Subquery in the <code>HAVING</code> Clause</h4>
+            <ul>
+                <li><strong>Problem Statement:</strong> Identify departments where the average employee <code>salary</code> is higher than the average <code>salary</code> of all employees across the entire company.</li>
+                <li><strong>Hint:</strong> The subquery will calculate the company-wide average.</li>
+                <li><strong>Solution:</strong>
+                    <pre><code>
+SELECT
+    department_id,
+    AVG(salary) AS avg_dept_salary
+FROM
+    Employees
+GROUP BY
+    department_id
+HAVING
+    AVG(salary) > (SELECT AVG(salary) FROM Employees);
+                    </code></pre>
+                </li>
+                <li><strong>Expected Output:</strong>
+                    <pre><code>
+department_id | avg_dept_salary
+--------------|----------------
+102           | 72500.000000
+103           | 90000.000000
+                    </code></pre>
+                    <p><em>(Note: Overall average salary is approx 62000.00. Marketing and IT have higher averages.)</em></p>
+                </li>
+                <li><strong>Discussion:</strong> The <code>HAVING</code> clause filters results of aggregate functions (<code>AVG(salary)</code>). The subquery provides the benchmark (overall average salary) against which each department's average is compared.</li>
+            </ul>
+
+            <hr>
+
+            <h3>Section 2: Subqueries in Data Manipulation Language (DML) Statements</h3>
+
+            <h4>2.1 Subquery in <code>INSERT</code> Statement</h4>
+            <ul>
+                <li><strong>Problem Statement:</strong> Archive the <code>employee_id</code> and <code>salary</code> for all employees in the 'IT' department into the <code>SalariesArchive</code> table, along with the current date.</li>
+                <li><strong>Hint:</strong> The <code>SELECT</code> part of the <code>INSERT</code> statement will be your subquery.</li>
+                <li><strong>Solution:</strong>
+                    <pre><code>
+INSERT INTO SalariesArchive (employee_id, salary, archive_date)
+SELECT
+    employee_id,
+    salary,
+    CURDATE()
+FROM
+    Employees
+WHERE
+    department_id = (SELECT department_id FROM Departments WHERE department_name = 'IT');
+
+-- Verify the insertion:
+SELECT * FROM SalariesArchive;
+                    </code></pre>
+                </li>
+                <li><strong>Expected Output (after running INSERT and then SELECT):</strong>
+                    <pre><code>
+archive_id | employee_id | salary   | archive_date
+-----------|-------------|----------|-------------
+1          | 4           | 90000.00 | YYYY-MM-DD (current date)
+                    </code></pre>
+                </li>
+                <li><strong>Discussion:</strong> The subquery first selects the relevant employee data. The <code>INSERT INTO ... SELECT</code> syntax then takes this result set and inserts it into the specified <code>SalariesArchive</code> table.</li>
+            </ul>
+
+            <hr>
+
+            <h4>2.2 Subquery in <code>UPDATE</code> Statement</h4>
+            <ul>
+                <li><strong>Problem Statement:</strong> Give a 5% raise to all employees who work in departments located in 'London'.</li>
+                <li><strong>Hint:</strong> The subquery will identify the employees to be updated.</li>
+                <li><strong>Solution:</strong>
+                    <pre><code>
+UPDATE
+    Employees
+SET
+    salary = salary * 1.05
+WHERE
+    department_id IN (SELECT department_id FROM Departments WHERE location = 'London');
+
+-- Verify the update:
+SELECT employee_id, first_name, salary, department_id FROM Employees WHERE department_id IN (SELECT department_id FROM Departments WHERE location = 'London');
+                    </code></pre>
+                </li>
+                <li><strong>Expected Output (after running UPDATE and then SELECT):</strong>
+                    <pre><code>
+employee_id | first_name | salary   | department_id
+------------|------------|----------|--------------
+2           | Bob        | 78750.00 | 102
+5           | Eve        | 73500.00 | 102
+                    </code></pre>
+                    <p><em>(Salaries for Bob and Eve increased by 5%)</em></p>
+                </li>
+                <li><strong>Discussion:</strong> The subquery determines which <code>department_id</code>s are in 'London'. The <code>UPDATE</code> statement then applies the salary increase only to employees whose <code>department_id</code> matches one of those found by the subquery.</li>
+            </ul>
+
+            <hr>
+
+            <h4>2.3 Subquery in <code>DELETE</code> Statement</h4>
+            <ul>
+                <li><strong>Problem Statement:</strong> Delete all employees whose salaries were archived before '2025-01-01' (assuming you have some archived data now).</li>
+                <li><strong>Hint:</strong> The subquery will find the <code>employee_id</code>s to be deleted.</li>
+                <li><strong>Solution:</strong>
+                    <pre><code>
+-- First, ensure you have some data in SalariesArchive from before 2025-01-01 for this to work.
+-- For demonstration, let's manually insert a record with an older date.
+-- INSERT INTO SalariesArchive (employee_id, salary, archive_date) VALUES (1, 60000.00, '2024-12-25');
+
+DELETE FROM
+    Employees
+WHERE
+    employee_id IN (SELECT employee_id FROM SalariesArchive WHERE archive_date < '2025-01-01');
+
+-- Verify the deletion (if any employees were affected):
+SELECT * FROM Employees;
+                    </code></pre>
+                </li>
+                <li><strong>Expected Output (if employee 1 was archived before 2025-01-01 and then deleted):</strong>
+                    <p>Employee with <code>employee_id = 1</code> (Alice Smith) would be removed from the <code>Employees</code> table.</p>
+                </li>
+                <li><strong>Discussion:</strong> The subquery returns a list of <code>employee_id</code>s that meet the archiving date condition. The <code>DELETE</code> statement then removes records from the <code>Employees</code> table where the <code>employee_id</code> is present in that list. This is a common pattern for data cleanup or synchronization.</li>
+            </ul>
+        </section>
+
+        <hr>
+
+        <section class="card">
+            <h2>Review Questions</h2>
+            <ol>
+                <li>What is the primary purpose of using a subquery in MySQL?</li>
+                <li>In which clauses of a <code>SELECT</code> statement can a subquery be used?</li>
+                <li>Explain the difference between <code>IN</code> and <code>EXISTS</code> when used with subqueries. When might you prefer one over the other?</li>
+                <li>Why must a subquery in the <code>FROM</code> clause be given an alias?</li>
+                <li>Can a subquery return multiple rows when used in the <code>SELECT</code> clause? Why or why not?</li>
+                <li>Describe a scenario where using a subquery in an <code>UPDATE</code> statement would be beneficial.</li>
+            </ol>
+        </section>
+
+        <hr>
+
+        <footer class="text-center text-gray-500 mt-8 text-sm">
+            <p>&copy; 2025 IT 311 - Aviation Database Systems | RONALD T. LAVA, MSIT |INSTITUTE OF COMPUTER STUDIES</p>
+        </footer>
+    </div>
+</body>
+</html>
