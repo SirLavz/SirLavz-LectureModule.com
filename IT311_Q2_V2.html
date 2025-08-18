@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IT 311 - Prelim Quiz 2</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 p-6">
+<div class="container max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+    <h1 class="text-3xl font-semibold text-center text-gray-700 mb-4">IT 311 - Aviation Database Systems</h1>
+    
+    <!-- Registration Form -->
+    <form id="registration-form" class="mb-8 space-y-6 max-w-lg mx-auto">
+        <div>
+            <label for="name" class="block text-gray-700 font-semibold mb-1">Full Name:</label>
+            <input type="text" id="name" placeholder="Enter your full name" required
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <div>
+            <label for="courseSection" class="block text-gray-700 font-semibold mb-1">Course - Year - Section:</label>
+            <input type="text" id="courseSection" placeholder="Example: IT 311 - 3rd Year - Section A" required
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+    </form>
+
+    <div id="quiz-container" class="space-y-8"></div>
+
+    <div class="text-center mt-8">
+        <button id="submit-btn" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors">
+            Submit Answers
+        </button>
+    </div>
+
+    <div id="score-display" class="text-center font-bold text-lg mt-6 text-gray-900"></div>
+
+    <div id="certificate" class="hidden mt-10 p-6 border-4 border-blue-600 rounded-lg bg-blue-50 text-center">
+        <h2 class="text-2xl font-bold mb-3 text-blue-700">Certificate of Completion</h2>
+        <p class="text-lg mb-1"><strong>IT 311 - Prelim Quiz 2</strong></p>
+        <p class="text-lg mb-1">Presented to: <span id="cert-name" class="font-semibold"></span></p>
+        <p class="text-lg mb-1">Course-Year-Section: <span id="cert-courseSection" class="font-semibold"></span></p>
+        <p class="text-lg mb-4">Score: <span id="cert-score" class="font-semibold"></span> / <span id="cert-total" class="font-semibold"></span></p>
+        <button id="print-cert-btn" class="px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-semibold">Print Certificate</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            "question": "Given a relation `Students(sid, sname, age)` and a SQL query `SELECT sname FROM Students WHERE age > 20;`, which of the following is the correct relational algebra equivalent?",
+            "answerOptions": [
+                {
+                    "text": "$$\\Pi\_{sname}(\\sigma\_{age > 20}(Students))$$",
+                    "rationale": "This expression correctly uses the selection operator ($\\sigma$) to filter students based on age and the projection operator ($\\Pi$) to select only the 'sname' attribute.",
+                    "isCorrect": true
+                },
+                {
+                    "text": "$$\\sigma\_{age > 20}(\\Pi\_{sname}(Students))$$",
+                    "rationale": "The projection operator ($\\Pi$) should be applied after the selection operator ($\\sigma$). The selection must be performed on the original relation that contains the 'age' attribute.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "$$\\sigma\_{sname}(\\Pi\_{age > 20}(Students))$$",
+                    "rationale": "This expression incorrectly applies the selection on the 'sname' attribute and attempts to project a condition, which is not a valid relational algebra operation.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "$$\\Pi\_{age > 20}(\\sigma\_{sname}(Students))$$",
+                    "rationale": "This expression swaps the operators and applies the condition to the wrong attribute. The selection and projection operations are not applied in the correct order or to the correct attributes.",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "question": "The SQL query `SELECT DISTINCT department FROM Employees;` is most closely represented by which relational algebra operator?",
+            "answerOptions": [
+                {
+                    "text": "Selection ($\\sigma$)",
+                    "rationale": "Selection is used to filter rows based on a condition and does not handle the removal of duplicate tuples.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Projection ($\\Pi$)",
+                    "rationale": "The projection operator ($\\Pi$) inherently removes duplicate tuples from its result, making it the equivalent of a `SELECT DISTINCT` clause in SQL.",
+                    "isCorrect": true
+                },
+                {
+                    "text": "Cartesian Product ($\\times$)",
+                    "rationale": "The Cartesian Product combines every tuple from one relation with every tuple from another and is used for multi-table queries, not for selecting distinct values from a single column.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Union ($\\cup$)",
+                    "rationale": "The union operator combines the results of two or more queries but is not the primary operator for handling `DISTINCT` on a single column.",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "question": "Which relational algebra expression correctly represents the SQL query `SELECT name, city FROM Customers WHERE city = 'London' OR city = 'Paris';`?",
+            "answerOptions": [
+                {
+                    "text": "$$\\Pi\_{name, city}(\\sigma\_{city = \\text{'London'} \\lor city = \\text{'Paris'}}(Customers))$$",
+                    "rationale": "This expression correctly uses the logical OR ($\\lor$) within the selection operator ($\\sigma$) to filter rows and then projects the specified columns.",
+                    "isCorrect": true
+                },
+                {
+                    "text": "$$\\sigma\_{name, city}(\\Pi\_{city = \\text{'London'} \\lor city = \\text{'Paris'}}(Customers))$$",
+                    "rationale": "This expression incorrectly swaps the selection and projection operators and tries to project a condition.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "$$(\\Pi\_{name, city}(\\sigma\_{city = \\text{'London'}}(Customers))) \\cup (\\Pi\_{name, city}(\\sigma\_{city = \\text{'Paris'}}(Customers)))$$",
+                    "rationale": "While this expression is also valid and will produce the correct result, it is not the most direct or concise translation of the single SQL query.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "$$\\Pi\_{name, city}(\\sigma\_{city \\ne \\text{'London'} \\land city \\ne \\text{'Paris'}}(Customers))$$",
+                    "rationale": "This expression uses a logical AND ($\\land$) and the 'not equal to' operator ($\\ne$), which would select customers who are neither in London nor Paris, the opposite of the query.",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "question": "Given two relations `R(A, B)` and `S(B, C)`, what is the result of the SQL query `SELECT * FROM R, S WHERE R.B = S.B;` in relational algebra?",
+            "answerOptions": [
+                {
+                    "text": "$$R \\times S$$",
+                    "rationale": "This represents the Cartesian product, which does not include the join condition, resulting in a much larger, unfiltered relation.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "$$R \\bowtie\_{R.B = S.B} S$$",
+                    "rationale": "This represents a theta join, which correctly performs a Cartesian product and then a selection based on the join condition `R.B = S.B`, which is equivalent to the SQL query.",
+                    "isCorrect": true
+                },
+                {
+                    "text": "$$\\Pi\_{A, R.B, C}(\\sigma\_{R.B = S.B}(R \\times S))$$",
+                    "rationale": "This is a valid expression for a theta join, but the more concise and standard representation is the join symbol itself.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "$$R \\bowtie S$$",
+                    "rationale": "This represents a natural join, which would require the common attribute 'B' to be listed only once and would not be the direct translation of the given SQL query.",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "question": "Consider the relations `Courses(cid, cname)` and `Enrollments(sid, cid)`. The SQL query `SELECT T1.cname FROM Courses T1 JOIN Enrollments T2 ON T1.cid = T2.cid;` is equivalent to which relational algebra expression?",
+            "answerOptions": [
+                {
+                    "text": "$$\\Pi\_{cname}(\\sigma\_{Courses.cid = Enrollments.cid}(Courses \\times Enrollments))$$",
+                    "rationale": "This expression correctly represents the join as a Cartesian product followed by a selection on the join condition and a final projection on the `cname` attribute.",
+                    "isCorrect": true
+                },
+                {
+                    "text": "$$\\Pi\_{cname}(Courses \\bowtie\_{Courses.cid = Enrollments.cid} Enrollments)$$",
+                    "rationale": "This expression is also correct and more concise. However, the previous option explicitly shows the underlying mechanics of a join, which is often a more fundamental representation for analysis.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "$$\\sigma\_{Courses.cid = Enrollments.cid}(\\Pi\_{cname}(Courses \\times Enrollments))$$",
+                    "rationale": "The projection operator ($\\Pi$) should be applied after the selection operator ($\\sigma$) to ensure the join condition is evaluated on the required attributes.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "$$\\Pi\_{cname}(\\sigma\_{Courses.cid \\ne Enrollments.cid}(Courses \\times Enrollments))$$",
+                    "rationale": "This expression incorrectly uses the 'not equal to' operator, which would result in an anti-join or a vastly different result set.",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "question": "The SQL query `SELECT name FROM Customers UNION SELECT name FROM Employees;` is represented by which relational algebra operator?",
+            "answerOptions": [
+                {
+                    "text": "Intersection ($\\cap$)",
+                    "rationale": "Intersection returns only the common tuples between two relations and is not the correct operator for `UNION`.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Difference ($-$)",
+                    "rationale": "Difference returns tuples from the first relation that are not in the second and is not the correct operator for `UNION`.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Union ($\\cup$)",
+                    "rationale": "The union operator ($\\cup$) is the direct relational algebra equivalent of the `UNION` clause in SQL, combining the results of two relations.",
+                    "isCorrect": true
+                },
+                {
+                    "text": "Join ($\\bowtie$)",
+                    "rationale": "Join combines tuples from two relations based on a common attribute, whereas `UNION` combines the results of two queries with compatible schemas.",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "question": "Given a relation `Employees(eid, ename, salary, deptid)` and the SQL query `SELECT ename, salary FROM Employees WHERE salary > (SELECT AVG(salary) FROM Employees);`, what is the key relational algebra concept being used?",
+            "answerOptions": [
+                {
+                    "text": "Natural Join",
+                    "rationale": "A natural join combines two relations based on common attributes, which is not what the given query is doing.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Selection with a subquery",
+                    "rationale": "The query uses a subquery to find the average salary, which is then used as a condition within a selection operator. This highlights the concept of selection with a nested expression.",
+                    "isCorrect": true
+                },
+                {
+                    "text": "Projection and Union",
+                    "rationale": "The query involves neither a projection of a new relation nor a union of two relations.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Difference and Grouping",
+                    "rationale": "The query does not perform a difference operation, nor does it explicitly use grouping to compute the average.",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "question": "A SQL `GROUP BY` clause combined with an aggregate function like `COUNT()` is most closely related to which relational algebra operation?",
+            "answerOptions": [
+                {
+                    "text": "Extended Projection ($\\Pi\_{F})$",
+                    "rationale": "The extended projection operator can create new attributes and apply functions, but it does not inherently handle the grouping of tuples.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Grouping and Aggregate ($\\mathcal{G})$",
+                    "rationale": "This specific relational algebra operator is designed to group tuples based on a list of attributes and then apply aggregate functions to each group.",
+                    "isCorrect": true
+                },
+                {
+                    "text": "Selection ($\\sigma$)",
+                    "rationale": "Selection filters rows based on a condition and does not have the capability to perform grouping or aggregation.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Rename ($\\rho$)",
+                    "rationale": "The rename operator simply changes the name of a relation or an attribute and has no relation to grouping or aggregation.",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "question": "Which of the following relational algebra expressions is equivalent to the SQL query `SELECT E.ename, P.pname FROM Employees E, Projects P WHERE E.deptid = P.deptid AND E.salary > 50000;`?",
+            "answerOptions": [
+                {
+                    "text": "$$\\Pi\_{E.ename, P.pname}(\\sigma\_{E.deptid = P.deptid \\land E.salary > 50000}(E \\times P))$$",
+                    "rationale": "This expression correctly represents the query as a Cartesian product, followed by a selection with a compound condition (logical AND), and a final projection.",
+                    "isCorrect": true
+                },
+                {
+                    "text": "$$\\Pi\_{E.ename, P.pname}(\\sigma\_{E.deptid = P.deptid}(E) \\times \\sigma\_{E.salary > 50000}(P))$$",
+                    "rationale": "This expression incorrectly applies the salary condition to the Projects relation and separates the conditions, which will not yield the correct result.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "$$(\\Pi\_{E.ename}(E)) \\bowtie\_{E.deptid = P.deptid} (\\Pi\_{P.pname}(P))$$",
+                    "rationale": "This expression attempts to project the columns before the join, which would cause an error because the join condition depends on the 'deptid' attribute, which is not projected.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "$$(\\sigma\_{E.salary > 50000}(\\Pi\_{E.ename}(E))) \\bowtie\_{E.deptid = P.deptid} P$$",
+                    "rationale": "This expression incorrectly projects `ename` before the join, losing the `deptid` column needed for the join condition.",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "question": "The SQL query `SELECT C.cname, E.sid FROM Courses C LEFT OUTER JOIN Enrollments E ON C.cid = E.cid;` is represented by which relational algebra operator?",
+            "answerOptions": [
+                {
+                    "text": "Natural Join ($\\bowtie$)",
+                    "rationale": "A natural join is an inner join that only returns matching tuples from both relations, not all tuples from the left relation.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Theta Join ($\\bowtie\_{\\theta}$)",
+                    "rationale": "A theta join is a type of inner join and does not retain all tuples from the left relation if there is no match in the right relation.",
+                    "isCorrect": false
+                },
+                {
+                    "text": "Left Outer Join ($\\text{L}\\Join$)",
+                    "rationale": "The left outer join operator ($\\text{L}\\Join$) is the direct equivalent of the SQL `LEFT OUTER JOIN` clause, ensuring that all tuples from the left relation are included in the result.",
+                    "isCorrect": true
+                },
+                {
+                    "text": "Full Outer Join ($\\text{F}\\Join$)",
+                    "rationale": "A full outer join would include all tuples from both relations, padding with nulls where there are no matches, which is not what the `LEFT OUTER JOIN` clause does.",
+                    "isCorrect": false
+                }
+            ]
+        },
+        // New questions about subqueries and joins
+        {
+            question: "What kind of JOIN returns all records when there is a match in either left or right table?",
+            answerOptions: [
+                {text: "INNER JOIN", isCorrect: false, rationale: "INNER JOIN returns only matching records."},
+                {text: "LEFT JOIN", isCorrect: false, rationale: "LEFT JOIN returns all records from left table and matched rows."},
+                {text: "RIGHT JOIN", isCorrect: false, rationale: "RIGHT JOIN returns all records from right table and matched rows."},
+                {text: "FULL OUTER JOIN", isCorrect: true, rationale: "FULL OUTER JOIN returns rows when there is a match in one of the tables."}
+            ]
+        },
+        {
+            question: "Which SQL clause would you use to return rows in one table that do NOT have matching rows in another?",
+            answerOptions: [
+                {text: "INNER JOIN", isCorrect: false, rationale: "INNER JOIN returns only matches."},
+                {text: "LEFT JOIN with IS NULL check", isCorrect: true, rationale: "LEFT JOIN with IS NULL filters records without matches."},
+                {text: "RIGHT JOIN", isCorrect: false, rationale: "RIGHT JOIN returns matching rows and all from right table."},
+                {text: "FULL OUTER JOIN", isCorrect: false, rationale: "FULL OUTER JOIN returns all matches and non-matches."}
+            ]
+        },
+        {
+            question: "What type of subquery can be used to test existence of rows in another table?",
+            answerOptions: [
+                {text: "Scalar Subquery", isCorrect: false, rationale: "Scalar subquery returns a single value."},
+                {text: "EXISTS Subquery", isCorrect: true, rationale: "EXISTS subquery tests for existence of rows."},
+                {text: "IN Subquery", isCorrect: false, rationale: "IN tests membership, but does not specifically test existence."},
+                {text: "JOIN", isCorrect: false, rationale: "JOIN combines rows; not a subquery."}
+            ]
+        },
+        {
+            question: "In a correlated subquery, how is the inner query linked to the outer query?",
+            answerOptions: [
+                {text: "Through a shared column reference in WHERE clause", isCorrect: true, rationale: "Correlated subqueries depend on outer query columns."},
+                {text: "By using JOIN syntax", isCorrect: false, rationale: "JOINs are joins, not subqueries."},
+                {text: "Using GROUP BY clause", isCorrect: false, rationale: "GROUP BY is for aggregation."},
+                {text: "By aliasing columns arbitrarily", isCorrect: false, rationale: "Aliasing alone doesn't link queries."}
+            ]
+        },
+        {
+            question: "What does an INNER JOIN return?",
+            answerOptions: [
+                {text: "All rows from both tables", isCorrect: false, rationale: "This is FULL OUTER JOIN."},
+                {text: "Only matching rows between tables", isCorrect: true, rationale: "INNER JOIN returns only matching rows."},
+                {text: "Rows from left table with nulls for unmatched", isCorrect: false, rationale: "This is LEFT JOIN."},
+                {text: "Rows from right table with nulls for unmatched", isCorrect: false, rationale: "This is RIGHT JOIN."}
+            ]
+        },
+        {
+            question: "Which of these can replace a subquery in the WHERE clause to improve performance?",
+            answerOptions: [
+                {text: "INNER JOIN", isCorrect: true, rationale: "INNER JOIN often replaces subqueries for optimization."},
+                {text: "LEFT JOIN", isCorrect: false, rationale: "LEFT JOIN preserves all left rows, may not replace subquery logic."},
+                {text: "EXISTS clause", isCorrect: false, rationale: "EXISTS is itself a subquery."},
+                {text: "GROUP BY", isCorrect: false, rationale: "GROUP BY is for aggregation."}
+            ]
+        },
+        {
+            question: "What will this SQL do? `SELECT * FROM A WHERE A.id IN (SELECT B.id FROM B WHERE B.status='active');`",
+            answerOptions: [
+                {text: "Selects all rows from A that have matching active id in B", isCorrect: true, rationale: "IN with subquery returns matching rows."},
+                {text: "Selects all rows from B with status active", isCorrect: false, rationale: "Main query is from A, selects rows based on subquery."},
+                {text: "Returns all rows from A if B has any active statuses", isCorrect: false, rationale: "This is behavior of EXISTS, not IN."},
+                {text: "Returns all rows from A and B joined", isCorrect: false, rationale: "This is a JOIN behavior, not IN."}
+            ]
+        },
+        {
+            question: "How do you express a LEFT JOIN in relational algebra?",
+            answerOptions: [
+                {text: "Natural Join", isCorrect: false, rationale: "Natural join is an inner join."},
+                {text: "Theta Join with null padding on left", isCorrect: false, rationale: "Theta join is inner join with condition."},
+                {text: "Left Outer Join operation ($\\text{L}\\Join$)", isCorrect: true, rationale: "Left outer join directly corresponds to LEFT JOIN."},
+                {text: "Cartesian product", isCorrect: false, rationale: "Cartesian product is a base operation."}
+            ]
+        },
+        {
+            question: "What happens if a subquery returns multiple rows where only a single value is expected?",
+            answerOptions: [
+                {text: "SQL error occurs", isCorrect: true, rationale: "Subqueries expecting scalars error if multiple rows returned."},
+                {text: "Only first row used", isCorrect: false, rationale: "SQL does not automatically pick first row."},
+                {text: "Query silently truncates rows", isCorrect: false, rationale: "This is not default behavior."},
+                {text: "It performs a join instead", isCorrect: false, rationale: "Join is separate operation."}
+            ]
+        },
+        {
+            question: "Which JOIN allows you to include unmatched rows from the right table?",
+            answerOptions: [
+                {text: "LEFT JOIN", isCorrect: false, rationale: "LEFT JOIN includes unmatched rows from left table."},
+                {text: "RIGHT JOIN", isCorrect: true, rationale: "RIGHT JOIN includes unmatched from right table."},
+                {text: "FULL OUTER JOIN", isCorrect: false, rationale: "Includes unmatched from both sides."},
+                {text: "INNER JOIN", isCorrect: false, rationale: "Only matched rows."}
+            ]
+        }
+    ];
+
+    const quizContainer = document.getElementById('quiz-container');
+    const submitBtn = document.getElementById('submit-btn');
+    const scoreDisplay = document.getElementById('score-display');
+    const certificateDiv = document.getElementById('certificate');
+    const printBtn = document.getElementById('print-cert-btn');
+
+    function renderQuiz() {
+        questions.forEach((q, qIndex) => {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+
+            const questionText = document.createElement('p');
+            questionText.className = 'question font-semibold text-lg mb-4';
+            questionText.textContent = `${qIndex + 1}. ${q.question}`;
+            questionBlock.appendChild(questionText);
+
+            const optionsList = document.createElement('ul');
+            optionsList.className = 'options space-y-3';
+
+            q.answerOptions.forEach((option, oIndex) => {
+                const optionItem = document.createElement('li');
+                optionItem.className = 'option p-3 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer';
+
+                const radioInput = document.createElement('input');
+                radioInput.type = 'radio';
+                radioInput.name = `question${qIndex}`;
+                radioInput.id = `q${qIndex}o${oIndex}`;
+                radioInput.value = oIndex;
+                radioInput.className = 'mr-2 cursor-pointer';
+
+                const label = document.createElement('label');
+                label.htmlFor = radioInput.id;
+                label.innerHTML = option.text;
+                label.className = 'cursor-pointer';
+
+                optionItem.appendChild(radioInput);
+                optionItem.appendChild(label);
+
+                const rationale = document.createElement('div');
+                rationale.className = 'rationale mt-2 p-2 border-l-4 bg-gray-50 text-gray-700 text-sm';
+                rationale.style.display = 'none';
+                rationale.textContent = option.rationale;
+                optionItem.appendChild(rationale);
+
+                optionItem.setAttribute('data-correct', option.isCorrect);
+
+                optionsList.appendChild(optionItem);
+            });
+
+            questionBlock.appendChild(optionsList);
+            quizContainer.appendChild(questionBlock);
+        });
+    }
+
+    renderQuiz();
+
+    const script = document.createElement('script');
+    script.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
+    script.async = true;
+    document.head.appendChild(script);
+
+    submitBtn.addEventListener('click', () => {
+        const nameInput = document.getElementById('name');
+        const courseSectionInput = document.getElementById('courseSection');
+
+        if (!nameInput.value.trim()) {
+            alert('Please enter your full name.');
+            nameInput.focus();
+            return;
+        }
+        if (!courseSectionInput.value.trim()) {
+            alert('Please enter your Course-Year-Section.');
+            courseSectionInput.focus();
+            return;
+        }
+
+        const questionBlocks = document.querySelectorAll('.question-block');
+        let score = 0;
+        const total = questions.length;
+
+        questionBlocks.forEach((block, qIndex) => {
+            const options = block.querySelectorAll('.option');
+            let selectedIndex = -1;
+            const radios = block.querySelectorAll(`input[name="question${qIndex}"]`);
+            radios.forEach((radio) => {
+                if (radio.checked) {
+                    selectedIndex = parseInt(radio.value);
+                }
+            });
+
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect', 'bg-green-100', 'bg-red-100');
+                option.querySelector('.rationale').style.display = 'none';
+            });
+
+            if (selectedIndex !== -1) {
+                if (questions[qIndex].answerOptions[selectedIndex].isCorrect) {
+                    score++;
+                }
+            }
+
+            options.forEach((option, oIndex) => {
+                const isChecked = option.querySelector('input').checked;
+                const correctFlag = option.getAttribute('data-correct') === 'true';
+
+                if (isChecked && correctFlag) {
+                    option.classList.add('correct', 'bg-green-100');
+                } else if (isChecked && !correctFlag) {
+                    option.classList.add('incorrect', 'bg-red-100');
+                }
+                if (isChecked) option.querySelector('.rationale').style.display = 'block';
+            });
+        });
+
+        scoreDisplay.textContent = `Score: ${score} out of ${total}`;
+
+        document.getElementById('cert-name').textContent = nameInput.value.trim();
+        document.getElementById('cert-courseSection').textContent = courseSectionInput.value.trim();
+        document.getElementById('cert-score').textContent = score;
+        document.getElementById('cert-total').textContent = total;
+
+        certificateDiv.classList.remove('hidden');
+        certificateDiv.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    printBtn.addEventListener('click', () => {
+        const originalContents = document.body.innerHTML;
+        const certificateContents = certificateDiv.innerHTML;
+        document.body.innerHTML = certificateContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        window.location.reload();
+    });
+</script>
+</body>
+</html>
