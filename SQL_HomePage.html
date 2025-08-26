@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SQL for Dummies — Companion Homepage</title>
+  <meta name="description" content="A clean, friendly landing page for SQL beginners: learn queries, joins, DDL/DML, constraints, indexing, views, and more." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <style>
+    /* --------- Base / Reset --------- */
+    :root{
+      --bg: #0b0d12;
+      --panel: #121520;
+      --panel-2:#171b28;
+      --text: #e8ecf1;
+      --muted:#a9b3c2;
+      --brand:#3da9fc;
+      --brand-2:#90cdfb;
+      --accent:#38f2b8;
+      --danger:#ff6b6b;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --radius: 14px;
+      --radius-sm:10px;
+      --ring: 0 0 0 3px color-mix(in srgb, var(--brand) 40%, transparent);
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Arial, Noto Sans, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 70% -10%, #182032 0%, var(--bg) 50%),
+                  linear-gradient(180deg, #0a0c12 0%, #0b0d12 100%);
+      color:var(--text);
+    }
+    img{max-width:100%;display:block}
+    a{color:var(--brand);text-decoration:none}
+    a:hover{text-decoration:underline}
+    code,kbd,pre{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, Monaco, "Liberation Mono", monospace}
+
+    /* --------- Layout --------- */
+    .container{width:min(1100px, 92%); margin-inline:auto}
+    header{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(8px);
+      background: color-mix(in oklab, var(--panel) 70%, transparent);
+      border-bottom:1px solid #20263a;
+    }
+    .nav{
+      display:flex; align-items:center; gap:18px; padding:14px 0;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px; font-weight:700;
+      letter-spacing:.2px;
+    }
+    .brand-mark{
+      width:36px; height:36px; border-radius:10px;
+      background: conic-gradient(from 210deg at 50% 50%, var(--brand), var(--accent), var(--brand));
+      box-shadow: var(--shadow);
+    }
+    .spacer{flex:1}
+    .nav a.btn{padding:10px 14px; border-radius:10px; background:var(--panel-2); border:1px solid #242b40}
+    .nav a.btn:hover{background:#1d2335}
+    .nav .cta{
+      background:linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
+      color:#081019; border:none; box-shadow: var(--shadow); font-weight:700;
+    }
+    .nav .cta:hover{filter:brightness(1.05)}
+    .mobile-toggle{display:none}
+
+    /* --------- Hero --------- */
+    .hero{
+      padding: 72px 0 40px;
+    }
+    .hero-grid{
+      display:grid; grid-template-columns: 1.2fr 1fr; gap:28px; align-items:center;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px; border-radius:999px; background:#101625; border:1px solid #23304f; color:var(--brand-2); font-weight:600;
+    }
+    .hero h1{
+      font-size: clamp(2rem, 2.6rem + 1vw, 3.2rem);
+      line-height:1.1; margin: 14px 0 10px;
+      letter-spacing:.2px;
+    }
+    .hero p{color:var(--muted); font-size:1.05rem}
+    .hero-actions{display:flex; gap:12px; margin-top:18px; flex-wrap:wrap}
+    .btn-lg{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:12px 18px; border-radius:12px; border:1px solid #26324d; background:var(--panel-2); color:var(--text); font-weight:650;
+    }
+    .btn-lg.primary{background: linear-gradient(135deg, var(--brand), var(--accent)); color:#081019; border:none}
+    .btn-lg:hover{transform: translateY(-1px)}
+    .hero-card{
+      background: radial-gradient(600px 300px at 100% 0%, #1a2236, var(--panel));
+      border:1px solid #232a40; border-radius: var(--radius); padding:22px; box-shadow: var(--shadow);
+    }
+    .hero-card h3{margin:10px 0 8px}
+    .pill-row{display:flex; flex-wrap:wrap; gap:8px}
+    .pill{padding:6px 10px; border-radius:999px; border:1px solid #2a3450; background:#101624; color:#cfe6ff}
+
+    /* --------- Feature Cards --------- */
+    .section{padding: 48px 0}
+    .section h2{font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2rem); margin:0 0 18px}
+    .muted{color:var(--muted)}
+    .grid{
+      display:grid; gap:16px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .card{
+      grid-column: span 4;
+      background: var(--panel);
+      border:1px solid #232a40; border-radius: var(--radius); padding:18px;
+      box-shadow: var(--shadow);
+      transition: transform .1s ease;
+    }
+    .card:hover{transform: translateY(-2px)}
+    .card h3{margin:8px 0 8px}
+    .kicker{font-size:.85rem; color:#98a6be; font-weight:700; letter-spacing:.2px; text-transform:uppercase}
+
+    /* --------- Code Demo --------- */
+    .code-wrap{
+      background: #0c111b; border:1px solid #232a40; border-radius: var(--radius);
+      overflow:hidden; box-shadow: var(--shadow)
+    }
+    .code-head{
+      display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:#0f1422; border-bottom:1px solid #20263a;
+    }
+    .dots{display:flex; gap:6px}
+    .dot{width:10px; height:10px; border-radius:50%}
+    .dot.red{background:#ff6b6b}.dot.yellow{background:#ffd166}.dot.green{background:#06d6a0}
+    pre{margin:0; padding:16px; overflow:auto; font-size:.95rem}
+    /* Tiny SQL syntax tinting */
+    .tok-key{color:#8bd5ff; font-weight:700}
+    .tok-fn{color:#ffcc66}
+    .tok-str{color:#a0ffcf}
+    .tok-num{color:#f8a8ff}
+    .tok-comm{color:#7a859b; font-style:italic}
+
+    /* --------- TOC / Topics --------- */
+    .topic{
+      grid-column: span 3; background: linear-gradient(180deg, #121723, #111522); border:1px solid #222941; border-radius: var(--radius-sm); padding:14px;
+    }
+    .topic h4{margin:8px 0 6px}
+    .topic p{margin:0; color:var(--muted); font-size:.95rem}
+    .topic .tag{display:inline-block; margin-top:10px; padding:4px 8px; border-radius:999px; border:1px solid #26324d; background:#0e1423; font-size:.8rem; color:#cfe6ff}
+
+    /* --------- CTA Banner --------- */
+    .cta-band{
+      display:grid; grid-template-columns: 1.4fr 1fr; gap:18px; align-items:center;
+      background: linear-gradient(135deg, #101725, #0f1a30 40%, #0b1020);
+      border:1px solid #1f2740; border-radius: var(--radius); padding:22px;
+    }
+
+    /* --------- FAQ --------- */
+    details{
+      background: var(--panel); border:1px solid #232a40; border-radius:12px; padding:14px 16px;
+    }
+    summary{cursor:pointer; font-weight:650}
+    details[open]{box-shadow: var(--ring)}
+    details + details{margin-top:10px}
+
+    /* --------- Footer --------- */
+    footer{padding:36px 0; border-top:1px solid #20263a; color:#9eb0c7}
+    .foot-grid{display:grid; grid-template-columns: 1fr 1fr; gap:16px}
+    .foot-nav{display:flex; gap:14px; flex-wrap:wrap}
+    .tiny{font-size:.9rem}
+
+    /* --------- Responsive --------- */
+    @media (max-width: 900px){
+      .hero-grid, .cta-band{grid-template-columns: 1fr}
+      .card{grid-column: span 6}
+      .topic{grid-column: span 6}
+      .foot-grid{grid-template-columns:1fr}
+    }
+    @media (max-width: 620px){
+      .card, .topic{grid-column: span 12}
+      .mobile-toggle{display:inline-flex; background:transparent; border:1px solid #26324d; color:var(--text); padding:8px 10px; border-radius:10px}
+      .navlinks{display:none}
+      .navlinks.open{display:flex; gap:10px; flex-wrap:wrap}
+    }
+    /* Focus rings for a11y */
+    a:focus, button:focus, summary:focus{outline:none; box-shadow: var(--ring)}
+  </style>
+</head>
+<body>
+  <!-- Header / Nav -->
+  <header>
+    <div class="container nav">
+      <div class="brand" aria-label="Site brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <span>SQL for Dummies</span>
+      </div>
+      <button class="mobile-toggle" aria-expanded="false" aria-controls="navlinks">Menu</button>
+      <div class="spacer"></div>
+      <nav id="navlinks" class="navlinks" aria-label="Primary navigation">
+        <a class="btn" href="#topics">Topics</a>
+        <a class="btn" href="#demo">Live Demo</a>
+        <a class="btn" href="#faq">FAQ</a>
+        <a class="btn cta" href="#get-started">Get Started</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="badge" aria-label="Beginner friendly badge">Beginner-friendly • No prior SQL needed</span>
+        <h1>Learn SQL the friendly way.</h1>
+        <p>
+          Grasp the essentials of relational databases—from SELECT queries and JOINs to constraints, views,
+          and indexing. This companion homepage distills the first steps and core ideas you’ll see in
+          <em>SQL for Dummies</em>, so you can start practicing right away.
+        </p>
+        <div class="hero-actions">
+          <a class="btn-lg primary" href="#topics" aria-label="Jump to topics overview">Explore Topics</a>
+          <a class="btn-lg" href="#demo" aria-label="Jump to code demo">Try a Query</a>
+          <a class="btn-lg" href="#toc" aria-label="Jump to table of contents">See TOC</a>
+        </div>
+        <div class="pill-row" style="margin-top:14px">
+          <span class="pill">DDL • DML • DQL</span>
+          <span class="pill">Joins</span>
+          <span class="pill">Constraints</span>
+          <span class="pill">Indexes</span>
+          <span class="pill">Views</span>
+        </div>
+      </div>
+
+      <aside class="hero-card" role="complementary" aria-label="Quick facts">
+        <h3>What you’ll do here</h3>
+        <ul>
+          <li>Understand tables, rows, and keys</li>
+          <li>Write your first <code>SELECT</code> and <code>JOIN</code></li>
+          <li>Create and alter tables (DDL)</li>
+          <li>Insert, update, delete data (DML)</li>
+          <li>Query with filters, groups, and sorts (DQL)</li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Feature Cards -->
+  <section class="section">
+    <div class="container">
+      <h2>Start with the essentials</h2>
+      <p class="muted">A lightweight roadmap inspired by the beginner-friendly approach of <em>SQL for Dummies</em>.</p>
+
+      <div class="grid" style="margin-top:14px">
+        <article class="card">
+          <div class="kicker">Foundations</div>
+          <h3>Relational Thinking</h3>
+          <p>Tables, rows, columns, primary keys, foreign keys—how data relates and why normalization matters.</p>
+        </article>
+        <article class="card">
+          <div class="kicker">Queries</div>
+          <h3>SELECT &amp; JOINs</h3>
+          <p>Filter with <code>WHERE</code>, combine tables with <code>INNER</code>, <code>LEFT</code>, <code>RIGHT</code>, and <code>FULL</code> joins.</p>
+        </article>
+        <article class="card">
+          <div class="kicker">Modification</div>
+          <h3>DDL &amp; DML</h3>
+          <p>Create/alter structures with DDL; insert/update/delete data with DML while keeping constraints intact.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Code Demo -->
+  <section id="demo" class="section">
+    <div class="container">
+      <h2>See SQL in action</h2>
+      <p class="muted">A tiny example you can paste into your SQL environment.</p>
+
+      <div class="code-wrap" role="region" aria-label="Code example">
+        <div class="code-head">
+          <strong>Example.sql</strong>
+          <div class="dots" aria-hidden="true">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+          </div>
+        </div>
+<pre aria-label="SQL snippet"><code>
+<span class="tok-comm">-- Build a tiny library schema</span>
+<span class="tok-key">CREATE TABLE</span> authors(
+  author_id <span class="tok-key">INTEGER</span> <span class="tok-key">PRIMARY KEY</span>,
+  name <span class="tok-key">VARCHAR</span>(100) <span class="tok-key">NOT NULL</span>
+);
+
+<span class="tok-key">CREATE TABLE</span> books(
+  book_id <span class="tok-key">INTEGER</span> <span class="tok-key">PRIMARY KEY</span>,
+  title <span class="tok-key">VARCHAR</span>(150) <span class="tok-key">NOT NULL</span>,
+  author_id <span class="tok-key">INTEGER</span> <span class="tok-key">NOT NULL</span>,
+  published_year <span class="tok-key">INTEGER</span>,
+  <span class="tok-key">FOREIGN KEY</span>(author_id) <span class="tok-key">REFERENCES</span> authors(author_id)
+);
+
+<span class="tok-comm">-- Insert rows (DML)</span>
+<span class="tok-key">INSERT INTO</span> authors <span class="tok-key">VALUES</span> (1, <span class="tok-str">'Jane Doe'</span>), (2, <span class="tok-str">'Sam Lee'</span>);
+<span class="tok-key">INSERT INTO</span> books <span class="tok-key">VALUES</span>
+  (1, <span class="tok-str">'Learning SQL'</span>, 1, <span class="tok-num">2024</span>),
+  (2, <span class="tok-str">'Relational Basics'</span>, 2, <span class="tok-num">2023</span>);
+
+<span class="tok-comm">-- Query with a JOIN (DQL)</span>
+<span class="tok-key">SELECT</span> b.title, a.name <span class="tok-key">AS</span> author
+<span class="tok-key">FROM</span> books b
+<span class="tok-key">INNER JOIN</span> authors a <span class="tok-key">ON</span> a.author_id = b.author_id
+<span class="tok-key">WHERE</span> b.published_year &gt;= <span class="tok-num">2023</span>
+<span class="tok-key">ORDER BY</span> b.published_year <span class="tok-key">DESC</span>;
+</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Topics / TOC -->
+  <section id="topics" class="section">
+    <div class="container">
+      <h2>Topics you’ll cover</h2>
+      <p class="muted">Use this like a mini table of contents for your study plan.</p>
+      <div id="toc" class="grid" style="margin-top:14px">
+        <div class="topic">
+          <h4>Getting Started</h4>
+          <p>Relational model, tables, rows, columns, keys, and basic terminology.</p>
+          <span class="tag">Foundations</span>
+        </div>
+        <div class="topic">
+          <h4>Writing SELECT Queries</h4>
+          <p>Projection, filtering with <code>WHERE</code>, sorting, aliases, and limits.</p>
+          <span class="tag">DQL</span>
+        </div>
+        <div class="topic">
+          <h4>Aggregate &amp; Grouping</h4>
+          <p><code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN/MAX</code>, <code>GROUP BY</code>, and <code>HAVING</code>.</p>
+          <span class="tag">Analysis</span>
+        </div>
+        <div class="topic">
+          <h4>Joins</h4>
+          <p>Inner, left, right, full joins, cross joins; join conditions vs. filters.</p>
+          <span class="tag">Relationships</span>
+        </div>
+        <div class="topic">
+          <h4>Subqueries &amp; CTEs</h4>
+          <p>Nesting queries, <code>EXISTS</code>, derived tables, and common table expressions.</p>
+          <span class="tag">Intermediate</span>
+        </div>
+        <div class="topic">
+          <h4>Data Definition (DDL)</h4>
+          <p><code>CREATE</code>, <code>ALTER</code>, <code>DROP</code> tables, data types, defaults, and schema design.</p>
+          <span class="tag">Structure</span>
+        </div>
+        <div class="topic">
+          <h4>Data Manipulation (DML)</h4>
+          <p><code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, transactions, and safe changes.</p>
+          <span class="tag">CRUD</span>
+        </div>
+        <div class="topic">
+          <h4>Constraints</h4>
+          <p>Primary/foreign keys, unique, not null, checks, and referential integrity.</p>
+          <span class="tag">Data Quality</span>
+        </div>
+        <div class="topic">
+          <h4>Indexes</h4>
+          <p>Why and when to index, B-trees, covering indexes, pros/cons.</p>
+          <span class="tag">Performance</span>
+        </div>
+        <div class="topic">
+          <h4>Views &amp; Materialized Views</h4>
+          <p>Reusable query layers and performance tradeoffs.</p>
+          <span class="tag">Abstraction</span>
+        </div>
+        <div class="topic">
+          <h4>Basic Admin</h4>
+          <p>Users/roles, grants, backups/restores, and environment set-up tips.</p>
+          <span class="tag">Ops</span>
+        </div>
+        <div class="topic">
+          <h4>Best Practices</h4>
+          <p>Naming conventions, normalization, sample datasets, and debugging queries.</p>
+          <span class="tag">Habits</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Who It's For + CTA -->
+  <section id="get-started" class="section">
+    <div class="container cta-band" role="region" aria-label="Get started">
+      <div>
+        <h2>Who is this for?</h2>
+        <p class="muted">
+          Absolute beginners, students in database courses, and developers who want a quick,
+          practical refresher. If you can read basic English and type, you can learn SQL.
+        </p>
+        <div class="pill-row">
+          <span class="pill">Beginner friendly</span>
+          <span class="pill">Copy-paste ready</span>
+          <span class="pill">Hands-on</span>
+        </div>
+      </div>
+      <div>
+        <div class="hero-card">
+          <h3>Ready to dive in?</h3>
+          <p>Open your SQL tool (MySQL, PostgreSQL, SQL Server, SQLite), paste the demo above, and start exploring.</p>
+          <a class="btn-lg primary" href="#demo">Run the Sample</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="section">
+    <div class="container">
+      <h2>Frequently asked questions</h2>
+      <details>
+        <summary>Which database should I use?</summary>
+        <p class="muted">Any major RDBMS will work for learning: MySQL/MariaDB, PostgreSQL, SQL Server, or SQLite. The SQL you learn transfers easily with minor syntax differences.</p>
+      </details>
+      <details>
+        <summary>How do DDL, DML, and DQL differ?</summary>
+        <p class="muted"><strong>DDL</strong> changes structure (<code>CREATE/ALTER/DROP</code>), <strong>DML</strong> changes data (<code>INSERT/UPDATE/DELETE</code>), and <strong>DQL</strong> queries data (<code>SELECT</code> and friends).</p>
+      </details>
+      <details>
+        <summary>What about NoSQL?</summary>
+        <p class="muted">Start with SQL to master schemas and relationships. Later, explore NoSQL when your workload fits a non-relational pattern.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container foot-grid">
+      <div class="brand" aria-label="Site brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <span>SQL for Dummies</span>
+      </div>
+      <div class="foot-nav">
+        <a href="#topics">Topics</a>
+        <a href="#demo">Demo</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    </div>
+    <div class="container tiny" style="margin-top:10px">
+      <p>Made for learning and teaching purposes. This homepage is a companion page inspired by beginner-friendly SQL materials.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Progressive enhancement: mobile menu toggle + smooth scroll
+    (function(){
+      const btn = document.querySelector('.mobile-toggle');
+      const nav = document.getElementById('navlinks');
+      if(btn && nav){
+        btn.addEventListener('click', () => {
+          const open = nav.classList.toggle('open');
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+      // Smooth scroll for in-page anchors
+      document.querySelectorAll('a[href^="#"]').forEach(a=>{
+        a.addEventListener('click', e=>{
+          const id = a.getAttribute('href').slice(1);
+          const el = document.getElementById(id) || document.querySelector('[id="'+id+'"]');
+          if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
