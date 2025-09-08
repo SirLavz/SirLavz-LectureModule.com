@@ -1,0 +1,235 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DBMS Normalization - 1NF, 2NF, 3NF</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+        color: #333;
+        line-height: 1.6;
+    }
+    header {
+        background: #004080;
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+    }
+    nav {
+        background: #003366;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    nav a {
+        color: white;
+        padding: 0.8rem 1.2rem;
+        text-decoration: none;
+        display: block;
+        transition: background 0.3s;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+    nav a:hover,
+    nav a:focus {
+        background: #0059b3;
+        outline: none;
+    }
+    main {
+        max-width: 1000px;
+        margin: auto;
+        padding: 2rem;
+    }
+    section {
+        background: white;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    h2 {
+        color: #004080;
+        margin-top: 0;
+    }
+    h3 {
+        margin-bottom: 0.5rem;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+    }
+    table, th, td {
+        border: 1px solid #ccc;
+    }
+    th, td {
+        padding: 0.6rem;
+        text-align: left;
+    }
+    th {
+        background: #f0f0f0;
+    }
+    .summary-table th {
+        background: #004080;
+        color: white;
+    }
+    .highlight {
+        background: #e6f2ff;
+        padding: 0.5rem;
+        border-left: 4px solid #004080;
+        margin: 1rem 0;
+    }
+    .top-link {
+        display: inline-block;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: #004080;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .top-link:hover {
+        text-decoration: underline;
+    }
+    footer {
+        text-align: center;
+        padding: 1rem;
+        background: #004080;
+        color: white;
+        font-size: 0.9rem;
+    }
+</style>
+</head>
+<body>
+
+<header id="top">
+    <h1>IS 311 - DBMS Normalization – 1NF, 2NF, 3NF(Week7)</h1>
+</header>
+
+<nav aria-label="Primary">
+    <a href="#intro">Introduction</a>
+    <a href="#nf1">1NF</a>
+    <a href="#nf2">2NF</a>
+    <a href="#nf3">3NF</a>
+    <a href="#summary">Summary</a>
+</nav>
+
+<main>
+    <section id="intro">
+        <h2>What is Database Normalization?</h2>
+        <p>Database Normalization is the process of organizing data in a relational database to:</p>
+        <ul>
+            <li>Reduce redundancy</li>
+            <li>Improve data integrity</li>
+            <li>Prevent anomalies during INSERT, UPDATE, and DELETE operations</li>
+        </ul>
+        <p>It was introduced by <strong>Edgar F. Codd</strong> and is applied in stages called <em>Normal Forms (NF)</em> — each stage builds on the previous one.</p>
+        <a class="top-link" href="#top" aria-label="Back to top">↑ Back to top</a>
+    </section>
+
+    <section id="nf1">
+        <h2>1️⃣ First Normal Form (1NF)</h2>
+        <div class="highlight"><strong>Rule:</strong> Atomic values, no repeating groups, unique rows.</div>
+        <h3>Before 1NF:</h3>
+        <table>
+            <tr><th>StudentID</th><th>Name</th><th>Courses</th></tr>
+            <tr><td>101</td><td>Alice Tan</td><td>DBMS, Networking</td></tr>
+            <tr><td>102</td><td>Mark Lee</td><td>Programming, DBMS</td></tr>
+        </table>
+        <h3>After 1NF:</h3>
+        <table>
+            <tr><th>StudentID</th><th>Name</th><th>Course</th></tr>
+            <tr><td>101</td><td>Alice Tan</td><td>DBMS</td></tr>
+            <tr><td>101</td><td>Alice Tan</td><td>Networking</td></tr>
+            <tr><td>102</td><td>Mark Lee</td><td>Programming</td></tr>
+            <tr><td>102</td><td>Mark Lee</td><td>DBMS</td></tr>
+        </table>
+        <a class="top-link" href="#top" aria-label="Back to top">↑ Back to top</a>
+    </section>
+
+    <section id="nf2">
+        <h2>2️⃣ Second Normal Form (2NF)</h2>
+        <div class="highlight"><strong>Rule:</strong> Must be in 1NF, no partial dependency on composite keys.</div>
+        <h3>Before 2NF:</h3>
+        <table>
+            <tr><th>StudentID</th><th>CourseID</th><th>StudentName</th><th>CourseName</th><th>Instructor</th></tr>
+            <tr><td>101</td><td>C1</td><td>Alice Tan</td><td>DBMS</td><td>Prof. Cruz</td></tr>
+            <tr><td>101</td><td>C2</td><td>Alice Tan</td><td>Networking</td><td>Prof. Lim</td></tr>
+        </table>
+        <h3>After 2NF:</h3>
+        <p><strong>Students Table</strong></p>
+        <table>
+            <tr><th>StudentID</th><th>StudentName</th></tr>
+            <tr><td>101</td><td>Alice Tan</td></tr>
+            <tr><td>102</td><td>Mark Lee</td></tr>
+        </table>
+        <p><strong>Courses Table</strong></p>
+        <table>
+            <tr><th>CourseID</th><th>CourseName</th><th>Instructor</th></tr>
+            <tr><td>C1</td><td>DBMS</td><td>Prof. Cruz</td></tr>
+            <tr><td>C2</td><td>Networking</td><td>Prof. Lim</td></tr>
+        </table>
+        <p><strong>Enrollment Table</strong></p>
+        <table>
+            <tr><th>StudentID</th><th>CourseID</th></tr>
+            <tr><td>101</td><td>C1</td></tr>
+            <tr><td>101</td><td>C2</td></tr>
+            <tr><td>102</td><td>C1</td></tr>
+        </table>
+        <a class="top-link" href="#top" aria-label="Back to top">↑ Back to top</a>
+    </section>
+
+    <section id="nf3">
+        <h2>3️⃣ Third Normal Form (3NF)</h2>
+        <div class="highlight"><strong>Rule:</strong> Must be in 2NF, no transitive dependency.</div>
+        <h3>Before 3NF:</h3>
+        <table>
+            <tr><th>CourseID</th><th>CourseName</th><th>Instructor</th><th>InstructorOffice</th></tr>
+            <tr><td>C1</td><td>DBMS</td><td>Prof. Cruz</td><td>Room 201</td></tr>
+            <tr><td>C2</td><td>Networking</td><td>Prof. Lim</td><td>Room 305</td></tr>
+        </table>
+        <h3>After 3NF:</h3>
+        <p><strong>Courses Table</strong></p>
+        <table>
+            <tr><th>CourseID</th><th>CourseName</th><th>Instructor</th></tr>
+            <tr><td>C1</td><td>DBMS</td><td>Prof. Cruz</td></tr>
+            <tr><td>C2</td><td>Networking</td><td>Prof. Lim</td></tr>
+        </table>
+        <p><strong>Instructors Table</strong></p>
+        <table>
+            <tr><th>Instructor</th><th>InstructorOffice</th></tr>
+            <tr><td>Prof. Cruz</td><td>Room 201</td></tr>
+            <tr><td>Prof. Lim</td><td>Room 305</td></tr>
+        </table>
+        <a class="top-link" href="#top" aria-label="Back to top">↑ Back to top</a>
+    </section>
+
+    <section id="summary">
+        <h2>📊 Summary Table</h2>
+        <table class="summary-table">
+            <tr><th>Normal Form</th><th>Key Rule</th><th>Problem Solved</th><th>Example Fix</th></tr>
+            <tr><td>1NF</td><td>Atomic values, no repeating groups</td><td>Multi-valued fields</td><td>Split into separate rows</td></tr>
+            <tr><td>2NF</td><td>No partial dependency</td><td>Attributes depending on part of composite key</td><td>Separate into related tables</td></tr>
+            <tr><td>3NF</td><td>No transitive dependency</td><td>Attributes depending on other non-key attributes</td><td>Create separate lookup tables</td></tr>
+        </table>
+        <a class="top-link" href="#top" aria-label="Back to top">↑ Back to top</a>
+    </section>
+</main>
+
+<footer>
+    © 2025SirLavz | RONALD T. LAVA, MSIT | Institute of Computer Studies | PhilSCA
+</footer>
+
+</body>
+</html>
+  
