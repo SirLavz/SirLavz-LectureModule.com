@@ -1,0 +1,350 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 7: Advanced Normalization in DBMS</title>
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- AOS Animation CSS -->
+  <link
+    href="https://unpkg.com/aos@2.3.1/dist/aos.css"
+    rel="stylesheet"
+  />
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- Header -->
+  <header class="bg-indigo-700 text-white p-4 text-center shadow">
+    <h1 class="text-3xl font-bold">IT 311 - Database Systems</h1>
+    <p class="text-lg font-medium">Week 7: Advanced Normalization in DBMS</p>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="flex justify-center space-x-6 p-4 bg-white shadow">
+    <a href="#outcomes" class="text-blue-600 font-semibold hover:underline">Outcomes</a>
+    <a href="#review" class="text-blue-600 font-semibold hover:underline">Review</a>
+    <a href="#advanced" class="text-green-600 font-semibold hover:underline">Advanced</a>
+    <a href="#labs" class="text-purple-600 font-semibold hover:underline">Labs</a>
+    <a href="#glossary" class="text-gray-600 font-semibold hover:underline">Glossary</a>
+  </nav>
+
+  <!-- Learning Outcomes -->
+  <section id="outcomes" class="p-6 bg-white" data-aos="fade-up">
+    <h2 class="text-2xl font-bold mb-4">🎯 Learning Outcomes</h2>
+    <ul class="list-disc pl-6 space-y-2">
+      <li>Explain the concepts and purposes of each normal form from 1NF through 6NF.</li>
+      <li>Identify different types of dependencies and repeating groups in sample tables.</li>
+      <li>Apply normalization steps to convert relations into 1NF, 2NF, 3NF, BCNF, 4NF, 5NF, and 6NF.</li>
+      <li>Design lossless-join decompositions to achieve higher normal forms.</li>
+      <li>Evaluate trade-offs between normalization levels and practical database design.</li>
+    </ul>
+  </section>
+
+  <!-- Review Section -->
+  <section id="review" class="p-6" data-aos="fade-up">
+    <h2 class="text-2xl font-bold mb-4">🔍 Review: 1NF, 2NF, 3NF</h2>
+
+    <!-- Expanded 1NF -->
+    <div class="mb-8">
+      <h3 class="text-xl font-semibold">1NF – First Normal Form</h3>
+      <p>Definition: A relation is in 1NF if every attribute contains only atomic (indivisible) values and there are no repeating groups.</p>
+
+      <!-- Example 1: Phone Numbers -->
+      <h4 class="mt-4 font-semibold">Example 1: Multiple Phone Numbers</h4>
+      <table class="table table-bordered mt-2">
+        <thead>
+          <tr><th>Student</th><th>Phone Numbers</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Alice</td><td>123-456; 789-012</td></tr>
+          <tr><td>Bob</td><td>555-123</td></tr>
+        </tbody>
+      </table>
+      <ul class="list-disc pl-6 mt-2">
+        <li>Violation: “Phone Numbers” stores two values in one field.</li>
+        <li>Solution: Split into separate rows:
+          <ul class="list-disc pl-6">
+            <li>StudentPhone(Student, Phone)</li>
+            <li>Rows: (Alice,123-456), (Alice,789-012), (Bob,555-123)</li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Example 2: Composite Address -->
+      <h4 class="mt-4 font-semibold">Example 2: Composite Address</h4>
+      <table class="table table-bordered mt-2">
+        <thead>
+          <tr><th>EmployeeID</th><th>Address</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>E01</td><td>123 Maple St, Springfield, IL</td></tr>
+          <tr><td>E02</td><td>456 Oak Ave, Shelbyville, IN</td></tr>
+        </tbody>
+      </table>
+      <ul class="list-disc pl-6 mt-2">
+        <li>Violation: “Address” bundles street, city, state.</li>
+        <li>Solution: Decompose Address into atomic columns:
+          <ul class="list-disc pl-6">
+            <li>EmployeeAddress(EmployeeID, Street, City, State)</li>
+            <li>Rows: (E01,123 Maple St,Springfield,IL), …</li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Example 3: Order Items -->
+      <h4 class="mt-4 font-semibold">Example 3: Multiple Order Items</h4>
+      <table class="table table-bordered mt-2">
+        <thead>
+          <tr><th>OrderID</th><th>Items</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>O100</td><td>Pen, Notebook, Eraser</td></tr>
+          <tr><td>O101</td><td>Pencil</td></tr>
+        </tbody>
+      </table>
+      <ul class="list-disc pl-6 mt-2">
+        <li>Violation: “Items” stores a list of products in one cell.</li>
+        <li>Solution: Create OrderLine(OrderID, Item):
+          <ul class="list-disc pl-6">
+            <li>Rows: (O100,Pen), (O100,Notebook), (O100,Eraser), (O101,Pencil)</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 2NF with Example -->
+    <div class="mb-8">
+      <h3 class="text-xl font-semibold">2NF – Second Normal Form</h3>
+      <p>A relation is in 2NF if it is in 1NF and every non-key attribute is fully functionally dependent on the entire primary key.</p>
+      <h4 class="mt-4 font-semibold">Example Table</h4>
+      <table class="table table-bordered mt-2">
+        <thead>
+          <tr><th>StudentID</th><th>CourseID</th><th>CourseName</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>101</td><td>C01</td><td>Database</td></tr>
+          <tr><td>101</td><td>C02</td><td>Networks</td></tr>
+        </tbody>
+      </table>
+      <ul class="list-disc pl-6 mt-2">
+        <li>PK = (StudentID, CourseID)</li>
+        <li>Partial dependency: CourseID → CourseName</li>
+        <li>Violates 2NF because CourseName depends on part of the key.</li>
+        <li>Decompose into:
+          <ul class="list-disc pl-6">
+            <li>Enrollment(StudentID, CourseID)</li>
+            <li>Course(CourseID, CourseName)</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 3NF with Example -->
+    <div class="mb-8">
+      <h3 class="text-xl font-semibold">3NF – Third Normal Form</h3>
+      <p>A relation is in 3NF if it is in 2NF and no transitive dependencies exist among non-key attributes.</p>
+      <h4 class="mt-4 font-semibold">Example Table</h4>
+      <table class="table table-bordered mt-2">
+        <thead>
+          <tr><th>EmpID</th><th>EmpName</th><th>DeptID</th><th>DeptName</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Alice</td><td>D01</td><td>IT</td></tr>
+          <tr><td>2</td><td>Bob</td><td>D02</td><td>HR</td></tr>
+        </tbody>
+      </table>
+      <ul class="list-disc pl-6 mt-2">
+        <li>PK = EmpID</li>
+        <li>Transitive dependency: EmpID → DeptID → DeptName</li>
+        <li>Violates 3NF because DeptName depends on DeptID, not directly on EmpID.</li>
+        <li>Decompose into:
+          <ul class="list-disc pl-6">
+            <li>Employee(EmpID, EmpName, DeptID)</li>
+            <li>Department(DeptID, DeptName)</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <button class="btn btn-primary" onclick="alert('Review quiz coming soon!')">
+      🎯 Take Review Quiz
+    </button>
+  </section>
+
+  <!-- Advanced Section -->
+  <section id="advanced" class="p-6 bg-white" data-aos="fade-up">
+    <h2 class="text-2xl font-bold mb-4">🚀 Advanced Normalization</h2>
+
+    <!-- BCNF Example -->
+    <div class="mb-6">
+      <h3 class="text-xl font-semibold">BCNF – Boyce-Codd Normal Form</h3>
+      <p>Every determinant must be a candidate key. Stronger than 3NF.</p>
+      <h4 class="mt-4 font-semibold">Example Table</h4>
+      <table class="table table-bordered mt-2">
+        <thead>
+          <tr><th>Professor</th><th>Course</th><th>Classroom</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Dr. Smith</td><td>DBMS</td><td>R101</td></tr>
+          <tr><td>Dr. Smith</td><td>Data Mining</td><td>R101</td></tr>
+          <tr><td>Dr. Lee</td><td>Operating Systems</td><td>R102</td></tr>
+        </tbody>
+      </table>
+      <ul class="list-disc pl-6 mt-2">
+        <li>FDs: {Professor,Course} → Classroom & Professor → Classroom</li>
+        <li>Violates BCNF: Professor (non-key) determines Classroom.</li>
+        <li>Decompose into:
+          <ul class="list-disc pl-6">
+            <li>ProfessorRoom(Professor, Classroom)</li>
+            <li>ProfessorCourse(Professor, Course)</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 4NF Example -->
+    <div class="mb-6">
+      <h3 class="text-xl font-semibold">4NF – Fourth Normal Form</h3>
+      <p>In BCNF and no multi-valued dependencies exist.</p>
+      <h4 class="mt-4 font-semibold">Example Table</h4>
+      <table class="table table-bordered mt-2">
+        <thead>
+          <tr><th>Student</th><th>Hobby</th><th>Language</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Alice</td><td>Painting</td><td>English</td></tr>
+          <tr><td>Alice</td><td>Painting</td><td>French</td></tr>
+          <tr><td>Alice</td><td>Dancing</td><td>English</td></tr>
+          <tr><td>Alice</td><td>Dancing</td><td>French</td></tr>
+        </tbody>
+      </table>
+      <ul class="list-disc pl-6 mt-2">
+        <li>Student →→ Hobby & Student →→ Language</li>
+        <li>Violates 4NF: two independent multi-valued facts.</li>
+        <li>Decompose into:
+          <ul class="list-disc pl-6">
+            <li>StudentHobby(Student, Hobby)</li>
+            <li>StudentLanguage(Student, Language)</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 5NF Example -->
+    <div class="mb-6">
+      <h3 class="text-xl font-semibold">5NF – Fifth Normal Form</h3>
+      <p>Every join dependency is implied by candidate keys.</p>
+      <h4 class="mt-4 font-semibold">Example Table</h4>
+      <table class="table table-bordered mt-2">
+        <thead>
+          <tr><th>Supplier</th><th>Part</th><th>Project</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>S1</td><td>P1</td><td>J1</td></tr>
+          <tr><td>S1</td><td>P1</td><td>J2</td></tr>
+          <tr><td>S1</td><td>P2</td><td>J1</td></tr>
+          <tr><td>S1</td><td>P2</td><td>J2</td></tr>
+        </tbody>
+      </table>
+      <ul class="list-disc pl-6 mt-2">
+        <li>Implicit join dependency among (Supplier,Part,Project).</li>
+        <li>Violates 5NF: cannot losslessly reconstruct from pairwise joins.</li>
+        <li>Decompose into:
+          <ul class="list-disc pl-6">
+            <li>SupplierPart(Supplier, Part)</li>
+            <li>SupplierProject(Supplier, Project)</li>
+            <li>PartProject(Part, Project)</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 6NF Example -->
+    <div class="mb-6">
+      <h3 class="text-xl font-semibold">6NF – Sixth Normal Form</h3>
+      <p>Handles non-trivial join dependencies in temporal data.</p>
+      <h4 class="mt-4 font-semibold">Example Table</h4>
+      <table class="table table-bordered mt-2">
+        <thead>
+          <tr><th>ContractID</th><th>Clause</th><th>EffectiveDate</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>C01</td><td>A</td><td>2025-01-01</td></tr>
+          <tr><td>C01</td><td>A</td><td>2025-03-01</td></tr>
+          <tr><td>C01</td><td>B</td><td>2025-01-01</td></tr>
+        </tbody>
+      </table>
+      <ul class="list-disc pl-6 mt-2">
+        <li>Clause has multiple EffectiveDates.</li>
+        <li>Violates 6NF if residual join dependencies exist.</li>
+        <li>Decompose into:
+          <ul class="list-disc pl-6">
+            <li>ContractClause(ContractID, Clause)</li>
+            <li>ClauseEffectiveDate(Clause, EffectiveDate)</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="mt-4">
+      <video controls class="w-full max-w-xl mx-auto rounded shadow">
+        <source src="file:///Users/sirlavz_macbookpro/Desktop/IT%20311/Database%20Normalization%20for%20Beginners%20-%201NF,%202NF,%203NF,%20BCNF,%204NF,%205NF,%20EKNF,%20ETNF%20&%20DKNF.mp4" type="video/mp4" />
+        Your browser does not support video.
+      </video>
+    </div>
+  </section>
+
+  <!-- Labs Section -->
+  <section id="labs" class="p-6" data-aos="fade-up">
+    <h2 class="text-2xl font-bold mb-4">🧪 Lab Activities</h2>
+    <button class="btn btn-success mb-2" onclick="alert('Launching Student Normalization Lab')">
+      💡 Normalize Student Table
+    </button>
+    <button class="btn btn-warning" onclick="alert('Launching BCNF Decomposition Lab')">
+      💡 Decompose BCNF Violations
+    </button>
+  </section>
+
+  <!-- Glossary Section -->
+  <section id="glossary" class="p-6 bg-gray-50" data-aos="fade-up">
+    <h2 class="text-2xl font-bold mb-4">📘 Glossary</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr><th>Term</th><th>Definition</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Atomicity</td><td>Each field contains indivisible values</td></tr>
+        <tr><td>Partial Dependency</td><td>Attribute depends on part of a composite key</td></tr>
+        <tr><td>Transitive Dependency</td><td>Attribute depends on another non-key attribute</td></tr>
+        <tr><td>Candidate Key</td><td>Minimal set of attributes that uniquely identify a tuple</td></tr>
+        <tr><td>Multi-valued Dependency</td><td>One attribute determines multiple independent values</td></tr>
+        <tr><td>Join Dependency</td><td>Data integrity preserved across decomposed relations</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-indigo-700 text-white text-center p-4 mt-6">
+    <p class="text-sm">
+      @2025SirLavz | RONALD T. LAVA, MSIT | INSTITUTE OF COMPUTER STUDIES | PHILSCA
+    </p>
+  </footer>
+
+  <!-- Scripts -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+  ></script>
+  <script
+    src="https://unpkg.com/aos@2.3.1/dist/aos.js"
+  ></script>
+  <script>
+    AOS.init();
+  </script>
+</body>
+</html>
