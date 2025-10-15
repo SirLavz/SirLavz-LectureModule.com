@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Unary Relational Operations — SELECT, PROJECT, RENAME | IS 311</title>
+  <style>
+    :root{--accent:#0b6b9a;--muted:#666;--panel:#f8fafc;--card:#ffffff}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#eef3f7;color:#111;margin:0;padding:0}
+    header{background:linear-gradient(90deg,var(--accent),#08709f);color:#fff;padding:18px 28px}
+    header h1{margin:0;font-size:20px}
+    header p{margin:4px 0 0;color:rgba(255,255,255,0.9);font-size:13px}
+    .container{max-width:1000px;margin:22px auto;padding:0 18px}
+    .card{background:var(--card);border-radius:12px;padding:18px;margin-bottom:18px;box-shadow:0 6px 18px rgba(11,107,154,0.08)}
+    h2{color:var(--accent);margin:0 0 12px}
+    h3{margin:16px 0 8px}
+    table{border-collapse:collapse;width:100%;background:#fff}
+    th,td{padding:8px;border:1px solid #e6eef4;font-size:14px}
+    pre{background:#0b3544;color:#ecf9ff;padding:12px;border-radius:8px;overflow:auto}
+    code{font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace}
+    .muted{color:var(--muted)}
+    .btn{display:inline-block;padding:8px 12px;border-radius:8px;text-decoration:none;background:var(--accent);color:#fff;font-weight:600}
+    .btn-ghost{background:transparent;border:1px solid var(--accent);color:var(--accent)}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
+    .small{font-size:13px;color:var(--muted)}
+    .exercise{background:#f3fbff;border-left:6px solid var(--accent);padding:12px;border-radius:8px}
+    details{margin-top:8px}
+    .footer{font-size:13px;color:#fff;background:#072433;padding:12px 18px;border-radius:0 0 12px 12px;margin-top:12px}
+    .rubric li{margin:6px 0}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>IS 311 — Unary Relational Operations (SELECT, PROJECT, RENAME)</h1>
+  <p>Lecture module & lab activity — Relational Algebra ↔ SQL mapping using a Passenger database (XAMPP / MySQL)</p>
+</header>
+
+<div class="container">
+
+  <section class="card">
+    <h2>Module Overview & Learning Objectives</h2>
+    <p class="small">Duration: ~60 minutes (lecture + hands-on lab)</p>
+    <ul>
+      <li><strong>Understand</strong> the unary relational operations: <code>SELECT (σ)</code>, <code>PROJECT (π)</code>, and <code>RENAME (ρ)</code>.</li>
+      <li><strong>Write</strong> relational algebra expressions and equivalent SQL queries.</li>
+      <li><strong>Apply</strong> operations on a sample <code>PASSENGER</code> relation and practice using phpMyAdmin / MySQL (XAMPP).</li>
+    </ul>
+  </section>
+
+  <section class="card grid">
+    <div>
+      <h2>Concepts — Definitions & Key Points</h2>
+
+      <h3>1. SELECT (σ) — Filter tuples (rows)</h3>
+      <p><strong>Relational algebra notation:</strong> <code>σ_condition(R)</code></p>
+      <p><strong>Meaning:</strong> choose tuples from relation <code>R</code> that satisfy <code>condition</code>. The output schema (columns) is the same as <code>R</code>.</p>
+      <p class="small">Properties: preserves attributes; supports boolean combinations; commutative: <code>σ_a(σ_b(R)) = σ_b(σ_a(R))</code>.</p>
+
+      <h3>2. PROJECT (π) — Select attributes (columns)</h3>
+      <p><strong>Relational algebra notation:</strong> <code>π_attrlist(R)</code></p>
+      <p><strong>Meaning:</strong> keep only attributes in <code>attrlist</code>. Duplicate result rows (based on projected attributes) are eliminated.</p>
+      <p class="small">Note: projection may reduce number of tuples because of duplicate elimination.</p>
+
+      <h3>3. RENAME (ρ) — Rename relation or attributes</h3>
+      <p><strong>Relational algebra notation examples:</strong> <code>ρ_S(R)</code> (rename relation), or <code>ρ_{(A1,A2)←(X,Y)}(expr)</code> (rename attributes of an expression).</p>
+      <p><strong>Meaning:</strong> change the name of the output relation or its attributes — useful to avoid name clashes or to supply friendly names.</p>
+
+      <h3>Mapping to SQL</h3>
+      <ul>
+        <li><code>σ_condition(R)</code> → <code>SELECT * FROM R WHERE condition;</code></li>
+        <li><code>π_a,b(R)</code> → <code>SELECT DISTINCT a, b FROM R;</code></li>
+        <li><code>ρ</code> → use <code>AS</code> to alias columns or tables in SQL.</li>
+      </ul>
+
+      <details>
+        <summary><strong>Quick example (expand for short explanation)</strong></summary>
+        <p>Algebra: <code>π_FirstName,LastName(σ_Class = 'Business'(PASSENGER))</code></p>
+        <p>SQL:
+          <pre><code>SELECT DISTINCT FirstName, LastName
+FROM PASSENGER
+WHERE Class = 'Business';</code></pre>
+        </p>
+      </details>
+
+    </div>
+
+    <aside class="card" style="background:linear-gradient(180deg,#ffffff,#f0fbff)">
+      <h3 style="margin-top:0">Sample PASSENGER relation (concept)</h3>
+      <p class="small">A running example for the lecture & lab.</p>
+      <table>
+        <thead><tr><th>PassengerID</th><th>FirstName</th><th>LastName</th><th>PassportNo</th><th>Nationality</th><th>BirthDate</th><th>Gender</th><th>Class</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Maria</td><td>Santos</td><td>P1234567</td><td>Philippines</td><td>1989-03-12</td><td>F</td><td>Economy</td></tr>
+          <tr><td>2</td><td>John</td><td>Lim</td><td>P2345678</td><td>Philippines</td><td>1978-07-04</td><td>M</td><td>Business</td></tr>
+          <tr><td>3</td><td>Aisha</td><td>Khan</td><td>P3456789</td><td>Pakistan</td><td>1992-11-20</td><td>F</td><td>Economy</td></tr>
+          <tr><td>4</td><td>David</td><td>Gonzales</td><td>P4567890</td><td>Mexico</td><td>1985-02-01</td><td>M</td><td>Business</td></tr>
+          <tr><td>5</td><td>Lin</td><td>Zhao</td><td>P5678901</td><td>China</td><td>1995-09-18</td><td>F</td><td>Economy</td></tr>
+        </tbody>
+      </table>
+      <p class="small" style="margin-top:8px">This is a truncated conceptual view — full SQL DDL+DML provided below.</p>
+    </aside>
+  </section>
+
+  <section class="card">
+    <h2>SQL: Create the PASSENGER database & table (sample DDL + DML)</h2>
+    <p>Paste these statements in phpMyAdmin → SQL tab, or run via MySQL client.</p>
+
+    <pre><code>-- 1) Create database and use it
+CREATE DATABASE IF NOT EXISTS passenger_db;
+USE passenger_db;
+
+-- 2) Create PASSENGER table
+CREATE TABLE IF NOT EXISTS PASSENGER (
+  PassengerID INT AUTO_INCREMENT PRIMARY KEY,
+  FirstName VARCHAR(50) NOT NULL,
+  LastName VARCHAR(50) NOT NULL,
+  PassportNo VARCHAR(20) UNIQUE,
+  Nationality VARCHAR(50),
+  BirthDate DATE,
+  Gender CHAR(1),
+  TicketNo VARCHAR(20),
+  FlightNo VARCHAR(10),
+  SeatNo VARCHAR(6),
+  Class ENUM('Economy','PremiumEconomy','Business','First') DEFAULT 'Economy',
+  BookingDate DATE
+);
+
+-- 3) Insert sample data
+INSERT INTO PASSENGER (FirstName,LastName,PassportNo,Nationality,BirthDate,Gender,TicketNo,FlightNo,SeatNo,Class,BookingDate)
+VALUES
+('Maria','Santos','P1234567','Philippines','1989-03-12','F','T1001','PR123','12A','Economy','2025-09-10'),
+('John','Lim','P2345678','Philippines','1978-07-04','M','T1002','PR123','2B','Business','2025-10-01'),
+('Aisha','Khan','P3456789','Pakistan','1992-11-20','F','T1003','PR456','20C','Economy','2025-09-25'),
+('David','Gonzales','P4567890','Mexico','1985-02-01','M','T1004','PR456','1A','Business','2025-10-05'),
+('Lin','Zhao','P5678901','China','1995-09-18','F','T1005','PR789','34D','Economy','2025-08-15'),
+('James','Tan','P6789012','Singapore','1980-12-31','M','T1006','PR789','3C','Business','2025-07-20'),
+('Ava','Reyes','P7890123','Philippines','2000-05-09','F','T1007','PR321','29B','Economy','2025-06-02'),
+('Miguel','Ortiz','P8901234','Spain','1972-04-26','M','T1008','PR321','4A','First','2025-10-10');</code></pre>
+
+    <p class="small">If using phpMyAdmin, run all the above as one SQL batch (or import as a <code>.sql</code> file).</p>
+  </section>
+
+  <section class="card">
+    <h2>Examples: Relational Algebra ↔ SQL (using PASSENGER)</h2>
+
+    <h3>Example A — SELECT: passengers on flight PR123</h3>
+    <p>Algebra: <code>σ_{FlightNo='PR123'}(PASSENGER)</code></p>
+    <pre><code>-- SQL equivalent
+SELECT *
+FROM PASSENGER
+WHERE FlightNo = 'PR123';</code></pre>
+
+    <h3>Example B — PROJECT: first and last names (unique)</h3>
+    <p>Algebra: <code>π_{FirstName,LastName}(PASSENGER)</code></p>
+    <pre><code>-- SQL equivalent (DISTINCT ensures duplicates removed)
+SELECT DISTINCT FirstName, LastName
+FROM PASSENGER;</code></pre>
+
+    <h3>Example C — SELECT then PROJECT: Business-class passengers' names and seat</h3>
+    <p>Algebra: <code>π_{FirstName,LastName,SeatNo}(σ_{Class='Business'}(PASSENGER))</code></p>
+    <pre><code>-- SQL
+SELECT DISTINCT FirstName, LastName, SeatNo
+FROM PASSENGER
+WHERE Class = 'Business';</code></pre>
+
+    <h3>Example D — RENAME: rename attributes for presentation</h3>
+    <p>Algebra (concept): <code>ρ_{(FName, LName, PNo) ← (FirstName, LastName, PassportNo)}(π_{FirstName,LastName,PassportNo}(PASSENGER))</code></p>
+    <p>SQL equivalent using aliases:</p>
+    <pre><code>SELECT DISTINCT FirstName AS FName,
+       LastName AS LName,
+       PassportNo AS PNo
+FROM PASSENGER;</code></pre>
+
+    <h3>Example E — Compound SELECT (boolean conditions)</h3>
+    <p>Algebra: <code>σ_{(Nationality='Philippines' ∧ Class='Economy') ∨ (Class='First')}(PASSENGER)</code></p>
+    <pre><code>-- SQL
+SELECT *
+FROM PASSENGER
+WHERE (Nationality = 'Philippines' AND Class = 'Economy') OR (Class = 'First');</code></pre>
+  </section>
+
+  <section class="card">
+    <h2>Laboratory Activity — Unary Relational Operations (XAMPP / MySQL)</h2>
+
+    <p><strong>Goal:</strong> practice relational algebra operations by writing SQL on a PASSENGER database in XAMPP's phpMyAdmin.</p>
+
+    <h3>Preparation (what students must have)</h3>
+    <ul>
+      <li>XAMPP installed with Apache & MySQL (MariaDB) running.</li>
+      <li>Access to phpMyAdmin: typically <code>http://localhost/phpmyadmin</code>.</li>
+      <li>The SQL statements above (DDL + DML) copied into a file or ready to paste.</li>
+    </ul>
+
+    <h3>Step-by-step instructions (for students)</h3>
+    <ol>
+      <li><strong>Start XAMPP</strong> and ensure <code>Apache</code> and <code>MySQL</code> services are started.</li>
+      <li>Open a browser and go to <code>http://localhost/phpmyadmin</code>.</li>
+      <li>Click <strong>SQL</strong> tab, paste the DDL+DML block from above, and press <strong>Go</strong> to create <code>passenger_db</code> and insert sample data.</li>
+      <li>In phpMyAdmin, select <code>passenger_db</code> → <code>PASSENGER</code> to preview the table data.</li>
+      <li>Now run the lab queries below (Tasks 1–8). Use the phpMyAdmin SQL tab and submit each SQL statement. Save screenshots or CSV exports as evidence.</li>
+    </ol>
+
+    <h3 class="exercise">Lab Tasks (students)</h3>
+    <ol>
+      <li><strong>Task 1 — SELECT</strong>: Retrieve all passengers whose <code>FlightNo</code> is <code>'PR456'</code>.  
+        <details><summary>Write the SQL</summary>
+          <pre><code>SELECT * FROM PASSENGER WHERE FlightNo = 'PR456';</code></pre>
+        </details>
+      </li>
+
+      <li><strong>Task 2 — PROJECT</strong>: Show only unique pairs of <code>Nationality</code> and <code>Class</code>.  
+        <details><summary>Write the SQL</summary>
+          <pre><code>SELECT DISTINCT Nationality, Class FROM PASSENGER;</code></pre>
+        </details>
+      </li>
+
+      <li><strong>Task 3 — SELECT with boolean</strong>: Get passengers who are <code>Philippines</code> nationals and in <code>Economy</code> class.  
+        <details><summary>Write the SQL</summary>
+          <pre><code>SELECT * FROM PASSENGER
+WHERE Nationality = 'Philippines' AND Class = 'Economy';</code></pre>
+        </details>
+      </li>
+
+      <li><strong>Task 4 — Nested / Combined</strong>: Project <code>FirstName</code>, <code>LastName</code>, <code>SeatNo</code> for passengers in <code>Business</code> class.  
+        <details><summary>Write the SQL</summary>
+          <pre><code>SELECT DISTINCT FirstName, LastName, SeatNo
+FROM PASSENGER
+WHERE Class = 'Business';</code></pre>
+        </details>
+      </li>
+
+      <li><strong>Task 5 — Rename (presentation)</strong>: Show passenger names and passport but with column aliases <code>FName</code>, <code>LName</code>, <code>PNo</code>.  
+        <details><summary>Write the SQL</summary>
+          <pre><code>SELECT FirstName AS FName, LastName AS LName, PassportNo AS PNo
+FROM PASSENGER;</code></pre>
+        </details>
+      </li>
+
+      <li><strong>Task 6 — Selection + Projection + ORDER</strong>: Get names and booking date of passengers booked after <code>2025-09-01</code>, ordered by booking date descending.  
+        <details><summary>Write the SQL</summary>
+          <pre><code>SELECT FirstName, LastName, BookingDate
+FROM PASSENGER
+WHERE BookingDate &gt; '2025-09-01'
+ORDER BY BookingDate DESC;</code></pre>
+        </details>
+      </li>
+
+      <li><strong>Task 7 — Remove duplicates by projection rule</strong>: Explain why <code>SELECT DISTINCT FirstName FROM PASSENGER;</code> may return fewer rows than <code>SELECT FirstName FROM PASSENGER;</code> (write 2–3 sentences).</li>
+
+      <li><strong>Task 8 — Combined query</strong>: Students must write a relational algebra expression and its SQL equivalent for:  
+        "List the passport numbers and flight numbers of all passengers who are not from the Philippines and whose class is Business or First."  
+        <details><summary>Hint + example answer</summary>
+          <pre><code>-- Relational algebra (example)
+π_{PassportNo,FlightNo}(σ_{Nationality &lt;&gt; 'Philippines' ∧ (Class='Business' ∨ Class='First')}(PASSENGER))
+
+-- SQL
+SELECT DISTINCT PassportNo, FlightNo
+FROM PASSENGER
+WHERE Nationality &lt;&gt; 'Philippines'
+  AND (Class = 'Business' OR Class = 'First');</code></pre>
+        </details>
+      </li>
+    </ol>
+
+    <h3>Submission requirements</h3>
+    <ul>
+      <li>SQL statements used (text file or embedded in report)</li>
+      <li>Screenshots or exported CSV results for Tasks 1–6</li>
+      <li>Short answers for Task 7 and algebra+SQL for Task 8</li>
+      <li>One-page reflection: what differences you noticed between relational algebra abstraction and SQL</li>
+    </ul>
+
+    <h3>Grading rubric (suggested)</h3>
+    <ul class="rubric">
+      <li>Correct SQL for Tasks 1–6 — 50%</li>
+      <li>Correct explanation for Task 7 — 10%</li>
+      <li>Correct relational algebra & SQL for Task 8 — 15%</li>
+      <li>Quality of screenshots/exports & adherence to submission — 15%</li>
+      <li>Reflection quality — 10%</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Instructor Notes & Teaching Tips</h2>
+    <ul>
+      <li>Start with a live demo in phpMyAdmin: run a SELECT and a PROJECT, show the results and highlight duplicate elimination on projection.</li>
+      <li>Ask students to write algebra first, then translate to SQL — this strengthens conceptual mapping.</li>
+      <li>For large classes, prepare a Google Form for submission links to SQL files and images, or use your LMS assignment upload.</li>
+      <li>Consider adding a small extension: ask students to add a second table <code>FLIGHT</code> and attempt a join; this sets up binary relational operations for the next lecture.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Reference Cheat-sheet (short)</h2>
+    <table>
+      <thead><tr><th>Relational Algebra</th><th>SQL</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><code>σ_{cond}(R)</code></td><td><code>SELECT * FROM R WHERE cond;</code></td><td>Filters rows</td></tr>
+        <tr><td><code>π_{A,B}(R)</code></td><td><code>SELECT DISTINCT A,B FROM R;</code></td><td>Projection removes duplicates</td></tr>
+        <tr><td><code>ρ_{S}(R)</code></td><td><code>SELECT * FROM R AS S;</code></td><td>Rename relation (alias)</td></tr>
+        <tr><td><code>ρ_{(X,Y)←(A,B)}(expr)</code></td><td><code>SELECT A AS X, B AS Y FROM (...)</code></td><td>Rename attributes</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Answer Key / Sample Solutions (hidden for students)</h2>
+    <p class="small">Instructors: expand the details below to reveal sample SQL answers for the lab.</p>
+
+    <details>
+      <summary>Sample SQL answers for Tasks 1–6 (click to expand)</summary>
+      <pre><code>-- Task 1
+SELECT * FROM PASSENGER WHERE FlightNo = 'PR456';
+
+-- Task 2
+SELECT DISTINCT Nationality, Class FROM PASSENGER;
+
+-- Task 3
+SELECT * FROM PASSENGER WHERE Nationality = 'Philippines' AND Class = 'Economy';
+
+-- Task 4
+SELECT DISTINCT FirstName, LastName, SeatNo FROM PASSENGER WHERE Class = 'Business';
+
+-- Task 5
+SELECT FirstName AS FName, LastName AS LName, PassportNo AS PNo FROM PASSENGER;
+
+-- Task 6
+SELECT FirstName, LastName, BookingDate
+FROM PASSENGER
+WHERE BookingDate > '2025-09-01'
+ORDER BY BookingDate DESC; </code></pre>
+    </details>
+
+    <details>
+      <summary>Sample short answer for Task 7 (explain duplicate elimination)</summary>
+      <p>Projection keeps only selected attributes; when multiple tuples had the same values for those attributes, duplicates are removed. Thus fewer rows can result because information that distinguished rows was removed.</p>
+    </details>
+
+    <details>
+      <summary>Sample answer for Task 8 (compound selection + projection)</summary>
+      <pre><code>-- Algebra:
+π_{PassportNo,FlightNo}(σ_{Nationality &lt;&gt; 'Philippines' ∧ (Class='Business' ∨ Class='First')}(PASSENGER))
+
+-- SQL:
+SELECT DISTINCT PassportNo, FlightNo
+FROM PASSENGER
+WHERE Nationality <> 'Philippines'
+  AND (Class = 'Business' OR Class = 'First');</code></pre>
+    </details>
+
+  </section>
+
+  <footer class="footer">
+    <div>
+      @SirLavz2025 | RONALD T. LAVA, MSIT | Institute of Computer Studies | PhilSCA
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>
