@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Distributed Databases Laboratory Activity</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f9f9f9;
+    }
+    header, footer {
+      background-color: #003366;
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+    }
+    footer {
+      font-size: 0.9rem;
+    }
+    h2, h3 {
+      color: #003366;
+    }
+    .activity-section {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    code {
+      background-color: #e9ecef;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .quiz-question {
+      margin-bottom: 15px;
+    }
+    .btn-check-answers {
+      background-color: #003366;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+    }
+    .btn-check-answers:hover {
+      background-color: #00509e;
+    }
+    #result {
+      font-weight: bold;
+      color: #003366;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h2>IT 311 – Aviation Database Systems</h2>
+  <h5>Week 11 - Laboratory Activity</h5>
+</header>
+
+<div class="container mt-4 mb-4">
+  <!-- STUDENT INFO -->
+  <div class="activity-section">
+    <h3>Student Information</h3>
+    <form id="studentInfoForm">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="fullname" class="form-label">Full Name:</label>
+          <input type="text" id="fullname" class="form-control" placeholder="Enter your full name" required>
+        </div>
+        <div class="col-md-6">
+          <label for="course" class="form-label">Course / Year / Section:</label>
+          <input type="text" id="course" class="form-control" placeholder="e.g., BSIT 3A" required>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="activity-section">
+    <h3>Title:</h3>
+    <p><strong>Implementing Distributed Databases using XAMPP MySQL</strong></p>
+
+    <h3>Objectives:</h3>
+    <ul>
+      <li>Understand the concept and architecture of distributed databases.</li>
+      <li>Simulate distributed database management using multiple MySQL databases in XAMPP.</li>
+      <li>Apply database fragmentation and replication techniques.</li>
+      <li>Perform data retrieval using federated tables and database links.</li>
+    </ul>
+  </div>
+
+  <div class="activity-section">
+    <h3>Introduction:</h3>
+    <p>
+      A <strong>Distributed Database System (DDBS)</strong> consists of multiple databases located on different servers or computers but managed as a single system.
+      In MySQL, this can be simulated by creating multiple databases within the same XAMPP server or using the <code>FEDERATED</code> storage engine to connect remote databases.
+    </p>
+  </div>
+
+  <div class="activity-section">
+    <h3>Materials and Requirements:</h3>
+    <ul>
+      <li>XAMPP Control Panel (MySQL and Apache modules running)</li>
+      <li>phpMyAdmin interface or MySQL Command Line</li>
+      <li>Two databases (e.g., <code>branch1_db</code> and <code>branch2_db</code>)</li>
+    </ul>
+  </div>
+
+  <div class="activity-section">
+    <h3>Step-by-Step Procedure:</h3>
+
+    <h5>Step 1 – Create Branch Databases</h5>
+    <pre><code>CREATE DATABASE branch1_db;
+CREATE DATABASE branch2_db;</code></pre>
+
+    <h5>Step 2 – Create Tables in Each Branch</h5>
+    <p><strong>In branch1_db:</strong></p>
+    <pre><code>USE branch1_db;
+
+CREATE TABLE employees (
+  emp_id INT PRIMARY KEY AUTO_INCREMENT,
+  emp_name VARCHAR(50),
+  position VARCHAR(30),
+  salary DECIMAL(10,2)
+);
+
+INSERT INTO employees (emp_name, position, salary) VALUES
+('John Cruz', 'Manager', 55000),
+('Ana Dela Cruz', 'Clerk', 25000);
+</code></pre>
+
+    <p><strong>In branch2_db:</strong></p>
+    <pre><code>USE branch2_db;
+
+CREATE TABLE employees (
+  emp_id INT PRIMARY KEY AUTO_INCREMENT,
+  emp_name VARCHAR(50),
+  position VARCHAR(30),
+  salary DECIMAL(10,2)
+);
+
+INSERT INTO employees (emp_name, position, salary) VALUES
+('Mark Reyes', 'Supervisor', 40000),
+('Jane Santos', 'Technician', 30000);
+</code></pre>
+
+    <h5>Step 3 – Enable the FEDERATED Storage Engine</h5>
+    <p>In MySQL configuration (<code>my.ini</code> or <code>my.cnf</code>), make sure the following line is not commented:</p>
+    <pre><code>[mysqld]
+federated</code></pre>
+    <p>Then restart MySQL from your XAMPP Control Panel.</p>
+
+    <h5>Step 4 – Create a Centralized Database</h5>
+    <pre><code>CREATE DATABASE central_db;
+USE central_db;
+</code></pre>
+
+    <h5>Step 5 – Create a FEDERATED Table Linking to Branch Databases</h5>
+    <p><strong>Example:</strong> Link to <code>branch1_db.employees</code></p>
+    <pre><code>CREATE TABLE branch1_employees (
+  emp_id INT,
+  emp_name VARCHAR(50),
+  position VARCHAR(30),
+  salary DECIMAL(10,2)
+) ENGINE=FEDERATED
+CONNECTION='mysql://root@localhost/branch1_db/employees';
+</code></pre>
+
+    <p><strong>Link to branch2_db:</strong></p>
+    <pre><code>CREATE TABLE branch2_employees (
+  emp_id INT,
+  emp_name VARCHAR(50),
+  position VARCHAR(30),
+  salary DECIMAL(10,2)
+) ENGINE=FEDERATED
+CONNECTION='mysql://root@localhost/branch2_db/employees';
+</code></pre>
+
+    <h5>Step 6 – Retrieve Data from Both Branches</h5>
+    <pre><code>SELECT * FROM branch1_employees
+UNION
+SELECT * FROM branch2_employees;</code></pre>
+
+    <p>This command combines employee data from both distributed databases into one unified view.</p>
+  </div>
+
+  <div class="activity-section">
+    <h3>Guide Questions:</h3>
+    <ol>
+      <li>What is the purpose of the <code>FEDERATED</code> engine in MySQL?</li>
+      <li>How does distributed database management improve data availability and reliability?</li>
+      <li>What are the potential risks of using distributed databases?</li>
+      <li>Can you think of a real-world example where distributed databases are useful?</li>
+      <li>How can data replication improve fault tolerance?</li>
+    </ol>
+  </div>
+
+  <div class="activity-section">
+    <h3>Output Screenshot:</h3>
+    <p>Take a screenshot of your successful <code>UNION</code> result query showing records from both branches and paste it in your lab report.</p>
+  </div>
+
+  <div class="activity-section">
+    <h3>Submission:</h3>
+    <p>Submit the following in PDF format:</p>
+    <ul>
+      <li>Screenshot of branch databases and tables</li>
+      <li>SQL scripts used</li>
+      <li>Result of UNION query</li>
+      <li>Answers to the guide questions</li>
+    </ul>
+  </div>
+
+  <!-- INTERACTIVE QUIZ -->
+  <div class="activity-section">
+    <h3>Interactive Quiz: Test Your Understanding</h3>
+
+    <form id="quizForm">
+      <div class="quiz-question">
+        <p><strong>1.</strong> What does the FEDERATED engine in MySQL allow you to do?</p>
+        <label><input type="radio" name="q1" value="A"> Store data in memory</label><br>
+        <label><input type="radio" name="q1" value="B"> Connect to tables in remote databases</label><br>
+        <label><input type="radio" name="q1" value="C"> Backup databases automatically</label><br>
+        <label><input type="radio" name="q1" value="D"> Encrypt MySQL connections</label>
+      </div>
+
+      <div class="quiz-question">
+        <p><strong>2.</strong> Which SQL command combines data from multiple queries or tables?</p>
+        <label><input type="radio" name="q2" value="A"> JOIN</label><br>
+        <label><input type="radio" name="q2" value="B"> UNION</label><br>
+        <label><input type="radio" name="q2" value="C"> GROUP BY</label><br>
+        <label><input type="radio" name="q2" value="D"> CONNECT</label>
+      </div>
+
+      <div class="quiz-question">
+        <p><strong>3.</strong> In distributed databases, data is stored...</p>
+        <label><input type="radio" name="q3" value="A"> In one centralized location</label><br>
+        <label><input type="radio" name="q3" value="B"> Across multiple connected databases</label><br>
+        <label><input type="radio" name="q3" value="C"> Only in the cloud</label><br>
+        <label><input type="radio" name="q3" value="D"> Temporarily in cache</label>
+      </div>
+
+      <div class="quiz-question">
+        <p><strong>4.</strong> What is a key advantage of distributed databases?</p>
+        <label><input type="radio" name="q4" value="A"> Reduced data redundancy</label><br>
+        <label><input type="radio" name="q4" value="B"> Improved performance and reliability</label><br>
+        <label><input type="radio" name="q4" value="C"> Lower disk usage</label><br>
+        <label><input type="radio" name="q4" value="D"> Single point of failure</label>
+      </div>
+
+      <div class="quiz-question">
+        <p><strong>5.</strong> Which MySQL clause is used to specify a connection for a FEDERATED table?</p>
+        <label><input type="radio" name="q5" value="A"> CONNECTION</label><br>
+        <label><input type="radio" name="q5" value="B"> LINK</label><br>
+        <label><input type="radio" name="q5" value="C"> CONNECT</label><br>
+        <label><input type="radio" name="q5" value="D"> URL</label>
+      </div>
+
+      <button type="button" class="btn-check-answers" onclick="checkAnswers()">Check Answers</button>
+    </form>
+
+    <div id="result"></div>
+  </div>
+</div>
+
+<footer>
+  @SirLavz2025 | RONALD T. LAVA, MSIT | Institute of Computer Studies | PhilSCA
+</footer>
+
+<script>
+function checkAnswers() {
+  const correct = {
+    q1: "B",
+    q2: "B",
+    q3: "B",
+    q4: "B",
+    q5: "A"
+  };
+  let score = 0;
+  const form = document.forms["quizForm"];
+  for (let key in correct) {
+    if (form[key].value === correct[key]) {
+      score++;
+    }
+  }
+
+  const fullname = document.getElementById("fullname").value || "Student";
+  const course = document.getElementById("course").value || "N/A";
+
+  document.getElementById("result").innerHTML =
+    "<p>" + fullname + " (" + course + ") — Your score is <strong>" + score + " out of 5</strong>.</p>";
+}
+</script>
+
+</body>
+</html>
