@@ -305,52 +305,7 @@ WHERE Nationality &lt;&gt; 'Philippines'
     </table>
   </section>
 
-  <section class="card">
-    <h2>Answer Key / Sample Solutions (hidden for students)</h2>
-    <p class="small">Instructors: expand the details below to reveal sample SQL answers for the lab.</p>
-
-    <details>
-      <summary>Sample SQL answers for Tasks 1–6 (click to expand)</summary>
-      <pre><code>-- Task 1
-SELECT * FROM PASSENGER WHERE FlightNo = 'PR456';
-
--- Task 2
-SELECT DISTINCT Nationality, Class FROM PASSENGER;
-
--- Task 3
-SELECT * FROM PASSENGER WHERE Nationality = 'Philippines' AND Class = 'Economy';
-
--- Task 4
-SELECT DISTINCT FirstName, LastName, SeatNo FROM PASSENGER WHERE Class = 'Business';
-
--- Task 5
-SELECT FirstName AS FName, LastName AS LName, PassportNo AS PNo FROM PASSENGER;
-
--- Task 6
-SELECT FirstName, LastName, BookingDate
-FROM PASSENGER
-WHERE BookingDate > '2025-09-01'
-ORDER BY BookingDate DESC; </code></pre>
-    </details>
-
-    <details>
-      <summary>Sample short answer for Task 7 (explain duplicate elimination)</summary>
-      <p>Projection keeps only selected attributes; when multiple tuples had the same values for those attributes, duplicates are removed. Thus fewer rows can result because information that distinguished rows was removed.</p>
-    </details>
-
-    <details>
-      <summary>Sample answer for Task 8 (compound selection + projection)</summary>
-      <pre><code>-- Algebra:
-π_{PassportNo,FlightNo}(σ_{Nationality &lt;&gt; 'Philippines' ∧ (Class='Business' ∨ Class='First')}(PASSENGER))
-
--- SQL:
-SELECT DISTINCT PassportNo, FlightNo
-FROM PASSENGER
-WHERE Nationality <> 'Philippines'
-  AND (Class = 'Business' OR Class = 'First');</code></pre>
-    </details>
-
-  </section>
+  
 
   <footer class="footer">
     <div>
