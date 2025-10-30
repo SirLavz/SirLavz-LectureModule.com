@@ -1,0 +1,265 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL - Aggregate Functions | IS 311 - Information Management</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        background-color: #f4f7fa;
+        color: #333;
+    }
+    header, footer {
+        background-color: #003366;
+        color: white;
+        text-align: center;
+        padding: 10px 0;
+    }
+    main {
+        padding: 20px;
+        max-width: 1000px;
+        margin: auto;
+        background: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        border-radius: 10px;
+    }
+    h1, h2, h3 {
+        color: #003366;
+    }
+    code, pre {
+        background: #eef;
+        padding: 10px;
+        border-radius: 5px;
+        display: block;
+        overflow-x: auto;
+    }
+    button {
+        background-color: #003366;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+    }
+    button:hover {
+        background-color: #00509e;
+    }
+    #quizSection {
+        margin-top: 30px;
+        border-top: 3px solid #003366;
+        padding-top: 20px;
+    }
+    .question {
+        background: #f8f9fc;
+        border-radius: 8px;
+        padding: 20px;
+        display: none;
+    }
+    .active {
+        display: block;
+    }
+    #result {
+        font-weight: bold;
+        font-size: 18px;
+        margin-top: 20px;
+        text-align: center;
+    }
+    #feedback {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        background: #eef8ff;
+        font-size: 15px;
+    }
+    #registration {
+        text-align: center;
+        margin-top: 20px;
+    }
+    input[type="text"] {
+        padding: 8px;
+        width: 250px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<header>
+    <h1>IS 311 - Information Management (DB/SQL)</h1>
+    <h2>SQL – Aggregate Functions</h2>
+</header>
+
+<main>
+    <section>
+        <h2>Introduction</h2>
+        <p>SQL Aggregate Functions perform calculations on multiple rows and return a single summarized value.
+           They are widely used in data analytics and reporting to summarize data efficiently.</p>
+    </section>
+
+    <section>
+        <h2>Common SQL Aggregate Functions</h2>
+        <h3>1. COUNT()</h3>
+        <p>Counts the number of rows that match a condition.</p>
+        <pre><code>SELECT COUNT(*) AS TotalEmployees FROM Employees;</code></pre>
+
+        <h3>2. SUM()</h3>
+        <p>Adds up all numeric values in a column.</p>
+        <pre><code>SELECT SUM(Salary) AS TotalSalaries FROM Employees;</code></pre>
+
+        <h3>3. AVG()</h3>
+        <p>Calculates the average of numeric values.</p>
+        <pre><code>SELECT AVG(Salary) AS AverageSalary FROM Employees;</code></pre>
+
+        <h3>4. MIN()</h3>
+        <p>Finds the smallest value in a column.</p>
+        <pre><code>SELECT MIN(Salary) AS LowestSalary FROM Employees;</code></pre>
+
+        <h3>5. MAX()</h3>
+        <p>Finds the largest value in a column.</p>
+        <pre><code>SELECT MAX(Salary) AS HighestSalary FROM Employees;</code></pre>
+    </section>
+
+    <section>
+        <h2>Using GROUP BY and HAVING</h2>
+        <pre><code>SELECT Department, AVG(Salary) AS AvgSalary
+FROM Employees
+GROUP BY Department
+HAVING AVG(Salary) > 50000;</code></pre>
+        <p>This query groups employees by department and displays only departments
+           with an average salary greater than 50,000.</p>
+    </section>
+
+    <section id="quizSection">
+        <h2>🧠 Interactive Quiz (20 Items)</h2>
+
+        <div id="registration">
+            <p><strong>Enter your name to start the quiz:</strong></p>
+            <input type="text" id="studentName" placeholder="Your full name">
+            <br><br>
+            <button onclick="startQuiz()">Start Quiz</button>
+        </div>
+
+        <form id="quizForm" style="display:none;">
+            <div id="quizContainer"></div>
+            <div style="text-align:center;">
+                <button type="button" onclick="prevQuestion()">Previous</button>
+                <button type="button" onclick="nextQuestion()">Next</button>
+                <button type="button" id="submitBtn" onclick="checkAnswers()" style="display:none;">Submit Quiz</button>
+            </div>
+        </form>
+        <div id="result"></div>
+        <div id="feedback"></div>
+    </section>
+</main>
+
+<footer>
+    © @SirLavz2025 | RONALD T. LAVA, MSIT | Institute of Computer Studies | NAAP
+</footer>
+
+<script>
+const quizData =  [ { q: "1. Which SQL function returns the number of rows?", options: ["SUM()", "COUNT()", "AVG()", "MAX()"], answer: "COUNT()", exp: "COUNT() returns the total number of rows in a result set." }, { q: "2. What does the SUM() function do?", options: ["Counts records", "Calculates total", "Finds minimum", "Finds average"], answer: "Calculates total", exp: "SUM() adds all numeric values in a column." }, { q: "3. The AVG() function returns the ____.", options: ["Sum", "Total", "Average", "Maximum"], answer: "Average", exp: "AVG() returns the arithmetic mean of numeric values." }, { q: "4. Which function finds the smallest value?", options: ["MIN()", "MAX()", "SUM()", "COUNT()"], answer: "MIN()", exp: "MIN() returns the lowest value in a column." }, { q: "5. Which function finds the largest value?", options: ["MIN()", "MAX()", "COUNT()", "AVG()"], answer: "MAX()", exp: "MAX() returns the highest value in a column." }, { q: "6. What keyword groups rows with the same values?", options: ["HAVING", "ORDER BY", "GROUP BY", "WHERE"], answer: "GROUP BY", exp: "GROUP BY groups rows sharing the same column values." }, { q: "7. Which clause filters aggregated results?", options: ["WHERE", "HAVING", "ORDER BY", "FROM"], answer: "HAVING", exp: "HAVING is used to filter aggregated groups." }, { q: "8. COUNT(*) counts ____.", options: ["Only NULLs", "Only unique values", "All rows", "Only text data"], answer: "All rows", exp: "COUNT(*) counts all rows, including duplicates." }, { q: "9. AVG(Salary) will ignore ____ values.", options: ["Positive", "Negative", "NULL", "Zero"], answer: "NULL", exp: "Aggregate functions ignore NULL values." }, { q: "10. To get total salary per department, use ____.", options: [ "SELECT Department, SUM(Salary) FROM Employees GROUP BY Department;", "SELECT Department, COUNT(Salary) FROM Employees;", "SELECT SUM(Salary) FROM Employees;", "SELECT Department, AVG(Salary) FROM Employees;" ], answer: "SELECT Department, SUM(Salary) FROM Employees GROUP BY Department;", exp: "This groups salaries by department and totals them." }, { q: "11. The MAX() function is used to find ____.", options: ["Lowest value", "Highest value", "Total", "Average"], answer: "Highest value", exp: "MAX() finds the highest numeric or date value." }, { q: "12. Which returns total employees in IT?", options: [ "SELECT COUNT(*) FROM Employees WHERE Department='IT';", "SELECT SUM(*) FROM Employees WHERE Department='IT';", "SELECT MAX(*) FROM Employees WHERE Department='IT';", "SELECT AVG(*) FROM Employees WHERE Department='IT';" ], answer: "SELECT COUNT(*) FROM Employees WHERE Department='IT';", exp: "COUNT(*) counts rows that satisfy the WHERE condition." }, { q: "13. Aggregate functions return ____ value(s).", options: ["Multiple", "Single", "No", "Variable"], answer: "Single", exp: "Each aggregate returns one summarized value." }, { q: "14. Which clause cannot be used to filter aggregate results?", options: ["HAVING", "GROUP BY", "WHERE", "ORDER BY"], answer: "WHERE", exp: "WHERE filters before aggregation; HAVING filters after aggregation." }, { q: "15. Count distinct departments using ____.", options: [ "SELECT COUNT(Department) FROM Employees;", "SELECT COUNT(DISTINCT Department) FROM Employees;", "SELECT DISTINCT COUNT(Department) FROM Employees;", "SELECT SUM(DISTINCT Department) FROM Employees;" ], answer: "SELECT COUNT(DISTINCT Department) FROM Employees;", exp: "COUNT(DISTINCT column) counts unique occurrences." }, { q: "16. HAVING acts like WHERE but for ____.", options: ["Groups", "Columns", "Tables", "Indexes"], answer: "Groups", exp: "HAVING filters grouped results, not individual rows." }, { q: "17. COUNT(Salary) ignores rows with ____.", options: ["Zero salary", "NULL salary", "Negative salary", "Duplicate salary"], answer: "NULL salary", exp: "COUNT(column) ignores NULL values." }, { q: "18. Which shows average salary per department?", options: [ "SELECT Department, AVG(Salary) FROM Employees GROUP BY Department;", "SELECT AVG(Salary) FROM Employees;", "SELECT Department, SUM(Salary) FROM Employees;", "SELECT AVG(Salary) FROM Employees GROUP BY Name;" ], answer: "SELECT Department, AVG(Salary) FROM Employees GROUP BY Department;", exp: "Groups data by department and averages the salary." }, { q: "19. To find departments with more than 5 employees, use ____.", options: ["HAVING COUNT(*) > 5", "WHERE COUNT(*) > 5", "GROUP BY COUNT(*) > 5", "FILTER COUNT(*) > 5"], answer: "HAVING COUNT(*) > 5", exp: "HAVING filters grouped data based on count." }, { q: "20. Aggregate functions are used in ____.", options: ["Data analysis and reporting", "Table creation", "User login", "Data deletion"], answer: "Data analysis and reporting", exp: "Aggregates are used for summarizing data." } ];
+
+let currentQuestion = 0;
+let studentName = "";
+let userAnswers = {}; // store user answers
+
+function startQuiz() {
+    studentName = document.getElementById('studentName').value.trim();
+    if (studentName === "") {
+        alert("Please enter your name before starting the quiz.");
+        return;
+    }
+    document.getElementById('registration').style.display = 'none';
+    document.getElementById('quizForm').style.display = 'block';
+    loadQuiz();
+}
+
+function loadQuiz() {
+    const quizContainer = document.getElementById('quizContainer');
+    quizContainer.innerHTML = "";
+    const q = quizData[currentQuestion];
+    const div = document.createElement("div");
+    div.classList.add("question", "active");
+
+    // Build radio buttons
+    let optionsHTML = "";
+    q.options.forEach(opt => {
+        const checked = userAnswers[currentQuestion] === opt ? "checked" : "";
+        optionsHTML += `<label><input type="radio" name="q${currentQuestion}" value="${opt}" ${checked}> ${opt}</label><br>`;
+    });
+
+    div.innerHTML = `<p><strong>${q.q}</strong></p>${optionsHTML}`;
+    quizContainer.appendChild(div);
+
+    // Show submit only on last question
+    document.getElementById('submitBtn').style.display =
+        currentQuestion === quizData.length - 1 ? 'inline-block' : 'none';
+}
+
+function nextQuestion() {
+    saveAnswer();
+    if (currentQuestion < quizData.length - 1) {
+        currentQuestion++;
+        loadQuiz();
+    }
+}
+
+function prevQuestion() {
+    saveAnswer();
+    if (currentQuestion > 0) {
+        currentQuestion--;
+        loadQuiz();
+    }
+}
+
+function saveAnswer() {
+    const selected = document.querySelector(`input[name="q${currentQuestion}"]:checked`);
+    if (selected) {
+        userAnswers[currentQuestion] = selected.value;
+    }
+}
+
+function checkAnswers() {
+    saveAnswer(); // save last answer
+    let score = 0;
+    quizData.forEach((item, index) => {
+        const userAns = userAnswers[index] || "No answer";
+        if (userAns === item.answer) score++;
+    });
+
+    document.getElementById('quizForm').style.display = 'none';
+    document.getElementById('result').innerHTML = `
+        <p>🧾 Student: <strong>${studentName}</strong></p>
+        <p>Your score: <strong>${score} / ${quizData.length}</strong></p>
+        <button onclick="generateCertificate(${score})">Download Certificate</button>
+    `;
+    document.getElementById('feedback').style.display = 'none'; // hide feedback completely
+}
+
+function generateCertificate(score) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text("IS 311 - Final Quiz 1 Certificate", 55, 30);
+    doc.setFontSize(12);
+    doc.text(`This certifies that`, 20, 50);
+    doc.setFontSize(16);
+    doc.text(`${studentName}`, 20, 60);
+    doc.setFontSize(12);
+    doc.text(`has successfully completed the SQL Aggregate Functions Quiz`, 20, 70);
+    doc.text(`with a score of ${score} out of ${quizData.length}.`, 20, 80);
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 100);
+    doc.text("Instructor: RONALD T. LAVA, MSIT", 20, 110);
+    doc.text("Institute of Computer Studies | NAAP", 20, 120);
+    doc.save("IS311_Final_Quiz1_Certificate.pdf");
+}
+</script>
+
+</body>
+</html>
