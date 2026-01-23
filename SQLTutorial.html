@@ -1,0 +1,167 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LU-CCS SQL Encyclopedia | SirLavz2026</title>
+    <style>
+        :root {
+            --lu-blue: #003366; --ccs-gold: #FFD700; --bg: #0f172a; 
+            --sidebar: #1e293b; --accent: #38bdf8; --text: #f8fafc; 
+            --text-dim: #94a3b8; --code: #000; --border: #334155;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; scroll-behavior: smooth; }
+        
+        /* Fixed Header */
+        .header { 
+            background: var(--lu-blue); color: white; padding: 15px 40px; display: flex; 
+            justify-content: space-between; position: fixed; width: 100%; z-index: 1000; 
+            border-bottom: 3px solid var(--ccs-gold); box-sizing: border-box;
+        }
+        .author-tag { font-family: 'Courier New', monospace; color: var(--ccs-gold); font-weight: bold; }
+
+        /* Sidebar Navigation */
+        nav { width: 350px; background: var(--sidebar); height: 100vh; position: fixed; overflow-y: auto; padding-top: 80px; border-right: 1px solid var(--border); }
+        .nav-cat { padding: 15px 25px; background: #111827; font-size: 0.7rem; color: var(--ccs-gold); font-weight: bold; text-transform: uppercase; }
+        nav li a { display: block; padding: 8px 25px; color: var(--text-dim); text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #1e293b; }
+        nav li a:hover { color: var(--accent); background: #334155; }
+
+        /* Main Body */
+        main { margin-left: 350px; padding: 120px 60px; max-width: 1000px; }
+        h1 { font-size: 3rem; color: var(--accent); margin-bottom: 5px; }
+        h2 { font-size: 2.2rem; color: var(--ccs-gold); border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-top: 80px; }
+        h3 { color: var(--accent); margin-top: 40px; }
+
+        .content-box { background: #1e293b; padding: 25px; border-radius: 12px; margin-top: 20px; border-left: 5px solid var(--accent); }
+        .day-label { background: var(--ccs-gold); color: black; padding: 2px 8px; border-radius: 4px; font-weight: 800; font-size: 0.8rem; margin-right: 10px; }
+        
+        code { background: var(--code); color: #7dd3fc; padding: 20px; border-radius: 8px; display: block; margin: 15px 0; font-family: 'Fira Code', monospace; line-height: 1.5; overflow-x: auto; }
+        .keyword { color: #f472b6; font-weight: bold; }
+        
+        footer { margin-top: 100px; padding: 60px; background: var(--lu-blue); border-top: 4px solid var(--ccs-gold); text-align: center; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div>LAGUNA UNIVERSITY | College of Computing Studies</div>
+    <div class="author-tag">SirLavz2026</div>
+</header>
+
+<nav id="sidebar">
+    <div class="nav-cat">Stage 1: The Foundations</div>
+    <ul>
+        <li><a href="#d1">Day 1: SELECT & FROM</a></li>
+        <li><a href="#d2">Day 2: WHERE Clause</a></li>
+        <li><a href="#d3">Day 3: Comparison Operators</a></li>
+        <li><a href="#d4">Day 4: AND, OR, NOT Logic</a></li>
+        <li><a href="#d5">Day 5: LIKE & Wildcards</a></li>
+        <li><a href="#d6">Day 6: ORDER BY (Sorting)</a></li>
+        <li><a href="#d7">Day 7: LIMIT & TOP</a></li>
+    </ul>
+    <div class="nav-cat">Stage 2: Relationships</div>
+    <ul>
+        <li><a href="#d8">Day 8: Inner Joins</a></li>
+        <li><a href="#d9">Day 9: Left & Right Joins</a></li>
+        <li><a href="#d10">Day 10: Multi-Table Joins</a></li>
+        <li><a href="#d11">Day 11: SUM, AVG, COUNT</a></li>
+        <li><a href="#d12">Day 12: MIN & MAX</a></li>
+        <li><a href="#d13">Day 13: GROUP BY Logic</a></li>
+        <li><a href="#d14">Day 14: HAVING vs WHERE</a></li>
+        <li><a href="#d15">Day 15: Subqueries</a></li>
+    </ul>
+    <div class="nav-cat">Stage 3: Advanced Logic</div>
+    <ul>
+        <li><a href="#d16">Day 16: CASE Statements</a></li>
+        <li><a href="#d17">Day 17: CTEs (WITH Clause)</a></li>
+        <li><a href="#d18">Day 18: Window Functions Intro</a></li>
+        <li><a href="#d19">Day 19: RANK & Running Totals</a></li>
+        <li><a href="#d20">Day 20: Performance & Indexes</a></li>
+        <li><a href="#d21">Day 21: UNION & Set Ops</a></li>
+    </ul>
+    <div class="nav-cat">Stage 4: Engineering</div>
+    <ul>
+        <li><a href="#d22">Day 22: Normalization (1-3NF)</a></li>
+        <li><a href="#d23">Day 23: DDL (CREATE/ALTER)</a></li>
+        <li><a href="#d24">Day 24: Constraints & Keys</a></li>
+        <li><a href="#d25">Day 25: ACID Transactions</a></li>
+        <li><a href="#d26">Day 26: Stored Procedures</a></li>
+        <li><a href="#d27">Day 27: DCL (GRANT/REVOKE)</a></li>
+        <li><a href="#d28">Day 28: Big Data & Warehousing</a></li>
+        <li><a href="#d29">Day 29: SQL for BI & Viz</a></li>
+        <li><a href="#d30">Day 30: Career Roadmap</a></li>
+    </ul>
+</nav>
+
+<main>
+    <h1>The SQL Encyclopedia</h1>
+    <p>A complete 30-day technical curriculum for Laguna University students.</p>
+
+    <section id="d1">
+        <h2>Stage 1: The Foundations</h2>
+        <div class="content-box">
+            <h3><span class="day-label">Day 1-3</span> Data Retrieval Basics</h3>
+            <p>Every query starts with <code>SELECT</code>. We learn to filter rows using <code>WHERE</code>. Note: SQL processes FROM before WHERE, and WHERE before SELECT.</p>
+            
+            <code><span class="keyword">SELECT</span> name, age <span class="keyword">FROM</span> students <span class="keyword">WHERE</span> age >= 18;</code>
+        </div>
+        <div class="content-box">
+            <h3><span class="day-label">Day 4-7</span> Logic & Organization</h3>
+            <p>We use <code>LIKE</code> for pattern matching (e.g., <code>'A%'</code> finds all names starting with A). Sorting is handled by <code>ORDER BY</code>, and <code>LIMIT</code> prevents data overload.</p>
+        </div>
+    </section>
+
+    <section id="d8">
+        <h2>Stage 2: Relationships & Aggregates</h2>
+        <div class="content-box">
+            <h3><span class="day-label">Day 8-10</span> The Mechanics of Joins</h3>
+            <p>Joins connect tables via Primary and Foreign Keys. <strong>INNER JOIN</strong> returns only matching rows; <strong>LEFT JOIN</strong> returns everything from the first table plus matches.</p>
+            [attachment_0](attachment)
+            <code><span class="keyword">SELECT</span> orders.id, customers.name <span class="keyword">FROM</span> orders <br><span class="keyword">JOIN</span> customers <span class="keyword">ON</span> orders.cid = customers.id;</code>
+        </div>
+        <div class="content-box">
+            <h3><span class="day-label">Day 11-15</span> Aggregation Logic</h3>
+            <p>Aggregates (SUM, AVG) collapse rows. Remember: Any non-aggregated column in your SELECT must appear in your <code>GROUP BY</code> clause.</p>
+        </div>
+    </section>
+
+    <section id="d16">
+        <h2>Stage 3: Advanced Analysis</h2>
+        <div class="content-box">
+            <h3><span class="day-label">Day 16-17</span> Clean Logic & CTEs</h3>
+            <p><code>CASE</code> adds If/Then logic. <code>CTEs (WITH)</code> allow you to break complex queries into readable, temporary blocks.</p>
+        </div>
+        <div class="content-box">
+            <h3><span class="day-label">Day 18-21</span> Window Functions & Sets</h3>
+            <p>Window functions (<code>OVER</code>) perform calculations across rows while keeping individual records visible. Essential for Running Totals and Ranking.</p>
+            
+            <code><span class="keyword">SELECT</span> name, <span class="keyword">RANK</span>() <span class="keyword">OVER</span>(<span class="keyword">PARTITION BY</span> dept <span class="keyword">ORDER BY</span> salary <span class="keyword">DESC</span>) <span class="keyword">FROM</span> staff;</code>
+        </div>
+    </section>
+
+    <section id="d22">
+        <h2>Stage 4: Architecture & Design</h2>
+        <div class="content-box">
+            <h3><span class="day-label">Day 22-24</span> Database Normalization</h3>
+            <p>Organizing data to minimize redundancy. We move from 1NF (atomic values) to 2NF (partial dependency) to 3NF (transitive dependency).</p>
+            
+        </div>
+        <div class="content-box">
+            <h3><span class="day-label">Day 25-27</span> Safety, Procedures, & Security</h3>
+            <p><strong>Transactions</strong> ensure data safety (ACID). <strong>Stored Procedures</strong> automate scripts. <strong>DCL (GRANT/REVOKE)</strong> secures access.</p>
+        </div>
+        <div class="content-box">
+            <h3><span class="day-label">Day 28-30</span> Enterprise SQL</h3>
+            <p>Understanding <strong>OLAP</strong> for Big Data and how to prep SQL data for Visualization tools like Tableau or Power BI.</p>
+            
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div style="font-weight: bold; font-size: 1.2rem; margin-bottom: 10px;">LAGUNA UNIVERSITY - COLLEGE OF COMPUTING STUDIES</div>
+    <p>SQL Curriculum & Archive &copy; 2026 | Developed by SirLavz2026</p>
+</footer>
+
+</body>
+</html>
