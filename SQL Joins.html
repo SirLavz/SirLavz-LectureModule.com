@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Join Laboratory: Shopee Database</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; }
+        header { background-color: #ee4d2d; color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .content { background: white; padding: 40px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 15px rgba(0,0,0,0.1); }
+        h2 { color: #ee4d2d; border-bottom: 2px solid #f2f2f2; padding-bottom: 10px; margin-top: 30px; }
+        h3 { color: #444; margin-top: 25px; }
+        pre { background: #2d2d2d; color: #f8f8f2; padding: 20px; border-radius: 6px; overflow-x: auto; font-size: 0.85em; border-left: 5px solid #ee4d2d; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; font-size: 0.9em; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f8f8f8; color: #ee4d2d; }
+        .task-box { background-color: #fff9f0; border-left: 5px solid #ffa500; padding: 20px; margin: 20px 0; border-radius: 4px; }
+        .rubric-table th { background-color: #444; color: white; }
+        .check-item { margin: 10px 0; display: flex; align-items: center; }
+        .check-item input { margin-right: 10px; }
+        .diagram { text-align: center; margin: 30px 0; padding: 20px; border: 2px dashed #ddd; background: #fafafa; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>SQL Laboratory: Mastering Joins</h1>
+    <p>E-Commerce Case Study: Shopee Philippines</p>
+</header>
+
+<div class="content">
+    <h2>1. Objective</h2>
+    <p>Apply relational algebra concepts using SQL JOINs to connect user registries with transaction data. Students will identify active customers, inactive users, and data inconsistencies.</p>
+
+    <h2>2. Database Initialization</h2>
+    <p>Copy and execute the following script in your SQL environment to set up the <strong>Users</strong> (from the student registry), <strong>Products</strong>, and <strong>Orders</strong> tables.</p>
+
+    <pre>
+-- Setup Tables
+CREATE TABLE Users (
+    user_id INT PRIMARY KEY,
+    username VARCHAR(100),
+    city VARCHAR(50)
+);
+
+CREATE TABLE Products (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(100),
+    category VARCHAR(50),
+    price DECIMAL(10, 2)
+);
+
+CREATE TABLE Orders (
+    order_id INT PRIMARY KEY,
+    user_id INT,
+    product_id INT,
+    quantity INT
+);
+
+-- Insert Student Registry Data
+INSERT INTO Users VALUES 
+(101, 'BADELLES, NORHATA PIMENTEL', 'Manila'),
+(102, 'BARCENAS, AGEO JOAQUIN TORRENTE', 'Cebu'),
+(103, 'BENOSA, NEIL BRUSAS', 'Davao'),
+(104, 'BOCO, JOHN ADRIAN DULATRE', 'Quezon City'),
+(105, 'BONDOC, TRISHA VICTORIA DE GUZMAN', 'Batangas'),
+(106, 'BONGO, EDELYN CUESTA', 'Iloilo'),
+(107, 'BRICIA, MARK JOVAN LIZARDO', 'Manila'),
+(108, 'CO, KYLE DENISE BEDUYA', 'Cebu'),
+(109, 'CURAY, RAQUEL QUIMZON', 'Davao'),
+(110, 'CUYACOT, PIANDREA LUISA ARABIA', 'Zamboanga'),
+(111, 'DE CHAVEZ, VINCE IVAN BALLATAN', 'Batangas'),
+(112, 'DIROY, LAWRENCE CANLAS', 'Manila'),
+(113, 'ENGUANCHO, RIEGO ALFONSO SANCHEZ', 'Pampanga'),
+(114, 'GASPAR, GYVANN CATOLTOL', 'Leyte'),
+(115, 'GUILLERMO, MIKO GLORIOSO', 'Quezon City'),
+(116, 'JOSE, JEREMY JOSE GACOS', 'Manila'),
+(117, 'LIPAOPAO, REGINE WAGA', 'Davao'),
+(118, 'MARTIN, JHAN KENNETH JOSE N/A', 'Manila'),
+(119, 'ODICTA, JB MICO BURGONIA', 'Cebu'),
+(120, 'PELIÑO, MARGARETTE CANLAS', 'Quezon City'),
+(121, 'PERALTA, MA FE VIOLETA BALBUENA', 'Manila'),
+(122, 'PRIETO, ARCH ULRICH ARCIAGA', 'Cebu'),
+(123, 'SALIENTE, CARL JOEL MONIVA', 'Davao'),
+(124, 'TAPAO, LIZETTE MAY CARORO', 'Manila'),
+(125, 'VALENZUELA, VIVIENE MARIE N/A', 'Batangas'),
+(126, 'WONG, LAIZEL ANN TOLEDO', 'Manila');
+
+-- Insert Products
+INSERT INTO Products VALUES 
+(501, 'Wireless Mouse', 'Electronics', 450.00),
+(502, 'Canvas Tote Bag', 'Fashion', 150.00),
+(503, 'Mechanical Keyboard', 'Electronics', 2100.00),
+(504, 'Hydroflask 32oz', 'Home & Living', 1800.00),
+(505, 'Sunscreen SPF50', 'Beauty', 350.00);
+
+-- Insert Orders (Sample Transactions)
+INSERT INTO Orders VALUES 
+(9001, 101, 501, 1), 
+(9002, 102, 503, 1), 
+(9003, 101, 505, 2), 
+(9004, 105, 502, 3), 
+(9005, 108, 504, 1),
+(9006, 126, 505, 1),
+(9007, 999, 501, 1); -- Orphaned Record
+    </pre>
+
+    <div class="diagram">
+        
+
+<img src = "sqljoins.jpg" height="500" width="500"> 
+
+        <p><em>Use this visual to choose the correct JOIN for each task below.</em></p>
+    </div>
+
+    <h2>3. Laboratory Tasks</h2>
+
+    <div class="task-box">
+        <h3>Task 1: Inner Join (Active Customer Report)</h3>
+        <p>Generate a list showing the <code>username</code> and the <code>product_name</code> they purchased. Only include users who have at least one order.</p>
+    </div>
+
+    <div class="task-box">
+        <h3>Task 2: Left Join (Marketing Audit)</h3>
+        <p>Shopee wants to send a voucher to users who haven't bought anything yet. Use a <code>LEFT JOIN</code> to list <strong>all</strong> users and their <code>order_id</code>. Identify the users where the <code>order_id</code> is NULL.</p>
+    </div>
+
+    <div class="task-box">
+        <h3>Task 3: Aggregation & Logic</h3>
+        <p>Calculate the total spend for <strong>BADELLES, NORHATA PIMENTEL</strong>. Your query must join all three tables and use the calculation: <code>(Price * Quantity)</code>.</p>
+    </div>
+
+    <h2>4. Grading Rubric</h2>
+    <table class="rubric-table">
+        <thead>
+            <tr>
+                <th>Criteria</th>
+                <th>Excellent (5)</th>
+                <th>Satisfactory (3)</th>
+                <th>Developing (1)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>SQL Syntax</strong></td>
+                <td>Queries run without error and use proper aliases.</td>
+                <td>Queries run but lack proper formatting.</td>
+                <td>Major syntax errors present.</td>
+            </tr>
+            <tr>
+                <td><strong>Join Logic</strong></td>
+                <td>Correctly chooses between Inner, Left, and Right joins.</td>
+                <td>Used a join, but results include/exclude wrong rows.</td>
+                <td>Did not use joins (used subqueries only).</td>
+            </tr>
+            <tr>
+                <td><strong>Data Integrity</strong></td>
+                <td>Successfully identifies and explains the "Orphaned Record" (999).</td>
+                <td>Noticed the record but could not explain the NULL user.</td>
+                <td>Ignored the orphaned record.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>5. Submission Checklist</h2>
+    <div class="check-item"><input type="checkbox"> SQL script file (.sql) included.</div>
+    <div class="check-item"><input type="checkbox"> Clear screenshots of query results.</div>
+    <div class="check-item"><input type="checkbox"> Comparison table between INNER and LEFT join results.</div>
+    <div class="check-item"><input type="checkbox"> Reflection on why <strong>VALENZUELA</strong> shows NULL in Task 2.</div>
+
+    <footer style="margin-top: 50px; text-align: center; font-size: 0.8em; color: #888;">
+        &copy; @SirLavz | RONALD T. LAVA, MSIT | College of Computing Studies | Laguna University 
+    </footer>
+</div>
+
+</body>
+</html>
