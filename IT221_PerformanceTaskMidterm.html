@@ -1,0 +1,206 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SQL Aggregate Training System</title>
+<style>
+body{font-family:Arial;background:#f4f6f9;padding:20px}
+h1{text-align:center}
+.container{display:flex;gap:30px}
+.panel{flex:1;background:white;padding:15px;border-radius:8px}
+table{border-collapse:collapse;width:100%;margin-bottom:10px}
+th,td{border:1px solid #ccc;padding:6px;text-align:center}
+th{background:#007bff;color:white}
+textarea{width:100%;height:90px;font-family:monospace}
+button{padding:8px 12px;margin-top:5px;background:#28a745;color:white;border:none;cursor:pointer}
+.result{margin-top:10px;padding:10px;background:#fff3cd}
+.scorebox{background:#e2e3e5;padding:10px;margin-top:10px}
+.timer{font-size:18px;color:red}
+.correct{color:green;font-weight:bold}
+.wrong{color:red;font-weight:bold}
+</style>
+</head>
+<body>
+
+<h1>SQL Aggregate & JOIN Practice System</h1>
+
+<div class="container">
+
+<div class="panel">
+<h3>Employees</h3>
+<table id="employeesTable"></table>
+
+<h3>Departments</h3>
+<table id="departmentsTable"></table>
+</div>
+
+<div class="panel">
+<h3>SQL Editor</h3>
+<textarea id="queryInput"></textarea><br>
+<button onclick="runQuery()">Run Query</button>
+<button onclick="checkAnswer()">Submit Practice Answer</button>
+
+<div class="result" id="resultBox"></div>
+
+<div class="scorebox">
+<p><strong>Practice Question:</strong></p>
+<p id="practiceQuestion"></p>
+
+<p class="timer">Time Left: <span id="timer">60</span> sec</p>
+
+<p>Score: <span id="score">0</span></p>
+<p id="feedback"></p>
+
+<button onclick="nextQuestion()">Next Question</button>
+</div>
+
+</div>
+</div>
+
+<script>
+// ---------------- DATA ----------------
+const employees=[
+{id:1,name:"Alice",dept_id:1,salary:50000},
+{id:2,name:"Bob",dept_id:2,salary:40000},
+{id:3,name:"Charlie",dept_id:1,salary:60000},
+{id:4,name:"David",dept_id:3,salary:45000},
+{id:5,name:"Emma",dept_id:2,salary:42000}
+];
+
+const departments=[
+{id:1,dept_name:"IT"},
+{id:2,dept_name:"HR"},
+{id:3,dept_name:"Finance"}
+];
+
+// LOAD TABLES
+function loadTable(data,id){
+let table=document.getElementById(id);
+let keys=Object.keys(data[0]);
+let header="<tr>";
+keys.forEach(k=>header+=`<th>${k}</th>`);
+header+="</tr>";
+let rows="";
+data.forEach(row=>{
+rows+="<tr>";
+keys.forEach(k=>rows+=`<td>${row[k]}</td>`);
+rows+="</tr>";
+});
+table.innerHTML=header+rows;
+}
+loadTable(employees,"employeesTable");
+loadTable(departments,"departmentsTable");
+
+// ---------------- QUERY ENGINE ----------------
+function runQuery(){
+let query=document.getElementById("queryInput").value.toLowerCase();
+let result="";
+
+if(query.includes("join")){
+// JOIN simulation
+let joined=[];
+employees.forEach(emp=>{
+let dept=departments.find(d=>d.id==emp.dept_id);
+joined.push({...emp,dept_name:dept.dept_name});
+});
+result="JOIN Result:<br>";
+joined.forEach(r=>{
+result+=r.name+" - "+r.dept_name+"<br>";
+});
+}
+
+else if(query.includes("count")){
+result="COUNT = "+employees.length;
+}
+else if(query.includes("sum")){
+let sum=employees.reduce((a,b)=>a+b.salary,0);
+result="SUM = "+sum;
+}
+else{
+result="Query executed (simulation only).";
+}
+
+document.getElementById("resultBox").innerHTML=result;
+}
+
+// ---------------- PRACTICE QUESTIONS (40 AUTO) ----------------
+let practiceList=[];
+
+// AUTO GENERATE 20 aggregate questions
+for(let i=0;i<10;i++){
+practiceList.push({
+q:"Count all employees.",
+a:"select count(*) from employees;"
+});
+practiceList.push({
+q:"Get total salary of employees.",
+a:"select sum(salary) from employees;"
+});
+practiceList.push({
+q:"Show employees with department name using JOIN.",
+a:"select * from employees join departments on employees.dept_id = departments.id;"
+});
+practiceList.push({
+q:"Count employees per department.",
+a:"select dept_id, count(*) from employees group by dept_id;"
+});
+}
+
+// ---------------- PRACTICE SYSTEM ----------------
+let score=0;
+let currentIndex=0;
+let timeLeft=60;
+let timerInterval;
+
+function normalize(q){
+return q.replace(/\s+/g,' ').trim().toLowerCase();
+}
+
+function startTimer(){
+clearInterval(timerInterval);
+timeLeft=60;
+document.getElementById("timer").innerText=timeLeft;
+timerInterval=setInterval(()=>{
+timeLeft--;
+document.getElementById("timer").innerText=timeLeft;
+if(timeLeft<=0){
+clearInterval(timerInterval);
+document.getElementById("feedback").innerHTML="<span class='wrong'>Time's up!</span>";
+}
+},1000);
+}
+
+function loadQuestion(){
+let random=Math.floor(Math.random()*practiceList.length);
+currentIndex=random;
+document.getElementById("practiceQuestion").innerText=practiceList[random].q;
+document.getElementById("queryInput").value="";
+document.getElementById("feedback").innerText="";
+startTimer();
+}
+
+function checkAnswer(){
+let user=normalize(document.getElementById("queryInput").value);
+let correct=normalize(practiceList[currentIndex].a);
+
+if(user===correct){
+score++;
+document.getElementById("feedback").innerHTML="<span class='correct'>Correct!</span>";
+}else{
+document.getElementById("feedback").innerHTML="<span class='wrong'>Incorrect!</span>";
+}
+
+document.getElementById("score").innerText=score;
+clearInterval(timerInterval);
+}
+
+function nextQuestion(){
+loadQuestion();
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
