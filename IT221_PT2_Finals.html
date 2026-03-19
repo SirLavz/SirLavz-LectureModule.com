@@ -1,0 +1,240 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT 221 - Aviation RA Interactive Lab</title>
+    <style>
+        :root { --navy: #1a3a5a; --blue: #3498db; --green: #2ecc71; --light: #f4f7f9; --error: #e74c3c; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--light); padding: 20px; color: #333; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        .header-box { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--blue); margin-bottom: 20px; padding-bottom: 10px; }
+        .score-box { background: var(--navy); color: white; padding: 10px 20px; border-radius: 8px; font-size: 1.2em; font-weight: bold; }
+        
+        /* Toolbar */
+        .toolbar-label { font-weight: bold; margin-bottom: 5px; color: var(--navy); text-transform: uppercase; font-size: 0.8em; }
+        .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 30px; padding: 15px; background: #fff; border: 2px dashed #bdc3c7; border-radius: 8px; position: sticky; top: 10px; z-index: 100; }
+        .draggable { padding: 6px 12px; border-radius: 4px; cursor: grab; font-weight: bold; font-size: 0.85em; transition: 0.2s; color: white; }
+        .op { background: var(--navy); }
+        .attr { background: var(--blue); }
+        .rel { background: #9b59b6; }
+        .draggable:active { cursor: grabbing; opacity: 0.6; }
+
+        /* Exercises */
+        .exercise { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fff; }
+        .question { font-weight: 600; margin-bottom: 12px; color: #2c3e50; font-size: 0.95em; }
+        .expression { font-family: "Cambria Math", "Times New Roman", serif; font-size: 1.1em; display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+        
+        .drop-zone { min-width: 80px; height: 30px; border-bottom: 2px solid #bdc3c7; text-align: center; line-height: 30px; background: #fdfdfd; font-size: 0.9em; transition: 0.3s; padding: 0 5px; }
+        .drop-zone.filled { border-bottom-color: var(--blue); font-weight: bold; }
+        .drop-zone.correct { background: #d4edda; border-color: var(--green); color: #155724; }
+        .drop-zone.wrong { background: #f8d7da; border-color: var(--error); color: #721c24; }
+
+        .sub { font-size: 0.7em; vertical-align: sub; margin-top: 10px; }
+        
+        button.verify-btn { width: 100%; padding: 15px; background: var(--navy); color: white; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer; font-weight: bold; margin-top: 20px; }
+        button.verify-btn:hover { background: var(--blue); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-box">
+        <div>
+            <h1>IT 221: Relational Algebra Lab</h1>
+            <p>Aviation Information Management 1</p>
+        </div>
+        <div class="score-box" id="scoreboard">Score: 0 / 10</div>
+    </div>
+
+    <div class="toolbar-label">Drag Operators, Attributes, or Relations:</div>
+    <div class="toolbar" id="toolbar">
+        <div class="draggable op" draggable="true" id="sigma">σ</div>
+        <div class="draggable op" draggable="true" id="pi">π</div>
+        <div class="draggable op" draggable="true" id="join">⨝</div>
+        <div class="draggable op" draggable="true" id="union">∪</div>
+        <div class="draggable op" draggable="true" id="minus">−</div>
+        <div class="draggable op" draggable="true" id="div">÷</div>
+        <div class="draggable attr" draggable="true" id="c300">Capacity ≥ 300</div>
+        <div class="draggable attr" draggable="true" id="d500">Distance > 500</div>
+        <div class="draggable attr" draggable="true" id="fnum">FlightNum, DepCity</div>
+        <div class="draggable attr" draggable="true" id="name">Name</div>
+        <div class="draggable attr" draggable="true" id="ga101">AirlineID = 'GA101'</div>
+        <div class="draggable attr" draggable="true" id="sh99">AirlineID = 'SH99'</div>
+        <div class="draggable attr" draggable="true" id="role">Role = 'Pilot'</div>
+        <div class="draggable rel" draggable="true" id="aircraft">AIRCRAFT</div>
+        <div class="draggable rel" draggable="true" id="flights">FLIGHTS</div>
+        <div class="draggable rel" draggable="true" id="crew">CREW</div>
+        <div class="draggable rel" draggable="true" id="airlines">AIRLINES</div>
+        <div class="draggable rel" draggable="true" id="schedule">SCHEDULE</div>
+    </div>
+
+    <div id="quiz-container">
+        <div class="exercise" data-id="1">
+            <div class="question">1. Safety Audit: Select all aircraft with capacity &ge; 300.</div>
+            <div class="expression">
+                <div class="drop-zone" data-ans="sigma"></div>
+                <span class="sub"><div class="drop-zone" data-ans="c300"></div></span>
+                (<div class="drop-zone" data-ans="aircraft"></div>)
+            </div>
+        </div>
+
+        <div class="exercise" data-id="2">
+            <div class="question">2. Route Analysis: Project FlightNum and DepCity for long flights (>500 miles).</div>
+            <div class="expression">
+                <div class="drop-zone" data-ans="pi"></div>
+                <span class="sub"><div class="drop-zone" data-ans="fnum"></div></span>
+                (<div class="drop-zone" data-ans="sigma"></div>
+                <span class="sub"><div class="drop-zone" data-ans="d500"></div></span>
+                (<div class="drop-zone" data-ans="flights"></div>))
+            </div>
+        </div>
+
+        <div class="exercise" data-id="3">
+            <div class="question">3. Fleet List: Join Airlines and Aircraft tables.</div>
+            <div class="expression">
+                <div class="drop-zone" data-ans="airlines"></div>
+                <div class="drop-zone" data-ans="join"></div>
+                <div class="drop-zone" data-ans="aircraft"></div>
+            </div>
+        </div>
+
+        <div class="exercise" data-id="4">
+            <div class="question">4. Specific Roster: Find the Name of crew members in 'GA101'.</div>
+            <div class="expression">
+                <div class="drop-zone" data-ans="pi"></div>
+                <span class="sub"><div class="drop-zone" data-ans="name"></div></span>
+                (<div class="drop-zone" data-ans="sigma"></div>
+                <span class="sub"><div class="drop-zone" data-ans="ga101"></div></span>
+                (<div class="drop-zone" data-ans="crew"></div>))
+            </div>
+        </div>
+
+        <div class="exercise" data-id="5">
+            <div class="question">5. Asset Gap: Airlines IDs without any Aircraft assigned.</div>
+            <div class="expression">
+                <div class="drop-zone" data-ans="pi"></div>(AIRLINES)
+                <div class="drop-zone" data-ans="minus"></div>
+                <div class="drop-zone" data-ans="pi"></div>(AIRCRAFT)
+            </div>
+        </div>
+
+        <div class="exercise" data-id="6">
+            <div class="question">6. Universal Pilot: Find pilots who have flown EVERY aircraft of 'SH99'.</div>
+            <div class="expression">
+                (<div class="drop-zone" data-ans="pi"></div> (SCHEDULE))
+                <div class="drop-zone" data-ans="div"></div>
+                (<div class="drop-zone" data-ans="pi"></div> (AIRCRAFT))
+            </div>
+        </div>
+
+        <div class="exercise" data-id="7">
+            <div class="question">7. Role Filter: Select all crew members who are 'Pilots'.</div>
+            <div class="expression">
+                <div class="drop-zone" data-ans="sigma"></div>
+                <span class="sub"><div class="drop-zone" data-ans="role"></div></span>
+                (<div class="drop-zone" data-ans="crew"></div>)
+            </div>
+        </div>
+
+        <div class="exercise" data-id="8">
+            <div class="question">8. Network Reach: Union of Departure Cities and Hub Cities.</div>
+            <div class="expression">
+                <div class="drop-zone" data-ans="pi"></div>(FLIGHTS)
+                <div class="drop-zone" data-ans="union"></div>
+                <div class="drop-zone" data-ans="pi"></div>(AIRLINES)
+            </div>
+        </div>
+
+        <div class="exercise" data-id="9">
+            <div class="question">9. Fleet Model: Display Model via Join of Schedule and Aircraft.</div>
+            <div class="expression">
+                <div class="drop-zone" data-ans="schedule"></div>
+                <div class="drop-zone" data-ans="join"></div>
+                <div class="drop-zone" data-ans="aircraft"></div>
+            </div>
+        </div>
+
+        <div class="exercise" data-id="10">
+            <div class="question">10. Fleet Integrity: Difference between Schedule TailNumbers and Aircraft TailNumbers.</div>
+            <div class="expression">
+                <div class="drop-zone" data-ans="pi"></div>(AIRCRAFT)
+                <div class="drop-zone" data-ans="minus"></div>
+                <div class="drop-zone" data-ans="pi"></div>(SCHEDULE)
+            </div>
+        </div>
+    </div>
+
+    <button class="verify-btn" onclick="checkAll()">SUBMIT COMPLETED LAB</button>
+</div>
+
+<script>
+    const draggables = document.querySelectorAll('.draggable');
+    const dropZones = document.querySelectorAll('.drop-zone');
+
+    // Setup Drag Events
+    draggables.forEach(d => {
+        d.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', d.id);
+        });
+    });
+
+    // Setup Drop Zones
+    dropZones.forEach(z => {
+        z.addEventListener('dragover', e => {
+            e.preventDefault();
+        });
+        
+        z.addEventListener('drop', e => {
+            e.preventDefault();
+            const id = e.dataTransfer.getData('text/plain');
+            const el = document.getElementById(id);
+            if (el) {
+                z.innerText = el.innerText;
+                z.setAttribute('data-user-ans', id);
+                z.classList.add('filled');
+            }
+        });
+    });
+
+    // Check Answers Function
+    function checkAll() {
+        let totalQuestions = 10;
+        let correctQuestions = 0;
+
+        for (let i = 1; i <= totalQuestions; i++) {
+            // Select all drop zones within the specific exercise
+            let zones = document.querySelectorAll(`.exercise[data-id="${i}"] .drop-zone`);
+            let isQCorrect = true;
+            
+            zones.forEach(z => {
+                const userVal = z.getAttribute('data-user-ans');
+                const correctVal = z.getAttribute('data-ans');
+                
+                if (userVal === correctVal) {
+                    z.classList.add('correct');
+                    z.classList.remove('wrong');
+                } else {
+                    z.classList.add('wrong');
+                    z.classList.remove('correct');
+                    isQCorrect = false;
+                }
+            });
+
+            if (isQCorrect) correctQuestions++;
+        }
+
+        // Update scoreboard with correct template literal syntax
+        document.getElementById('scoreboard').innerText = `Score: ${correctQuestions} / 10`;
+        
+        if(correctQuestions === 10) {
+            alert("Excellent! All aviation queries are logically sound.");
+        } else {
+            alert(`Review required. You got ${correctQuestions} out of 10 correctly solved.`);
+        }
+    }
+</script>
+
+</body>
+</html>
