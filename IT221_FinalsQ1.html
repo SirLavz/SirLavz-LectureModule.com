@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,32 +7,27 @@
         :root { --primary: #2c3e50; --accent: #3498db; --danger: #c0392b; --success: #27ae60; }
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333; user-select: none; }
         .container { max-width: 1000px; margin: auto; }
-        
         .sticky-header { position: sticky; top: 0; z-index: 100; background: var(--primary); color: white; padding: 15px 30px; border-radius: 0 0 8px 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .timer-box { font-size: 1.5em; font-weight: bold; font-family: 'Courier New', monospace; background: rgba(0,0,0,0.3); padding: 5px 15px; border-radius: 5px; }
         .timer-low { color: #ff4757; animation: blink 1s infinite; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-
         #security-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; color: white; text-align: center; padding-top: 200px; }
         .warning-box { background: var(--danger); padding: 30px; display: inline-block; border-radius: 8px; }
-
         .schema { background: white; border-left: 5px solid var(--accent); padding: 20px; border-radius: 8px; margin: 20px 0; font-family: monospace; font-size: 0.9em; }
         .quiz-card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .section-header { background: #e9ecef; padding: 10px; border-radius: 4px; font-weight: bold; margin: 30px 0 10px 0; color: var(--primary); font-size: 0.9em; }
         .q-title { font-weight: bold; display: block; margin-bottom: 10px; }
-        input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Consolas', monospace; box-sizing: border-box; }
+        input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Consolas', monospace; box-sizing: border-box; margin-bottom: 5px; }
         .sym-btn { background: #eee; border: 1px solid #ccc; padding: 5px 10px; cursor: pointer; margin: 0 5px 10px 0; border-radius: 3px; font-weight: bold; }
-        
         #cert-wrap { display: none; justify-content: center; padding: 40px 0; }
         .cert { width: 850px; padding: 40px; background: white; border: 15px solid var(--primary); text-align: center; font-family: 'Georgia', serif; position: relative; }
         .cert-inner { border: 2px solid #c5a059; padding: 40px; }
         .score-stamp { position: absolute; top: 50px; right: 60px; border: 4px double var(--danger); color: var(--danger); padding: 10px; transform: rotate(15deg); font-weight: bold; font-family: sans-serif; }
-        
         @media print {
-            body { background: white; padding: 0; margin: 0; }
-            .sticky-header, .schema, .quiz-card, #quiz-area, #submit-btn, .header, #security-overlay, #print-btn, .section-header { display: none !important; }
-            #cert-wrap { display: flex !important; margin: 0; padding: 0; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
-            .cert { border: 10px solid #2c3e50; box-shadow: none; width: 100%; }
+            body { background: white; padding: 0; }
+            .sticky-header, .schema, .quiz-card, #quiz-area, #submit-btn, #security-overlay, #print-btn, .section-header { display: none !important; }
+            #cert-wrap { display: flex !important; position: absolute; top: 0; left: 0; width: 100%; }
+            .cert { border: 10px solid #2c3e50; width: 100%; }
         }
     </style>
 </head>
@@ -48,7 +43,7 @@
 </div>
 
 <div class="sticky-header">
-    <div><strong>DATABASE ASSESSMENT</strong> | High-Stakes Proctored</div>
+    <div><strong>DATABASE ASSESSMENT</strong> | Proctored Exam</div>
     <div class="timer-box" id="timer-display">30:00</div>
 </div>
 
@@ -63,41 +58,41 @@
 
     <div class="quiz-card">
         <label><b>Candidate Name:</b></label>
-        <input type="text" id="student-name" placeholder="Enter name for certificate generation">
+        <input type="text" id="student-name" placeholder="Full name for certificate">
     </div>
 
     <div id="quiz-area">
-        <div class="section-header">Section A: Selection (&sigma;)</div>
+        <div class="section-header">Section A: Selection (σ) - Rows</div>
         
         <div class="quiz-card" data-sql="SELECT * FROM Customers WHERE StateProvince != 'California' OR Country = 'Canada'" data-ra="σ StateProvince <> 'California' ∨ Country = 'Canada' (Customers)">
-            <span class="q-title">1. Customers who are NOT in 'California' OR from 'Canada'.</span>
+            <span class="q-title">1. Find customers who are NOT in 'California' OR from 'Canada'.</span>
             <input type="text" class="sql-in" placeholder="SQL Statement">
             <div class="sym-bar"><button class="sym-btn" onclick="as(this,'σ')">σ</button><button class="sym-btn" onclick="as(this,'∨')">∨</button><button class="sym-btn" onclick="as(this,'<>')"><></button></div>
             <input type="text" class="ra-in" placeholder="Relational Algebra">
         </div>
 
         <div class="quiz-card" data-sql="SELECT * FROM Products WHERE Price < 5.00 AND UnitsInStock > 50" data-ra="σ Price < 5.00 ∧ UnitsInStock > 50 (Products)">
-            <span class="q-title">2. Products with Price < 5.00 and Stock > 50.</span>
+            <span class="q-title">2. Find products with Price < 5.00 AND UnitsInStock > 50.</span>
             <input type="text" class="sql-in"><input type="text" class="ra-in">
         </div>
 
         <div class="quiz-card" data-sql="SELECT * FROM Orders WHERE (CustomerID = 5 OR CustomerID = 12) AND TotalAmount < 100.00" data-ra="σ (CustomerID = 5 ∨ CustomerID = 12) ∧ TotalAmount < 100.00 (Orders)">
-            <span class="q-title">3. Orders by Customer 5 or 12 with Total < 100.</span>
+            <span class="q-title">3. Find orders by Customer 5 or 12 with TotalAmount < 100.00.</span>
             <input type="text" class="sql-in"><input type="text" class="ra-in">
         </div>
 
         <div class="quiz-card" data-sql="SELECT * FROM OrderDetails WHERE Quantity > 5 AND Discount != 0" data-ra="σ Quantity > 5 ∧ Discount <> 0 (OrderDetails)">
-            <span class="q-title">4. Order details where Quantity > 5 and Discount is not 0.</span>
+            <span class="q-title">4. Find order details with Quantity > 5 and Discount NOT 0.</span>
             <input type="text" class="sql-in"><input type="text" class="ra-in">
         </div>
 
         <div class="quiz-card" data-sql="SELECT * FROM Orders WHERE ShippedDate BETWEEN '2024-09-01' AND '2024-09-30' AND FreightCost > 15.00" data-ra="σ ShippedDate ≥ '2024-09-01' ∧ ShippedDate ≤ '2024-09-30' ∧ FreightCost > 15.00 (Orders)">
-            <span class="q-title">5. Orders shipped in Sept 2024 with Freight > 15.00.</span>
+            <span class="q-title">5. Orders from Sept 2024 with Freight > 15.00.</span>
             <input type="text" class="sql-in"><input type="text" class="ra-in">
         </div>
 
         <div class="quiz-card" data-sql="SELECT * FROM OrderDetails WHERE UnitPrice > 10.00 AND Quantity = 10" data-ra="σ UnitPrice > 10.00 ∧ Quantity = 10 (OrderDetails)">
-            <span class="q-title">6. Order details with Unit Price > 10 and Quantity = 10.</span>
+            <span class="q-title">6. Order details with UnitPrice > 10.00 and Quantity = 10.</span>
             <input type="text" class="sql-in"><input type="text" class="ra-in">
         </div>
 
@@ -106,22 +101,22 @@
             <input type="text" class="sql-in"><input type="text" class="ra-in">
         </div>
 
-        <div class="quiz-card" data-sql="SELECT * FROM Products WHERE Price < 5.00 AND UnitsInStock > 50" data-ra="σ Price < 5.00 ∧ UnitsInStock > 50 (Products)">
-            <span class="q-title">8. Products under $5 with stock over 50.</span>
+        <div class="quiz-card" data-sql="SELECT * FROM Products WHERE Category = 'Electronics' AND UnitsInStock = 0" data-ra="σ Category = 'Electronics' ∧ UnitsInStock = 0 (Products)">
+            <span class="q-title">8. Out of stock Electronics.</span>
             <input type="text" class="sql-in"><input type="text" class="ra-in">
         </div>
 
-        <div class="quiz-card" data-sql="SELECT * FROM Orders WHERE (CustomerID = 5 OR CustomerID = 12) AND TotalAmount < 100.00" data-ra="σ (CustomerID = 5 ∨ CustomerID = 12) ∧ TotalAmount < 100.00 (Orders)">
-            <span class="q-title">9. Orders by ID 5 or 12 with amount < $100.</span>
+        <div class="quiz-card" data-sql="SELECT * FROM Orders WHERE TotalAmount > 500.00 AND FreightCost < 20.00" data-ra="σ TotalAmount > 500.00 ∧ FreightCost < 20.00 (Orders)">
+            <span class="q-title">9. High value orders (>500) with low freight (<20).</span>
             <input type="text" class="sql-in"><input type="text" class="ra-in">
         </div>
 
-        <div class="quiz-card" data-sql="SELECT * FROM OrderDetails WHERE UnitPrice > 10.00 AND Quantity = 10" data-ra="σ UnitPrice > 10.00 ∧ Quantity = 10 (OrderDetails)">
-            <span class="q-title">10. Order details with Unit Price > $10 and Quantity = 10.</span>
+        <div class="quiz-card" data-sql="SELECT * FROM Customers WHERE Country != 'USA' AND City = 'London'" data-ra="σ Country <> 'USA' ∧ City = 'London' (Customers)">
+            <span class="q-title">10. Customers in London, excluding USA.</span>
             <input type="text" class="sql-in"><input type="text" class="ra-in">
         </div>
 
-        <div class="section-header">Section B: Projection (&pi;)</div>
+        <div class="section-header">Section B: Projection (π) - Columns</div>
 
         <div class="quiz-card" data-sql="SELECT FirstName, LastName FROM Customers" data-ra="π FirstName, LastName (Customers)">
             <span class="q-title">11. Select only First and Last names of all customers.</span>
@@ -145,35 +140,35 @@
         </div>
 
         <div class="quiz-card" data-sql="SELECT ProductID, Quantity FROM OrderDetails" data-ra="π ProductID, Quantity (OrderDetails)">
-            <span class="q-title">15. Select only ProductID and Quantity from order details.</span>
+            <span class="q-title">15. Select only ProductID and Quantity from details.</span>
             <input type="text" class="sql-in"><input type="text" class="ra-in">
         </div>
 
-        <div class="section-header">Section C: Combined Logic (&pi; over &sigma;)</div>
+        <div class="section-header">Section C: Combined Logic (π over σ)</div>
 
         <div class="quiz-card" data-sql="SELECT FirstName FROM Customers WHERE City = 'New York'" data-ra="π FirstName (σ City = 'New York' (Customers))">
-            <span class="q-title">16. First Names of customers in 'New York'.</span>
+            <span class="q-title">16. Get First Names of customers in 'New York'.</span>
             <div class="sym-bar"><button class="sym-btn" onclick="as(this,'π')">π</button><button class="sym-btn" onclick="as(this,'σ')">σ</button></div>
             <input type="text" class="sql-in"><input type="text" class="ra-in">
         </div>
 
         <div class="quiz-card" data-sql="SELECT ProductName FROM Products WHERE Price > 100.00" data-ra="π ProductName (σ Price > 100.00 (Products))">
-            <span class="q-title">17. Names of products costing over $100.</span>
+            <span class="q-title">17. Get Names of products costing over $100.</span>
             <input type="text" class="sql-in"><input type="text" class="ra-in">
         </div>
 
         <div class="quiz-card" data-sql="SELECT OrderID FROM Orders WHERE TotalAmount < 50.00" data-ra="π OrderID (σ TotalAmount < 50.00 (Orders))">
-            <span class="q-title">18. Order IDs where the total is less than $50.</span>
+            <span class="q-title">18. Get Order IDs where the total is less than $50.</span>
             <input type="text" class="sql-in"><input type="text" class="ra-in">
         </div>
 
         <div class="quiz-card" data-sql="SELECT LastName FROM Customers WHERE StateProvince != 'California'" data-ra="π LastName (σ StateProvince <> 'California' (Customers))">
-            <span class="q-title">19. Last Names of customers NOT in 'California'.</span>
+            <span class="q-title">19. Get Last Names of customers NOT in 'California'.</span>
             <input type="text" class="sql-in"><input type="text" class="ra-in">
         </div>
 
         <div class="quiz-card" data-sql="SELECT OrderDate FROM Orders WHERE CustomerID = 10" data-ra="π OrderDate (σ CustomerID = 10 (Orders))">
-            <span class="q-title">20. Order Dates for all orders by Customer 10.</span>
+            <span class="q-title">20. Get Order Dates for Customer 10.</span>
             <input type="text" class="sql-in"><input type="text" class="ra-in">
         </div>
     </div>
@@ -184,86 +179,78 @@
 
     <div id="cert-wrap">
         <div class="cert">
-            <div class="score-stamp">FINAL SCORE: <span id="stamp-val">0</span>/40</div>
+            <div class="score-stamp">SCORE: <span id="stamp-val">0</span>/40</div>
             <div class="cert-inner">
-                <h1 style="font-size: 38px; margin: 0;">CERTIFICATE OF COMPLETION</h1>
+                <h1>OFFICIAL CERTIFICATE</h1>
                 <p>Awarded to</p>
-                <div style="font-size:30px; font-weight:bold; border-bottom:2px solid #333; display:inline-block; margin: 10px 0; padding: 0 40px;" id="display-name">Candidate</div>
-                <p>for completing the proctored Database Logic Assessment.</p>
+                <div style="font-size:30px; font-weight:bold; border-bottom:2px solid #333; display:inline-block; margin:10px 0; padding:0 40px;" id="display-name">Candidate</div>
+                <p>For completion of the Proctored Database Assessment.</p>
                 <div style="margin-top:50px; display:flex; justify-content:space-around; font-size:0.8em;">
-                    <div style="border-top:1px solid #333; width:180px; padding-top:5px;">Secure Verification ID</div>
+                    <div style="border-top:1px solid #333; width:180px; padding-top:5px;">System Security Verified</div>
                     <div style="border-top:1px solid #333; width:180px; padding-top:5px;" id="cert-date">Date</div>
                 </div>
             </div>
-            <button id="print-btn" onclick="window.print()" style="margin-top:30px; padding: 12px 25px; background: var(--success); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">PRINT CERTIFICATE</button>
+            <button id="print-btn" onclick="window.print()" style="margin-top:30px; padding:12px 25px; background:var(--success); color:white; border:none; border-radius:4px; cursor:pointer;">PRINT CERTIFICATE</button>
         </div>
     </div>
 </div>
+
 <script>
-    let violations = 3;
+    // LOAD STATE FROM STORAGE (Persistent across refreshes)
+    let timeLeft = parseInt(localStorage.getItem('timeLeft')) || 30 * 60;
+    let violations = parseInt(localStorage.getItem('violations')) || 3;
     let isActive = true;
-    let timeLeft = 30 * 60;
 
-    // 1. FORCED INTERACTION: This ensures the browser activates "beforeunload"
-    document.addEventListener('click', () => {
-        console.log("Security Active");
-    }, { once: true });
-
-    // 2. THE REFRESH BLOCKER
-    window.onbeforeunload = function(e) {
-        if (isActive) {
-            // Standard way to trigger the "Are you sure?" browser dialog
-            const message = "Warning: Refreshing will reset your exam and count as a violation!";
-            e.returnValue = message; 
-            return message;
+    // Save state every second
+    const stateSaver = setInterval(() => {
+        if(isActive) {
+            localStorage.setItem('timeLeft', timeLeft);
+            localStorage.setItem('violations', violations);
         }
+    }, 1000);
+
+    const timerInterval = setInterval(updateTimer, 1000);
+
+    // REFRESH PROTECTION
+    window.onbeforeunload = function() {
+        if(isActive) return "Exam in progress! Your progress will be saved but this counts as leaving the window.";
     };
 
-    // 3. TAB SWITCH DETECTION (PROCTORING)
-    document.addEventListener("visibilitychange", function() {
-        if (document.hidden && isActive) {
-            violations--;
-            document.getElementById('violation-count').innerText = violations;
-            document.getElementById('security-overlay').style.display = "block";
-            
-            if (violations <= 0) {
-                finishExam('violation');
-            }
-        }
-    });
-
-    // 4. TIMER LOGIC
-    const timerInterval = setInterval(() => {
+    function updateTimer() {
         if (!isActive) return;
         let mins = Math.floor(timeLeft / 60);
         let secs = timeLeft % 60;
         let display = document.getElementById('timer-display');
         display.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        
         if (timeLeft <= 300) display.classList.add('timer-low');
         if (timeLeft <= 0) finishExam('timeout');
         timeLeft--;
-    }, 1000);
-
-    // 5. RESUME FUNCTION
-    function resumeQuiz() { 
-        if (violations > 0) {
-            document.getElementById('security-overlay').style.display = "none";
-        }
     }
 
-    // 6. FINISH & SCORE LOGIC
+    document.addEventListener("visibilitychange", function() {
+        if (document.hidden && isActive) {
+            violations--;
+            document.getElementById('violation-count').innerText = violations;
+            document.getElementById('security-overlay').style.display = "block";
+            if (violations <= 0) finishExam('violation');
+        }
+    });
+
+    function resumeQuiz() { if (violations > 0) document.getElementById('security-overlay').style.display = "none"; }
+
+    function as(btn, s) { 
+        let ra = btn.closest('.quiz-card').querySelector('.ra-in');
+        ra.value += s; ra.focus(); 
+    }
+
     function finishExam(reason) {
-        if (!isActive) return;
         isActive = false;
         clearInterval(timerInterval);
+        clearInterval(stateSaver);
+        localStorage.clear(); // Clear cheat-prevention data on submit
 
-        // Remove the refresh block so they can print/save without alerts
-        window.onbeforeunload = null;
-
-        let name = document.getElementById('student-name').value.trim() || "Candidate";
+        let name = document.getElementById('student-name').value.trim() || "Independent Learner";
         let score = 0;
-
         document.querySelectorAll('.quiz-card[data-sql]').forEach(card => {
             let sIn = card.querySelector('.sql-in').value.trim().replace(/;/g, "");
             let rIn = card.querySelector('.ra-in').value.trim();
@@ -274,22 +261,12 @@
         document.getElementById('display-name').innerText = name;
         document.getElementById('stamp-val').innerText = score;
         document.getElementById('cert-date').innerText = new Date().toLocaleDateString();
-        
         document.getElementById('cert-wrap').style.display = "flex";
         document.getElementById('submit-btn').style.display = "none";
         document.getElementById('security-overlay').style.display = "none";
         document.querySelectorAll('input').forEach(i => i.disabled = true);
-        
         window.scrollTo(0, document.body.scrollHeight);
-
-        if(reason === 'timeout') alert("TIME EXPIRED: Your exam has been submitted.");
-        if(reason === 'violation') alert("SECURITY BREACH: Multiple tab switches detected. Auto-submitting.");
-    }
-
-    function as(btn, s) { 
-        let ra = btn.closest('.quiz-card').querySelector('.ra-in');
-        ra.value += s; ra.focus(); 
     }
 </script>
- </body>
+</body>
 </html>
