@@ -1,108 +1,218 @@
- <!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SQL & Relational Algebra Quiz 1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Query Mastery Assessment</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; line-height: 1.6; max-width: 950px; margin: auto; padding: 20px; background-color: #fdfdfd; }
-        .header { background: #2c3e50; color: white; padding: 25px; border-radius: 8px; text-align: center; margin-bottom: 25px; }
-        .instructions { background: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
-        .card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-top: 3px solid #3498db; }
-        .q-text { font-weight: bold; color: #2c3e50; display: block; margin-bottom: 10px; }
-        .solution { display: none; margin-top: 15px; padding: 15px; background: #e8f6f3; border-left: 4px solid #1abc9c; }
-        button { background: #3498db; color: white; border: none; padding: 8px 18px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        code { color: #d63031; font-weight: bold; font-family: 'Consolas', monospace; }
-        .table-tag { font-size: 0.75em; text-transform: uppercase; color: #95a5a6; font-weight: bold; }
+        :root { --primary: #2c3e50; --secondary: #3498db; --success: #27ae60; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: 0 auto; padding: 20px; background-color: var(--bg); }
+        
+        /* Header & Instructions */
+        .header { background: var(--primary); color: white; padding: 30px; border-radius: 8px; text-align: center; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .instructions { background: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-bottom: 25px; border-radius: 4px; font-size: 0.95em; }
+        
+        /* Schema Box */
+        .schema-box { background: white; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 30px; font-family: 'Courier New', monospace; border-left: 5px solid var(--secondary); }
+        
+        /* Quiz Cards */
+        .quiz-card { background: white; padding: 25px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .q-title { font-weight: bold; color: var(--primary); font-size: 1.1em; display: block; margin-bottom: 15px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.8em; font-weight: bold; color: #7f8c8d; margin-bottom: 5px; }
+        input[type="text"] { width: 100%; padding: 12px; border: 1px solid #bdc3c7; border-radius: 4px; font-family: 'Consolas', 'Courier New', monospace; box-sizing: border-box; font-size: 1em; }
+        .symbol-bar { margin-bottom: 8px; }
+        .sym-btn { background: #ecf0f1; border: 1px solid #bdc3c7; padding: 5px 12px; cursor: pointer; border-radius: 4px; font-weight: bold; margin-right: 5px; transition: 0.2s; }
+        .sym-btn:hover { background: #dcdde1; }
+
+        /* Scoring & Buttons */
+        .action-area { text-align: center; margin: 40px 0; }
+        .submit-btn { background: var(--primary); color: white; border: none; padding: 18px 60px; font-size: 1.2em; border-radius: 50px; cursor: pointer; transition: 0.3s; font-weight: bold; }
+        .submit-btn:hover { background: #1a252f; transform: translateY(-2px); }
+        #score-display { display: none; background: var(--success); color: white; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 30px; font-size: 1.8em; }
+
+        /* Certificate Styles */
+        #certificate-wrapper { display: none; justify-content: center; margin-top: 50px; padding-bottom: 100px; }
+        .certificate { width: 800px; padding: 40px; background: white; border: 15px solid var(--primary); position: relative; text-align: center; font-family: 'Georgia', serif; box-shadow: 0 0 30px rgba(0,0,0,0.2); }
+        .cert-inner { border: 2px solid #c5a059; padding: 40px; height: 100%; }
+        .cert-title { font-size: 45px; color: var(--primary); margin: 0; }
+        .cert-name { font-size: 35px; font-weight: bold; border-bottom: 2px solid var(--primary); display: inline-block; margin: 25px 0; padding: 0 40px; min-width: 300px; }
+        .cert-footer { display: flex; justify-content: space-between; margin-top: 60px; }
+        .sig { border-top: 1px solid #333; width: 200px; font-size: 0.8em; padding-top: 5px; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #certificate-wrapper, #certificate-wrapper * { visibility: visible; }
+            #certificate-wrapper { position: absolute; left: 0; top: 0; display: flex !important; }
+        }
     </style>
 </head>
 <body>
 
+<div id="quiz-ui">
     <div class="header">
-        <h1>Interactive Database Query Quiz</h1>
-        <p>Selection (&sigma;) and Projection (&pi;) Practice</p>
+        <h1>SQL & Relational Algebra Assessment</h1>
+        <p>Mastering Selection (&sigma;) and Projection (&pi;)</p>
     </div>
 
     <div class="instructions">
-        <strong>How to Play:</strong> Read the query requirement, draft your SQL and Algebra on a piece of paper, then click the button to reveal the answer. 
-        Note: SQL uses <code>!=</code> and Algebra uses <code><></code> for inequality.
+        <strong>Assessment Directions:</strong><br>
+        1. Identify the target table and logic. 2. In <b>SQL</b>, use <code>!=</code> for not equal. 3. In <b>Algebra</b>, use <code>&lt;&gt;</code> for not equal. 4. Use the symbol buttons to ensure correct notation. 5. Achieve 20/20 to unlock your certificate.
     </div>
 
-    <div class="card">
-        <span class="table-tag">Source: Customers</span>
-        <span class="q-text">1. Find customers who are NOT in 'California' OR have a country of 'Canada'.</span>
-        <button onclick="toggle(this)">Show Solution</button>
-        <div class="solution">
-            <strong>SQL:</strong> <code>SELECT * FROM Customers WHERE StateProvince <> 'California' OR Country = 'Canada';</code><br>
-            <strong>Algebra:</strong> &sigma;<sub>StateProvince <> 'California' &or; Country = 'Canada'</sub>(Customers)
+    <div class="quiz-card">
+        <label>Enter Full Name for Certificate:</label>
+        <input type="text" id="user-name" placeholder="First and Last Name">
+    </div>
+
+    <div class="schema-box">
+        <strong>DATABASE SCHEMA:</strong><br>
+        • Customers(CustomerID, FirstName, LastName, City, StateProvince, Country)<br>
+        • Products(ProductID, ProductName, Category, Price, UnitsInStock)<br>
+        • Orders(OrderID, CustomerID, OrderDate, ShippedDate, TotalAmount, FreightCost)<br>
+        • OrderDetails(OrderDetailID, OrderID, ProductID, Quantity, UnitPrice, Discount)
+    </div>
+
+    <div id="score-display">Final Score: <span id="score-val">0</span> / 20</div>
+
+    <div id="questions-container">
+        <div class="quiz-card" data-sql="SELECT * FROM Customers WHERE StateProvince != 'California' OR Country = 'Canada'" data-ra="σ StateProvince <> 'California' ∨ Country = 'Canada' (Customers)">
+            <span class="q-title">1. Find customers who are NOT in 'California' OR from 'Canada'.</span>
+            <div class="input-group">
+                <label>SQL Statement:</label><input type="text" class="sql-in">
+            </div>
+            <div class="input-group">
+                <label>Relational Algebra:</label>
+                <div class="symbol-bar">
+                    <button class="sym-btn" onclick="addSym(this, 'σ')">σ</button>
+                    <button class="sym-btn" onclick="addSym(this, '∨')">∨</button>
+                    <button class="sym-btn" onclick="addSym(this, '<>')">&lt;&gt;</button>
+                </div>
+                <input type="text" class="ra-in">
+            </div>
+        </div>
+
+        <div class="quiz-card" data-sql="SELECT * FROM Products WHERE Price < 5.00 AND UnitsInStock > 50" data-ra="σ Price < 5.00 ∧ UnitsInStock > 50 (Products)">
+            <span class="q-title">2. Find products with a Price < 5.00 but an UnitsInStock > 50.</span>
+            <div class="input-group"><label>SQL:</label><input type="text" class="sql-in"></div>
+            <div class="input-group"><label>Relational Algebra:</label><div class="symbol-bar"><button class="sym-btn" onclick="addSym(this, 'σ')">σ</button><button class="sym-btn" onclick="addSym(this, '∧')">∧</button></div><input type="text" class="ra-in"></div>
+        </div>
+
+        <div class="quiz-card" data-sql="SELECT * FROM Orders WHERE (CustomerID = 5 OR CustomerID = 12) AND TotalAmount < 100.00" data-ra="σ (CustomerID = 5 ∨ CustomerID = 12) ∧ TotalAmount < 100.00 (Orders)">
+            <span class="q-title">3. Find orders by CustomerID 5 or 12, where TotalAmount < 100.00.</span>
+            <div class="input-group"><label>SQL:</label><input type="text" class="sql-in"></div>
+            <div class="input-group"><label>Relational Algebra:</label><input type="text" class="ra-in"></div>
+        </div>
+
+        <div class="quiz-card" data-sql="SELECT * FROM OrderDetails WHERE Quantity > 5 AND Discount != 0" data-ra="σ Quantity > 5 ∧ Discount <> 0 (OrderDetails)">
+            <span class="q-title">4. Find order details where Quantity > 5 and Discount is NOT 0.</span>
+            <div class="input-group"><label>SQL:</label><input type="text" class="sql-in"></div>
+            <div class="input-group"><label>Relational Algebra:</label><input type="text" class="ra-in"></div>
+        </div>
+
+        <div class="quiz-card" data-sql="SELECT * FROM Orders WHERE ShippedDate BETWEEN '2024-09-01' AND '2024-09-30' AND FreightCost > 15.00" data-ra="σ ShippedDate ≥ '2024-09-01' ∧ ShippedDate ≤ '2024-09-30' ∧ FreightCost > 15.00 (Orders)">
+            <span class="q-title">5. Find orders where ShippedDate is between '2024-09-01' and '2024-09-30' AND FreightCost > 15.00.</span>
+            <div class="input-group"><label>SQL:</label><input type="text" class="sql-in"></div>
+            <div class="input-group"><label>Relational Algebra:</label><div class="symbol-bar"><button class="sym-btn" onclick="addSym(this, 'σ')">σ</button><button class="sym-btn" onclick="addSym(this, '≥')">≥</button><button class="sym-btn" onclick="addSym(this, '≤')">≤</button></div><input type="text" class="ra-in"></div>
+        </div>
+
+        <div class="quiz-card" data-sql="SELECT * FROM OrderDetails WHERE UnitPrice > 10.00 AND Quantity = 10" data-ra="σ UnitPrice > 10.00 ∧ Quantity = 10 (OrderDetails)">
+            <span class="q-title">6. Find order details where Unit Price > 10.00 AND Quantity = 10.</span>
+            <div class="input-group"><label>SQL:</label><input type="text" class="sql-in"></div>
+            <div class="input-group"><label>Relational Algebra:</label><input type="text" class="ra-in"></div>
+        </div>
+
+        <div class="quiz-card" data-sql="SELECT * FROM Customers WHERE City = 'New York' AND CustomerID > 100" data-ra="σ City = 'New York' ∧ CustomerID > 100 (Customers)">
+            <span class="q-title">7. Find customers in 'New York' with an ID greater than 100.</span>
+            <div class="input-group"><label>SQL:</label><input type="text" class="sql-in"></div>
+            <div class="input-group"><label>Relational Algebra:</label><input type="text" class="ra-in"></div>
+        </div>
+
+        <div class="quiz-card" data-sql="SELECT * FROM Products WHERE Price < 5.00 AND UnitsInStock > 50" data-ra="σ Price < 5.00 ∧ UnitsInStock > 50 (Products)">
+            <span class="q-title">8. Find products priced under $5.00 AND stock > 50.</span>
+            <div class="input-group"><label>SQL:</label><input type="text" class="sql-in"></div>
+            <div class="input-group"><label>Relational Algebra:</label><input type="text" class="ra-in"></div>
+        </div>
+
+        <div class="quiz-card" data-sql="SELECT * FROM Orders WHERE (CustomerID = 5 OR CustomerID = 12) AND TotalAmount < 100.00" data-ra="σ (CustomerID = 5 ∨ CustomerID = 12) ∧ TotalAmount < 100.00 (Orders)">
+            <span class="q-title">9. Find orders by Customer ID 5 OR 12, with a Total Amount less than $100.</span>
+            <div class="input-group"><label>SQL:</label><input type="text" class="sql-in"></div>
+            <div class="input-group"><label>Relational Algebra:</label><input type="text" class="ra-in"></div>
+        </div>
+
+        <div class="quiz-card" data-sql="SELECT * FROM OrderDetails WHERE UnitPrice > 10.00 AND Quantity = 10" data-ra="σ UnitPrice > 10.00 ∧ Quantity = 10 (OrderDetails)">
+            <span class="q-title">10. Find order details where Unit Price > $10.00 AND quantity is 10.</span>
+            <div class="input-group"><label>SQL:</label><input type="text" class="sql-in"></div>
+            <div class="input-group"><label>Relational Algebra:</label><input type="text" class="ra-in"></div>
         </div>
     </div>
 
-    <div class="card">
-        <span class="table-tag">Source: Products</span>
-        <span class="q-text">2. Find products with a Price < 5.00 but an UnitsInStock > 50.</span>
-        <button onclick="toggle(this)">Show Solution</button>
-        <div class="solution">
-            <strong>SQL:</strong> <code>SELECT * FROM Products WHERE Price < 5.00 AND UnitsInStock > 50;</code><br>
-            <strong>Algebra:</strong> &sigma;<sub>Price < 5.00 &and; UnitsInStock > 50</sub>(Products)
-        </div>
+    <div class="action-area">
+        <button class="submit-btn" onclick="gradeQuiz()">SUBMIT ASSESSMENT</button>
     </div>
+</div>
 
-    <div class="card">
-        <span class="table-tag">Source: Orders</span>
-        <span class="q-text">3. Find orders by CustomerID 5 or 12, where TotalAmount is < 100.00.</span>
-        <button onclick="toggle(this)">Show Solution</button>
-        <div class="solution">
-            <strong>SQL:</strong> <code>SELECT * FROM Orders WHERE (CustomerID = 5 OR CustomerID = 12) AND TotalAmount < 100.00;</code><br>
-            <strong>Algebra:</strong> &sigma;<sub>(CustomerID = 5 &or; CustomerID = 12) &and; TotalAmount < 100</sub>(Orders)
+<div id="certificate-wrapper">
+    <div class="certificate">
+        <div class="cert-inner">
+            <p style="font-style: italic; font-size: 20px;">This Certifies That</p>
+            <div class="cert-name" id="cert-name-field">Student Name</div>
+            <p style="font-size: 20px;">Has achieved mastery in</p>
+            <h1 class="cert-title">DATABASE QUERY LOGIC</h1>
+            <p style="margin: 20px 0; font-size: 18px;">SQL Implementation & Relational Algebra Theory</p>
+            <div class="cert-footer">
+                <div class="sig">Assessment Verified</div>
+                <div style="font-weight: bold; color: #c5a059;">SEAL OF EXCELLENCE</div>
+                <div class="sig">Date Issued</div>
+            </div>
         </div>
+        <button onclick="window.print()" style="margin-top: 20px; cursor:pointer;" id="print-hide">Print Certificate</button>
     </div>
+</div>
 
-    <div class="card">
-        <span class="table-tag">Source: OrderDetails</span>
-        <span class="q-text">4. Find order details where Quantity > 5 and the Discount is NOT 0.</span>
-        <button onclick="toggle(this)">Show Solution</button>
-        <div class="solution">
-            <strong>SQL:</strong> <code>SELECT * FROM OrderDetails WHERE Quantity > 5 AND Discount != 0;</code><br>
-            <strong>Algebra:</strong> &sigma;<sub>Quantity > 5 &and; Discount <> 0</sub>(OrderDetails)
-        </div>
-    </div>
+<script>
+    function addSym(btn, sym) {
+        const input = btn.closest('.input-group').querySelector('input');
+        input.value += sym;
+        input.focus();
+    }
 
-    <div class="card">
-        <span class="table-tag">Source: Orders</span>
-        <span class="q-text">5. Find orders where ShippedDate is BETWEEN '2024-09-01' and '2024-09-30' AND FreightCost > 15.00.</span>
-        <button onclick="toggle(this)">Show Solution</button>
-        <div class="solution">
-            <strong>SQL:</strong> <code>SELECT * FROM Orders WHERE ShippedDate BETWEEN '2024-09-01' AND '2024-09-30' AND FreightCost > 15.00;</code><br>
-            <strong>Algebra:</strong> &sigma;<sub>ShippedDate &ge; '2024-09-01' &and; ShippedDate &le; '2024-09-30' &and; FreightCost > 15</sub>(Orders)
-        </div>
-    </div>
+    function gradeQuiz() {
+        const name = document.getElementById('user-name').value.trim();
+        if(!name) { alert("Please enter your name first."); return; }
+        
+        if(!confirm("Submit final answers? Score will be locked.")) return;
 
-    <div class="card">
-        <span class="table-tag">Source: OrderDetails</span>
-        <span class="q-text">6. Find order details where Unit Price > 10.00 AND Quantity is 10.</span>
-        <button onclick="toggle(this)">Show Solution</button>
-        <div class="solution">
-            <strong>SQL:</strong> <code>SELECT * FROM OrderDetails WHERE UnitPrice > 10.00 AND Quantity = 10;</code><br>
-            <strong>Algebra:</strong> &sigma;<sub>UnitPrice > 10.00 &and; Quantity = 10</sub>(OrderDetails)
-        </div>
-    </div>
+        let score = 0;
+        const cards = document.querySelectorAll('.quiz-card[data-sql]');
+        
+        cards.forEach(card => {
+            const sqlIn = card.querySelector('.sql-in').value.trim().replace(/;/g, "");
+            const raIn = card.querySelector('.ra-in').value.trim();
+            
+            if(sqlIn.toLowerCase() === card.getAttribute('data-sql').toLowerCase()) score++;
+            if(raIn === card.getAttribute('data-ra')) score++;
+        });
 
-    <div class="card">
-        <span class="table-tag">Source: Customers</span>
-        <span class="q-text">7. Find customers in 'New York' with an ID greater than 100.</span>
-        <button onclick="toggle(this)">Show Solution</button>
-        <div class="solution">
-            <strong>SQL:</strong> <code>SELECT * FROM Customers WHERE City = 'New York' AND CustomerID > 100;</code><br>
-            <strong>Algebra:</strong> &sigma;<sub>City = 'New York' &and; CustomerID > 100</sub>(Customers)
-        </div>
-    </div>
+        // Update Score Display
+        document.getElementById('score-val').innerText = score;
+        document.getElementById('score-display').style.display = "block";
+        window.scrollTo(0,0);
 
-    <script>
-        function toggle(btn) {
-            const sol = btn.nextElementSibling;
-            sol.style.display = (sol.style.display === "block") ? "none" : "block";
-            btn.innerText = (sol.style.display === "block") ? "Hide Answer" : "Show Solution";
+        // Lock UI
+        document.querySelectorAll('input').forEach(i => i.disabled = true);
+        document.querySelector('.submit-btn').style.display = "none";
+
+        // Show Certificate if score is high (Pass mark: 100%)
+        if(score >= 20) {
+            document.getElementById('cert-name-field').innerText = name;
+            document.getElementById('certificate-wrapper').style.display = "flex";
+            alert("Perfect Score! Your certificate has been generated at the bottom.");
+        } else {
+            alert("Score: " + score + "/20. You need 20/20 to earn the certificate. Review your logic and try again!");
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>
