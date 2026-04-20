@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SirLavz Exam Portal - Secure Session</title>
+    <title>SirLavz Exam Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
@@ -14,68 +14,70 @@
     <style>
         body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; -webkit-user-select: none; }
         
-        .main-container { display: flex; flex-direction: column; gap: 20px; padding: 15px; max-width: 1200px; margin: auto; }
+        /* Fixed: Adjusted padding and width for mobile responsiveness */
+        .main-container { display: flex; flex-direction: column; gap: 20px; padding: 10px; max-width: 1450px; margin: auto; }
 
-        .quiz-card { border-radius: 15px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.1); min-height: 500px; background: white; padding: 20px; z-index: 1; position: relative; }
+        @media (min-width: 992px) {
+            .main-container { flex-direction: row; padding: 25px; }
+            .quiz-card { flex: 1; }
+            .proctor-panel { width: 360px; position: sticky; top: 20px; height: fit-content; }
+        }
+
+        .quiz-card { border-radius: 15px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.1); min-height: 400px; background: white; padding: 20px; width: 100%; }
         .header-accent { border-top: 5px solid #004a99; border-radius: 15px 15px 0 0; }
         
         .option-btn { text-align: left; margin-bottom: 10px; border: 2px solid #edf2f7; transition: 0.2s; padding: 15px; width: 100%; background: white; border-radius: 12px; font-size: 1rem; display: flex; align-items: center; }
         .option-btn:hover { border-color: #004a99; background-color: #f0f7ff; }
         .selected-opt { background-color: #e6f0ff !important; border-color: #004a99 !important; color: #004a99 !important; font-weight: 600; }
 
-        /* FLOATING PROCTOR PANEL */
-        .proctor-panel { 
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 280px;
-            background: white; 
-            border-radius: 15px; 
-            padding: 12px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-            z-index: 2000;
-            border: 2px solid #004a99;
+        /* Fixed: Floating Proctor Panel for Mobile */
+        @media (max-width: 991px) {
+            .proctor-panel { 
+                position: fixed; 
+                bottom: 10px; 
+                right: 10px; 
+                width: 150px; 
+                z-index: 1000; 
+                padding: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            }
+            .log-box, .proctor-header-text { display: none; } /* Hide logs on small mobile screens */
         }
+
+        .proctor-panel { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        video { width: 100%; border-radius: 10px; transform: scaleX(-1); background: #2d3748; }
         
-        video { width: 100%; border-radius: 8px; transform: scaleX(-1); background: #2d3748; }
-        
-        .log-box { height: 100px; overflow-y: auto; background: #f8fafc; border-radius: 8px; padding: 8px; font-size: 0.7rem; margin-top: 10px; border: 1px solid #e2e8f0; color: #64748b; }
+        .log-box { height: 150px; overflow-y: auto; background: #f8fafc; border-radius: 10px; padding: 10px; font-size: 0.75rem; margin-top: 15px; border: 1px solid #e2e8f0; }
 
         #violation-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.97); color: white; z-index: 10001;
+            background: rgba(0,0,0,0.95); color: white; z-index: 10000;
             justify-content: center; align-items: center; flex-direction: column; text-align: center; padding: 20px;
         }
 
-        #rec-indicator { color: #e53e3e; animation: blink 1.5s infinite; display: none; font-weight: bold; font-size: 0.75rem; }
+        #rec-indicator { color: #e53e3e; animation: blink 1.5s infinite; display: none; font-weight: bold; font-size: 0.8rem; }
         @keyframes blink { 50% { opacity: 0; } }
-
-        @media (max-width: 768px) {
-            .proctor-panel { width: 160px; bottom: 10px; right: 10px; padding: 8px; }
-            .log-box { display: none; }
-        }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
 <div id="violation-overlay">
-    <i class="fas fa-exclamation-triangle fa-4x text-danger mb-3"></i>
-    <h2 class="fw-bold">SECURITY VIOLATION</h2>
-    <p class="lead">Window focus lost. This event has been recorded for the instructor.</p>
-    <button class="btn btn-danger px-5 mt-3" onclick="closeViolation()">RETURN TO EXAM</button>
+    <i class="fas fa-lock fa-4x text-danger mb-3"></i>
+    <h2 class="fw-bold">SECURITY ALERT</h2>
+    <p class="lead">Tab switching is strictly prohibited.</p>
+    <button class="btn btn-danger px-5 mt-3" onclick="closeViolation()">I AGREE & CONTINUE</button>
 </div>
 
 <div class="main-container">
     <div class="card quiz-card header-accent">
         <div id="setup-screen" class="text-center py-4">
             <img src="lulogo.png" width="60px" height="60px" alt="Logo" class="mb-3"> 
-            <h2 class="fw-bold h3">National Aviation Academy of the Philippines</h2>
+            <h2 class="fw-bold h3">NAAP</h2>
             <h5 class="text-muted mb-4">Institute of Computer Studies</h5>
             <div class="p-4 mx-auto border rounded shadow-sm" style="max-width: 450px; background: #fff;">
-                <p class="small text-uppercase fw-bold text-primary mb-3">IT 121 - Networking 1 Final Exam</p>
-                <div class="alert alert-info py-2 small"><i class="fas fa-info-circle me-1"></i> Screen and Camera permissions are required.</div>
-                <input type="text" id="student-name" class="form-control mb-3" placeholder="Full Name (Last Name, First Name)" required>
-                <input type="text" id="student-id" class="form-control mb-4" placeholder="Student ID Number" required>
+                <p class="small text-uppercase fw-bold text-primary mb-3">IT 121 - Networking 1</p>
+                <input type="text" id="student-name" class="form-control mb-3" placeholder="Full Name" required>
+                <input type="text" id="student-id" class="form-control mb-4" placeholder="Student ID" required>
                 <button class="btn btn-primary btn-lg w-100 shadow" onclick="startSecureExam()">Enter Examination Room</button>
             </div>
         </div>
@@ -83,11 +85,9 @@
         <div id="exam-area" class="d-none">
             <div class="d-flex justify-content-between align-items-end mb-3">
                 <div>
-                    <h5 class="mb-0 text-primary fw-bold">Final Examination: IT 121</h5>
-                    <small class="text-muted">Instructor: Ronald T. Lava, MSIT</small>
+                    <h5 class="mb-0 text-primary fw-bold">IT 121 Final Exam</h5>
                 </div>
                 <div class="text-end">
-                    <span id="violation-badge" class="badge bg-danger d-none mb-1">Violation Logged</span><br>
                     <span id="progress-text" class="badge bg-dark px-3 py-2">Question 1/45</span>
                 </div>
             </div>
@@ -98,32 +98,24 @@
                 <div id="options-container" class="d-grid gap-1"></div>
             </div>
 
-            <div class="d-flex justify-content-between mt-5 pt-3 border-top">
+            <div class="d-flex justify-content-center gap-3 mt-5 pt-3 border-top">
                 <button class="btn btn-outline-secondary px-4 invisible" id="prev-btn" onclick="prevQuestion()">Back</button>
-                <button id="next-btn" class="btn btn-primary px-5 shadow" onclick="nextQuestion()">Next Question</button>
-                <button id="submit-btn" class="btn btn-success px-5 d-none shadow" onclick="finishExam()">Submit Final Answers</button>
+                <button id="next-btn" class="btn btn-primary px-5 shadow" onclick="nextQuestion()">Next</button>
+                <button id="submit-btn" class="btn btn-success px-5 d-none shadow" onclick="finishExam()">Submit</button>
             </div>
         </div>
 
         <div id="result-area" class="text-center d-none py-4">
-            <div class="mb-3"><i class="fas fa-check-circle fa-4x text-success"></i></div>
-            <h1 class="fw-bold h2">Exam Submitted</h1>
-            <h2 class="display-6 text-primary mb-4">Final Score: <span id="final-score">0</span> / 45</h2>
-            <div class="card mx-auto mb-4 border-0 bg-light" style="max-width: 500px;">
-                <div class="card-body">
-                    <p class="mb-3 small">Session recording is being processed for download.</p>
-                    <button class="btn btn-dark btn-md w-100 mb-2" onclick="generatePDF()">
-                        <i class="fas fa-file-pdf me-2"></i>Download Detailed Report (PDF)
-                    </button>
-                </div>
-            </div>
+            <h1 class="fw-bold h2">Complete</h1>
+            <h2 class="display-6 text-primary mb-4">Score: <span id="final-score">0</span> / 45</h2>
+            <button class="btn btn-dark btn-md px-5" onclick="generatePDF()">Download Report</button>
         </div>
     </div>
 
     <div class="proctor-panel">
-        <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="d-flex justify-content-between align-items-center mb-3">
             <span id="rec-indicator"><i class="fas fa-circle me-1"></i> REC</span>
-            <span class="badge bg-primary" style="font-size: 0.6rem;">ICS PROCTOR</span>
+            <span class="badge bg-primary proctor-header-text">PROCTOR</span>
         </div>
         <video id="webcam" autoplay muted playsinline></video>
         <div class="log-box" id="audit-logs"></div>
@@ -131,97 +123,86 @@
 </div>
 
 <script>
-// Quiz data and variables
+// Data and Logic
 const rawData = [
-    { q: "Which protocol maps a domain name (www.google.com) to an IP address?", o: ["HTTP", "DNS", "FTP", "SMTP"], a: 1, r: "DNS acts as the phonebook of the internet.", s: 1 },
-    { q: "Which layer in TCP/IP combines OSI layers 5, 6, and 7?", o: ["Transport", "Internet", "Application", "Network Access"], a: 2, r: "TCP/IP's Application layer handles Session, Presentation, and Application functions.", s: 1 },
-    { q: "Primary role of the Application Layer?", o: ["Physical connection", "Services to end-user", "Error correction", "Routing"], a: 1, r: "It provides network services directly to software applications.", s: 1 },
-    { q: "Protocol for sending email from client to server?", o: ["POP3", "IMAP", "SMTP", "SNMP"], a: 2, r: "SMTP is for outgoing mail transfer.", s: 1 },
-    { q: "Which is NOT an Application layer function?", o: ["File transfer", "Email", "Data encryption", "Packet fragmentation"], a: 3, r: "Fragmentation happens at lower layers (Transport/Network).", s: 1 },
-    { q: "What is TFTP?", o: ["Secure FTP", "Simple UDP-based transfer", "Local cache protocol", "TCP-based tech protocol"], a: 1, r: "Trivial File Transfer Protocol uses UDP for simplicity.", s: 1 },
+    { q: "Which protocol maps a domain name (www.google.com) to an IP address?", o: ["HTTP", "DNS", "FTP", "SMTP"], a: 1, r: "DNS acts as the phonebook.", s: 1 },
+    { q: "Which layer in TCP/IP combines OSI layers 5, 6, and 7?", o: ["Transport", "Internet", "Application", "Network Access"], a: 2, r: "TCP/IP Application layer combines these.", s: 1 },
+    { q: "Primary role of the Application Layer?", o: ["Physical connection", "Services to end-user", "Error correction", "Routing"], a: 1, r: "Provides network services to software.", s: 1 },
+    { q: "Protocol for sending email from client to server?", o: ["POP3", "IMAP", "SMTP", "SNMP"], a: 2, r: "SMTP is for outgoing mail.", s: 1 },
+    { q: "Which is NOT an Application layer function?", o: ["File transfer", "Email", "Data encryption", "Packet fragmentation"], a: 3, r: "Fragmentation happens at lower layers.", s: 1 },
+    { q: "What is TFTP?", o: ["Secure FTP", "Simple UDP-based transfer", "Local cache protocol", "TCP-based tech protocol"], a: 1, r: "Trivial File Transfer Protocol uses UDP.", s: 1 },
     { q: "Which allows mailbox syncing across devices?", o: ["POP3", "SMTP", "IMAP", "HTTP"], a: 2, r: "IMAP syncs the mailbox on the server.", s: 1 },
-    { q: "Standard Port for HTTP?", o: ["21", "25", "53", "80"], a: 3, r: "Port 80 is the default for HTTP.", s: 1 },
-    { q: "Protocol for managing network devices?", o: ["TELNET", "SNMP", "DHCP", "FTP"], a: 1, r: "Simple Network Management Protocol monitors devices.", s: 1 },
-    { q: "What is the PDU at the Application Layer?", o: ["Segment", "Packet", "Frame", "Data/Message"], a: 3, r: "Segments (L4), Packets (L3), Frames (L2), Data (L7).", s: 1 },
+    { q: "Standard Port for HTTP?", o: ["21", "25", "53", "80"], a: 3, r: "Port 80 is default.", s: 1 },
+    { q: "Protocol for managing network devices?", o: ["TELNET", "SNMP", "DHCP", "FTP"], a: 1, r: "SNMP monitors devices.", s: 1 },
+    { q: "What is the PDU at the Application Layer?", o: ["Segment", "Packet", "Frame", "Data/Message"], a: 3, r: "PDU is Data/Message.", s: 1 },
     { q: "Layer immediately below Application?", o: ["Session", "Presentation", "Transport", "Data Link"], a: 1, r: "Presentation is Layer 6.", s: 1 },
-    { q: "Which is 'stateful'?", o: ["HTTP", "FTP", "DNS", "IP"], a: 1, r: "FTP maintains an active session state.", s: 1 },
-    { q: "Standard for secure web browsing?", o: ["HTTP 1.1", "HTTP 2.0", "HTTPS", "SSL-Only"], a: 2, r: "HTTPS uses SSL/TLS encryption.", s: 1 },
-    { q: "Remote login protocol (unencrypted)?", o: ["SNMP", "TELNET", "SMTP", "POP3"], a: 1, r: "Telnet provides remote terminal access.", s: 1 },
-    { q: "Directory Services provide?", o: ["Local storage", "Global resource info", "Data compression", "Encryption"], a: 1, r: "It provides access to a database of network objects.", s: 1 },
-    { q: "Primary Transport Layer responsibility?", o: ["Node-to-node", "Host-to-host", "Process-to-process", "Bit-to-bit"], a: 2, r: "L4 ensures data reaches the specific application process.", s: 2 },
+    { q: "Which is 'stateful'?", o: ["HTTP", "FTP", "DNS", "IP"], a: 1, r: "FTP maintains session state.", s: 1 },
+    { q: "Standard for secure web browsing?", o: ["HTTP 1.1", "HTTP 2.0", "HTTPS", "SSL-Only"], a: 2, r: "HTTPS uses SSL/TLS.", s: 1 },
+    { q: "Remote login protocol (unencrypted)?", o: ["SNMP", "TELNET", "SMTP", "POP3"], a: 1, r: "Telnet provides remote access.", s: 1 },
+    { q: "Directory Services provide?", o: ["Local storage", "Global resource info", "Data compression", "Encryption"], a: 1, r: "Access to network objects database.", s: 1 },
+    { q: "Primary Transport Layer responsibility?", o: ["Node-to-node", "Host-to-host", "Process-to-process", "Bit-to-bit"], a: 2, r: "Ensures data reaches specific application process.", s: 2 },
     { q: "Address used by Transport Layer?", o: ["IP Address", "MAC Address", "Port Address", "Logic Address"], a: 2, r: "Ports identify specific processes.", s: 2 },
     { q: "TCP Data Unit name?", o: ["Packet", "Frame", "Segment", "Datagram"], a: 2, r: "TCP uses Segments.", s: 2 },
-    { q: "Function preventing receiver overwhelm?", o: ["Error Control", "Flow Control", "Segmentation", "Routing"], a: 1, r: "Flow control manages the speed of data.", s: 2 },
-    { q: "Connectionless L4 protocol?", o: ["TCP", "UDP", "IP", "HTTP"], a: 1, r: "UDP is connectionless and faster.", s: 2 },
-    { q: "Mechanism for TCP connection?", o: ["2-way handshake", "3-way handshake", "Windowing", "Checksum"], a: 1, r: "TCP uses SYN, SYN-ACK, ACK.", s: 2 },
-    { q: "Transport Layer is called?", o: ["The Brain", "The Heart of OSI", "The Physical Link", "The User Face"], a: 1, r: "It bridges user and network-oriented layers.", s: 2 },
-    { q: "Reliability in TCP means?", o: ["Encrypted data", "Retransmission of loss", "Fastest speed", "No headers"], a: 1, r: "TCP retransmits segments that are not acknowledged.", s: 2 },
-    { q: "VOIP usually uses?", o: ["TCP", "UDP", "FTP", "SMTP"], a: 1, r: "UDP is better for real-time low-latency traffic.", s: 2 },
-    { q: "Port address size?", o: ["32 bits", "48 bits", "16 bits", "128 bits"], a: 2, r: "Ports are 16-bit numbers (0-65535).", s: 2 },
-    { q: "Phases of connection-oriented service?", o: ["Route/Switch", "Establish/Transfer/Release", "Segment/Frame", "Encrypt/Compress"], a: 1, r: "Standard TCP lifecycle.", s: 2 },
+    { q: "Function preventing receiver overwhelm?", o: ["Error Control", "Flow Control", "Segmentation", "Routing"], a: 1, r: "Flow control manages speed.", s: 2 },
+    { q: "Connectionless L4 protocol?", o: ["TCP", "UDP", "IP", "HTTP"], a: 1, r: "UDP is connectionless.", s: 2 },
+    { q: "Mechanism for TCP connection?", o: ["2-way handshake", "3-way handshake", "Windowing", "Checksum"], a: 1, r: "TCP uses 3-way handshake.", s: 2 },
+    { q: "Transport Layer is called?", o: ["The Brain", "The Heart of OSI", "The Physical Link", "The User Face"], a: 1, r: "It bridges user/network layers.", s: 2 },
+    { q: "Reliability in TCP means?", o: ["Encrypted data", "Retransmission of loss", "Fastest speed", "No headers"], a: 1, r: "TCP retransmits lost segments.", s: 2 },
+    { q: "VOIP usually uses?", o: ["TCP", "UDP", "FTP", "SMTP"], a: 1, r: "UDP is better for real-time.", s: 2 },
+    { q: "Port address size?", o: ["32 bits", "48 bits", "16 bits", "128 bits"], a: 2, r: "Ports are 16-bit.", s: 2 },
+    { q: "Phases of connection-oriented service?", o: ["Route/Switch", "Establish/Transfer/Release", "Segment/Frame", "Encrypt/Compress"], a: 1, r: "TCP lifecycle.", s: 2 },
     { q: "Layer above Transport?", o: ["Network", "Session", "Presentation", "Application"], a: 1, r: "Session is Layer 5.", s: 2 },
-    { q: "Multiplexing at L4 involves?", o: ["Sharing wires", "Multiple processes via ports", "Multiple paths", "Bit coding"], a: 1, r: "It allows many apps to share one network connection.", s: 2 },
-    { q: "UDP Header characteristic?", o: ["Complex", "Heavyweight", "Low overhead", "Error-correcting"], a: 2, r: "UDP is simple and fast due to low overhead.", s: 2 },
-    { q: "Transport layer error control is?", o: ["Hop-by-hop", "End-to-end", "Not possible", "Only for headers"], a: 1, r: "L4 checks integrity between the source and destination processes.", s: 2 },
-    { q: "Test end-to-end connectivity?", o: ["ipconfig", "ping", "netstat", "nslookup"], a: 1, r: "Ping uses ICMP to check reachability.", s: 3 },
-    { q: "Ping works by IP but not domain name?", o: ["DHCP error", "DNS error", "HTTP error", "ARP error"], a: 1, r: "DNS is failing to resolve the name.", s: 3 },
-    { q: "List hops to destination?", o: ["tracert", "ipconfig /all", "ping -t", "nmap"], a: 0, r: "Traceroute maps the path across routers.", s: 3 },
-    { q: "Firewall primary purpose?", o: ["Speed", "Traffic control/security", "DHCP", "Backups"], a: 1, r: "It filters traffic based on security rules.", s: 3 },
-    { q: "Secure tunnel protocol?", o: ["FTP", "HTTP", "VPN", "Telnet"], a: 2, r: "VPNs provide encrypted tunnels.", s: 3 },
-    { q: "Bottom-Up troubleshooting starts at?", o: ["Application", "Physical", "Network", "Reboot"], a: 1, r: "L1 (Hardware/Cables) is checked first.", s: 3 },
-    { q: "IP Conflict symptom?", o: ["Fast fan", "Intermittent/No access", "Slow browser", "No email"], a: 1, r: "Two devices cannot share one IP reliably.", s: 3 },
-    { q: "Malware that encrypts and demands money?", o: ["Spyware", "Ransomware", "Adware", "Worm"], a: 1, r: "Ransomware locks files for payment.", s: 3 },
-    { q: "Social engineering to steal info?", o: ["Phishing", "Traceroute", "DOS", "Switching"], a: 0, r: "Phishing uses bait to trick users.", s: 3 },
-    { q: "First step in troubleshooting?", o: ["Theory", "Identify problem", "Implement", "Document"], a: 1, r: "You must define what is broken first.", s: 3 },
-    { q: "IDS purpose?", o: ["Block countries", "Detect/Alert suspicious activity", "Speed", "Repair DB"], a: 1, r: "Intrusion Detection monitors and alerts.", s: 3 },
-    { q: "NIC light is off means?", o: ["Virus", "Physical Layer issue", "Wrong password", "DNS down"], a: 1, r: "No link light indicates a hardware/cable disconnect.", s: 3 },
-    { q: "Strong password policy?", o: ["Birthdate", "Length + Complexity", "password123", "Shared"], a: 1, r: "Complexity prevents easy cracking.", s: 3 },
-    { q: "DoS attack goal?", o: ["Theft", "Service unavailability", "Password guessing", "Hardware upgrade"], a: 1, r: "Denial of Service floods resources.", s: 3 },
-    { q: "Traceroute 'Time Exceeded' means?", o: ["Device off", "TTL reached zero", "Slow internet", "Maintenance"], a: 1, r: "Routers drop packets when TTL is 0.", s: 3 }
+    { q: "Multiplexing at L4 involves?", o: ["Sharing wires", "Multiple processes via ports", "Multiple paths", "Bit coding"], a: 1, r: "Allows many apps to share connection.", s: 2 },
+    { q: "UDP Header characteristic?", o: ["Complex", "Heavyweight", "Low overhead", "Error-correcting"], a: 2, r: "UDP has low overhead.", s: 2 },
+    { q: "Transport layer error control is?", o: ["Hop-by-hop", "End-to-end", "Not possible", "Only for headers"], a: 1, r: "Checks integrity source to destination.", s: 2 },
+    { q: "Test end-to-end connectivity?", o: ["ipconfig", "ping", "netstat", "nslookup"], a: 1, r: "Ping checks reachability.", s: 3 },
+    { q: "Ping works by IP but not domain name?", o: ["DHCP error", "DNS error", "HTTP error", "ARP error"], a: 1, r: "DNS failure.", s: 3 },
+    { q: "List hops to destination?", o: ["tracert", "ipconfig /all", "ping -t", "nmap"], a: 0, r: "Traceroute maps path.", s: 3 },
+    { q: "Firewall primary purpose?", o: ["Speed", "Traffic control/security", "DHCP", "Backups"], a: 1, r: "Filters traffic.", s: 3 },
+    { q: "Secure tunnel protocol?", o: ["FTP", "HTTP", "VPN", "Telnet"], a: 2, r: "VPN provides encrypted tunnels.", s: 3 },
+    { q: "Bottom-Up troubleshooting starts at?", o: ["Application", "Physical", "Network", "Reboot"], a: 1, r: "Check hardware/cables first.", s: 3 },
+    { q: "IP Conflict symptom?", o: ["Fast fan", "Intermittent/No access", "Slow browser", "No email"], a: 1, r: "Two devices cannot share IP.", s: 3 },
+    { q: "Malware that encrypts and demands money?", o: ["Spyware", "Ransomware", "Adware", "Worm"], a: 1, r: "Ransomware locks files.", s: 3 },
+    { q: "Social engineering to steal info?", o: ["Phishing", "Traceroute", "DOS", "Switching"], a: 0, r: "Phishing uses bait.", s: 3 },
+    { q: "First step in troubleshooting?", o: ["Theory", "Identify problem", "Implement", "Document"], a: 1, r: "Define what is broken.", s: 3 },
+    { q: "IDS purpose?", o: ["Block countries", "Detect/Alert suspicious activity", "Speed", "Repair DB"], a: 1, r: "Monitors and alerts.", s: 3 },
+    { q: "NIC light is off means?", o: ["Virus", "Physical Layer issue", "Wrong password", "DNS down"], a: 1, r: "No link light = hardware issue.", s: 3 },
+    { q: "Strong password policy?", o: ["Birthdate", "Length + Complexity", "password123", "Shared"], a: 1, r: "Complexity prevents cracking.", s: 3 },
+    { q: "DoS attack goal?", o: ["Theft", "Service unavailability", "Password guessing", "Hardware upgrade"], a: 1, r: "Floods resources.", s: 3 },
+    { q: "Traceroute 'Time Exceeded' means?", o: ["Device off", "TTL reached zero", "Slow internet", "Maintenance"], a: 1, r: "TTL is 0.", s: 3 }
 ];
 
 const quizData = rawData.sort(() => Math.random() - 0.5);
 let currentIdx = 0, userAnswers = new Array(quizData.length).fill(null);
 let violations = 0, isExamActive = false, mediaRecorder, recordedChunks = [], model;
 
-// SECURITY MONITORING
 function initSecurity() {
     document.addEventListener("visibilitychange", () => {
-        if (document.hidden && isExamActive) triggerViolation("Window Switched/Hidden");
+        if (document.hidden && isExamActive) triggerViolation("Window Hidden");
     });
-    window.onblur = () => { if (isExamActive) triggerViolation("Window Unfocused"); };
 }
 
 function triggerViolation(reason) {
     violations++;
-    logEvent(`ALERT: ${reason}`);
-    document.getElementById('violation-badge').classList.remove('d-none');
     document.getElementById('violation-overlay').style.display = 'flex';
 }
 
 function closeViolation() { document.getElementById('violation-overlay').style.display = 'none'; }
 
-// EXAM ENGINE
 async function startSecureExam() {
     const name = document.getElementById('student-name').value;
     const sid = document.getElementById('student-id').value;
-    if(!name || !sid) { alert("Please enter Student Name and ID."); return; }
+    if(!name || !sid) { alert("Please complete info."); return; }
 
     try {
-        // Request Camera
         const camStream = await navigator.mediaDevices.getUserMedia({ video: true });
         document.getElementById('webcam').srcObject = camStream;
         
-        // REQUEST SCREEN RECORDING OF THE DEVICE
-        const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
+        // Start Screen Recording
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
         mediaRecorder = new MediaRecorder(screenStream);
         mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
         mediaRecorder.start();
-
-        // Screen recording stop listener (manual stop by user)
-        screenStream.getVideoTracks()[0].onended = () => {
-            if(isExamActive) triggerViolation("Screen Recording Stopped by User");
-        };
 
         model = await blazeface.load();
         
@@ -231,39 +212,26 @@ async function startSecureExam() {
         
         isExamActive = true;
         initSecurity();
+        
+        // Fixed: Explicitly trigger the first question load
         showQuestion(); 
+        
         setInterval(monitorFace, 5000);
-        logEvent("Secure Session Initiated");
-    } catch (err) { 
-        alert("Camera and Screen Recording access are mandatory to proceed."); 
-    }
-}
-
-function logEvent(msg) {
-    const log = document.createElement('div');
-    log.className = "mb-1 border-bottom pb-1";
-    log.innerHTML = `<strong>[${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}]</strong> ${msg}`;
-    document.getElementById('audit-logs').prepend(log);
-}
-
-async function monitorFace() {
-    if (!model) return;
-    const predictions = await model.estimateFaces(document.getElementById('webcam'), false);
-    if (predictions.length === 0) logEvent("Student not in view");
+    } catch { alert("Camera and Screen Sharing required."); }
 }
 
 function showQuestion() {
     const q = quizData[currentIdx];
     document.getElementById('question-text').innerText = `${currentIdx + 1}. ${q.q}`;
-    document.getElementById('progress-text').innerText = `Question ${currentIdx + 1}/${quizData.length}`;
-    document.getElementById('progress-bar').style.width = `${((currentIdx + 1)/quizData.length)*100}%`;
+    document.getElementById('progress-text').innerText = `Q ${currentIdx + 1}/45`;
+    document.getElementById('progress-bar').style.width = `${((currentIdx + 1)/45)*100}%`;
     
     const container = document.getElementById('options-container');
     container.innerHTML = '';
     q.o.forEach((opt, i) => {
         const btn = document.createElement('button');
         btn.className = `option-btn ${userAnswers[currentIdx] === i ? 'selected-opt' : ''}`;
-        btn.innerHTML = `<span class="badge bg-light text-dark me-3">${String.fromCharCode(65+i)}</span> ${opt}`;
+        btn.innerHTML = `<span class="badge bg-light text-dark me-2">${String.fromCharCode(65+i)}</span> ${opt}`;
         btn.onclick = () => { userAnswers[currentIdx] = i; showQuestion(); };
         container.appendChild(btn);
     });
@@ -278,61 +246,21 @@ function nextQuestion() { currentIdx++; showQuestion(); }
 function prevQuestion() { currentIdx--; showQuestion(); }
 
 function finishExam() {
-    if(!confirm("Are you sure you want to submit your final answers?")) return;
     isExamActive = false;
-    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
-    
+    if (mediaRecorder) mediaRecorder.stop();
     let score = 0;
     userAnswers.forEach((ans, i) => { if(ans === quizData[i].a) score++; });
-    
     document.getElementById('exam-area').classList.add('d-none');
     document.getElementById('result-area').classList.remove('d-none');
     document.getElementById('final-score').innerText = score;
-
-    // DOWNLOAD RECORDING
-    setTimeout(() => {
-        const blob = new Blob(recordedChunks, { type: "video/webm" });
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = `ExamRecord_ID_${document.getElementById('student-id').value}.webm`;
-        a.click();
-    }, 2000);
 }
 
 function generatePDF() {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('p', 'mm', 'a4');
-    const name = document.getElementById('student-name').value;
-    const sid = document.getElementById('student-id').value;
-    const score = document.getElementById('final-score').innerText;
-    const footerText = "IT 121 - Networking 1 | Final Examination Session Log";
-
-    doc.setDrawColor(0, 74, 153);
-    doc.setLineWidth(1.5);
-    doc.rect(10, 10, 190, 277, 'S'); 
-    
-    doc.setFont("times", "bold");
-    doc.setFontSize(22);
-    doc.text("NAAP - Institute of Computer Studies", 105, 40, null, null, "center");
-    
-    doc.setFontSize(28);
-    doc.setFont("times", "bolditalic");
-    doc.setTextColor(0, 74, 153);
-    doc.text("Certificate of Completion", 105, 80, null, null, "center");
-    
-    doc.setTextColor(0);
-    doc.setFontSize(14);
-    doc.text("Student Name:", 105, 100, null, null, "center");
-    doc.setFontSize(24);
-    doc.text(name.toUpperCase(), 105, 115, null, null, "center");
-    doc.setFontSize(12);
-    doc.text(`Student ID: ${sid}`, 105, 122, null, null, "center");
-    
-    doc.setFontSize(16);
-    doc.text(`Final Score: ${score} / ${quizData.length}`, 105, 180, null, null, "center");
-    doc.text(`Security Violations: ${violations}`, 105, 190, null, null, "center");
-
-    doc.save(`${name}_IT121_Final.pdf`);
+    const doc = new jsPDF();
+    doc.text(`Student: ${document.getElementById('student-name').value}`, 10, 10);
+    doc.text(`Score: ${document.getElementById('final-score').innerText}/45`, 10, 20);
+    doc.save("Result.pdf");
 }
 </script>
 </body>
