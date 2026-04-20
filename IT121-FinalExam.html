@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,35 +14,46 @@
     <style>
         body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; -webkit-user-select: none; }
         
-        .main-container { display: flex; flex-direction: column; gap: 20px; padding: 15px; max-width: 1450px; margin: auto; }
+        .main-container { display: flex; flex-direction: column; gap: 20px; padding: 15px; max-width: 1200px; margin: auto; }
 
-        @media (min-width: 992px) {
-            .main-container { flex-direction: row; padding: 25px; }
-            .quiz-card { flex: 1; }
-            .proctor-panel { width: 360px; position: sticky; top: 20px; height: fit-content; }
-        }
-
-        .quiz-card { border-radius: 15px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.1); min-height: 500px; background: white; padding: 20px; }
+        .quiz-card { border-radius: 15px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.1); min-height: 500px; background: white; padding: 20px; z-index: 1; }
         .header-accent { border-top: 5px solid #004a99; border-radius: 15px 15px 0 0; }
         
         .option-btn { text-align: left; margin-bottom: 10px; border: 2px solid #edf2f7; transition: 0.2s; padding: 15px; width: 100%; background: white; border-radius: 12px; font-size: 1rem; display: flex; align-items: center; }
         .option-btn:hover { border-color: #004a99; background-color: #f0f7ff; }
         .selected-opt { background-color: #e6f0ff !important; border-color: #004a99 !important; color: #004a99 !important; font-weight: 600; }
 
-        .proctor-panel { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        /* FLOATING PROCTOR PANEL */
+        .proctor-panel { 
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background: white; 
+            border-radius: 15px; 
+            padding: 15px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border: 1px solid #dee2e6;
+        }
+        
         video { width: 100%; border-radius: 10px; transform: scaleX(-1); background: #2d3748; }
         
-        .log-box { height: 150px; overflow-y: auto; background: #f8fafc; border-radius: 10px; padding: 10px; font-size: 0.75rem; margin-top: 15px; border: 1px solid #e2e8f0; }
+        .log-box { height: 120px; overflow-y: auto; background: #f8fafc; border-radius: 10px; padding: 10px; font-size: 0.75rem; margin-top: 15px; border: 1px solid #e2e8f0; }
 
-        /* Security Warning Overlay */
         #violation-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); color: white; z-index: 10000;
+            background: rgba(0,0,0,0.95); color: white; z-index: 10001;
             justify-content: center; align-items: center; flex-direction: column; text-align: center; padding: 20px;
         }
 
         #rec-indicator { color: #e53e3e; animation: blink 1.5s infinite; display: none; font-weight: bold; font-size: 0.8rem; }
         @keyframes blink { 50% { opacity: 0; } }
+
+        @media (max-width: 768px) {
+            .proctor-panel { width: 180px; bottom: 10px; right: 10px; }
+            .log-box { display: none; }
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -97,7 +108,7 @@
         <div id="result-area" class="text-center d-none py-4">
             <div class="mb-3"><i class="fas fa-award fa-4x text-warning"></i></div>
             <h1 class="fw-bold h2">Assessment Complete</h1>
-            <h2 class="display-6 text-primary mb-4">Score: <span id="final-score">0</span> / 50</h2>
+            <h2 class="display-6 text-primary mb-4">Score: <span id="final-score">0</span> / 45</h2>
             <div class="card mx-auto mb-4 border-0 bg-light" style="max-width: 500px;">
                 <div class="card-body">
                     <p class="mb-3 small">Your record and proof of session are being prepared.</p>
@@ -110,19 +121,17 @@
     </div>
 
     <div class="proctor-panel">
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
             <span id="rec-indicator"><i class="fas fa-circle me-1"></i> MONITORING</span>
-            <span class="badge bg-primary">ICS PROCTOR</span>
+            <span class="badge bg-primary" style="font-size: 0.65rem;">ICS PROCTOR</span>
         </div>
         <video id="webcam" autoplay muted playsinline></video>
-        <h6 class="mt-3 small fw-bold text-uppercase text-muted border-bottom pb-2">Activity Stream</h6>
         <div class="log-box" id="audit-logs"></div>
     </div>
 </div>
 
 <script>
 const rawData = [
-    // Application Layer
     { q: "Which protocol maps a domain name (www.google.com) to an IP address?", o: ["HTTP", "DNS", "FTP", "SMTP"], a: 1, r: "DNS acts as the phonebook of the internet.", s: 1 },
     { q: "Which layer in TCP/IP combines OSI layers 5, 6, and 7?", o: ["Transport", "Internet", "Application", "Network Access"], a: 2, r: "TCP/IP's Application layer handles Session, Presentation, and Application functions.", s: 1 },
     { q: "Primary role of the Application Layer?", o: ["Physical connection", "Services to end-user", "Error correction", "Routing"], a: 1, r: "It provides network services directly to software applications.", s: 1 },
@@ -138,8 +147,6 @@ const rawData = [
     { q: "Standard for secure web browsing?", o: ["HTTP 1.1", "HTTP 2.0", "HTTPS", "SSL-Only"], a: 2, r: "HTTPS uses SSL/TLS encryption.", s: 1 },
     { q: "Remote login protocol (unencrypted)?", o: ["SNMP", "TELNET", "SMTP", "POP3"], a: 1, r: "Telnet provides remote terminal access.", s: 1 },
     { q: "Directory Services provide?", o: ["Local storage", "Global resource info", "Data compression", "Encryption"], a: 1, r: "It provides access to a database of network objects.", s: 1 },
-
-    // Transport Layer
     { q: "Primary Transport Layer responsibility?", o: ["Node-to-node", "Host-to-host", "Process-to-process", "Bit-to-bit"], a: 2, r: "L4 ensures data reaches the specific application process.", s: 2 },
     { q: "Address used by Transport Layer?", o: ["IP Address", "MAC Address", "Port Address", "Logic Address"], a: 2, r: "Ports identify specific processes.", s: 2 },
     { q: "TCP Data Unit name?", o: ["Packet", "Frame", "Segment", "Datagram"], a: 2, r: "TCP uses Segments.", s: 2 },
@@ -155,8 +162,6 @@ const rawData = [
     { q: "Multiplexing at L4 involves?", o: ["Sharing wires", "Multiple processes via ports", "Multiple paths", "Bit coding"], a: 1, r: "It allows many apps to share one network connection.", s: 2 },
     { q: "UDP Header characteristic?", o: ["Complex", "Heavyweight", "Low overhead", "Error-correcting"], a: 2, r: "UDP is simple and fast due to low overhead.", s: 2 },
     { q: "Transport layer error control is?", o: ["Hop-by-hop", "End-to-end", "Not possible", "Only for headers"], a: 1, r: "L4 checks integrity between the source and destination processes.", s: 2 },
-
-    // Troubleshooting/Security
     { q: "Test end-to-end connectivity?", o: ["ipconfig", "ping", "netstat", "nslookup"], a: 1, r: "Ping uses ICMP to check reachability.", s: 3 },
     { q: "Ping works by IP but not domain name?", o: ["DHCP error", "DNS error", "HTTP error", "ARP error"], a: 1, r: "DNS is failing to resolve the name.", s: 3 },
     { q: "List hops to destination?", o: ["tracert", "ipconfig /all", "ping -t", "nmap"], a: 0, r: "Traceroute maps the path across routers.", s: 3 },
@@ -178,7 +183,6 @@ const quizData = rawData.sort(() => Math.random() - 0.5);
 let currentIdx = 0, userAnswers = new Array(quizData.length).fill(null);
 let violations = 0, isExamActive = false, mediaRecorder, recordedChunks = [], model;
 
-// --- SECURITY & TAB DETECTION ---
 function initSecurity() {
     document.addEventListener("visibilitychange", () => {
         if (document.hidden && isExamActive) triggerViolation("Tab/Window Hidden");
@@ -195,7 +199,6 @@ function triggerViolation(reason) {
 
 function closeViolation() { document.getElementById('violation-overlay').style.display = 'none'; }
 
-// --- EXAM ENGINE ---
 async function startSecureExam() {
     const name = document.getElementById('student-name').value;
     const sid = document.getElementById('student-id').value;
@@ -205,7 +208,6 @@ async function startSecureExam() {
         const camStream = await navigator.mediaDevices.getUserMedia({ video: true });
         document.getElementById('webcam').srcObject = camStream;
         
-        // Start Screen Recording
         const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
         mediaRecorder = new MediaRecorder(screenStream);
         mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
@@ -219,7 +221,7 @@ async function startSecureExam() {
         
         isExamActive = true;
         initSecurity();
-        showQuestion();
+        showQuestion(); // EXPLICITLY LOAD FIRST QUESTION
         setInterval(monitorFace, 5000);
         logEvent("Secure Session Initiated");
     } catch { alert("Camera and Screen Sharing are required to proceed."); }
@@ -241,8 +243,8 @@ async function monitorFace() {
 function showQuestion() {
     const q = quizData[currentIdx];
     document.getElementById('question-text').innerText = `${currentIdx + 1}. ${q.q}`;
-    document.getElementById('progress-text').innerText = `Question ${currentIdx + 1}/45`;
-    document.getElementById('progress-bar').style.width = `${((currentIdx + 1)/50)*100}%`;
+    document.getElementById('progress-text').innerText = `Question ${currentIdx + 1}/${quizData.length}`;
+    document.getElementById('progress-bar').style.width = `${((currentIdx + 1)/quizData.length)*100}%`;
     
     const container = document.getElementById('options-container');
     container.innerHTML = '';
@@ -275,7 +277,6 @@ function finishExam() {
     document.getElementById('result-area').classList.remove('d-none');
     document.getElementById('final-score').innerText = score;
 
-    // Automatic download of the recording
     setTimeout(() => {
         const blob = new Blob(recordedChunks, { type: "video/webm" });
         const a = document.createElement("a");
@@ -285,16 +286,14 @@ function finishExam() {
     }, 1500);
 }
 
-// --- CERTIFICATE & DETAILED REPORT ---
 function generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'a4');
     const name = document.getElementById('student-name').value;
     const sid = document.getElementById('student-id').value;
     const score = document.getElementById('final-score').innerText;
-    const footerText = "SirLavz2026 | CS 2206 - Midterm Examination | CCS | Laguna University";
+    const footerText = "SirLavz2026 | IT 121 - Final Examination | Laguna University";
 
-    // Certificate Design
     doc.setDrawColor(0, 74, 153);
     doc.setLineWidth(1.5);
     doc.rect(10, 10, 190, 277, 'S'); 
@@ -330,7 +329,7 @@ function generatePDF() {
     doc.text("Final Examination", 105, 158, null, null, "center");
     
     doc.setFontSize(16);
-    doc.text(`Rating: ${score} / 50`, 105, 180, null, null, "center");
+    doc.text(`Rating: ${score} / ${quizData.length}`, 105, 180, null, null, "center");
 
     doc.setFontSize(12);
     doc.text("Instructor:", 60, 220);
@@ -342,7 +341,6 @@ function generatePDF() {
     doc.setTextColor(150);
     doc.text(footerText, 105, 282, null, null, "center");
 
-    // Page 2: Detailed Results
     doc.addPage();
     doc.setTextColor(0);
     doc.setFontSize(16);
@@ -369,7 +367,7 @@ function generatePDF() {
         columnStyles: { 1: { cellWidth: 80 } }
     });
 
-    doc.save(`${name}_CS2206_Result.pdf`);
+    doc.save(`${name}_IT121_Result.pdf`);
 }
 </script>
 </body>
