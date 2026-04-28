@@ -2,23 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SirLavz QR Attendance</title>
+    <title>SirLavz QR Attendance - iOS 26 Edition</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
             --ios-bg: #f2f2f7;
-            --ios-glass: rgba(255, 255, 255, 0.4);
+            --ios-glass: rgba(255, 255, 255, 0.45);
             --ios-blue: #007aff;
             --ios-red: #ff3b30;
             --ios-green: #34c759;
-            --blur: blur(30px);
-            --shadow: 0 10px 40px rgba(0,0,0,0.06);
+            --blur: blur(35px);
+            --shadow: 0 10px 40px rgba(0,0,0,0.08);
         }
 
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif; 
             background: linear-gradient(135deg, #dae5ff 0%, #f9eaff 50%, #e8f9ff 100%);
             background-attachment: fixed;
             margin: 0; padding: 20px; color: #1d1d1f; min-height: 100vh;
@@ -26,60 +26,61 @@
 
         h1, h2 { text-align: center; color: #000; text-transform: uppercase; margin: 5px 0; letter-spacing: -0.5px; }
         h1 { font-weight: 800; font-size: 28px; }
-        h2 { font-weight: 400; font-size: 16px; opacity: 0.6; }
+        h2 { font-weight: 400; font-size: 14px; opacity: 0.6; }
 
-        /* iOS 26 Floating Navigation */
+        /* iOS 26 Navigation Bar */
         .nav-container { 
-            text-align: center; margin-bottom: 30px; padding: 10px; 
+            text-align: center; margin: 0 auto 30px auto; padding: 10px; max-width: 600px;
             background: var(--ios-glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
             border-radius: 24px; border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: var(--shadow); position: sticky; top: 10px; z-index: 1000;
+            box-shadow: var(--shadow); position: sticky; top: 15px; z-index: 1000;
         }
 
         button { 
-            padding: 12px 20px; margin: 4px; cursor: pointer; border-radius: 14px; border: none; 
-            background: var(--ios-blue); color: white; font-weight: 600; 
+            padding: 12px 18px; margin: 4px; cursor: pointer; border-radius: 14px; border: none; 
+            background: var(--ios-blue); color: white; font-weight: 600; font-size: 14px;
             transition: all 0.3s cubic-bezier(0.15, 0, 0.2, 1); 
         }
         button:hover { transform: scale(1.05); filter: brightness(1.1); }
         button:active { transform: scale(0.95); }
 
-        /* Retaining Card Layout with Glassmorphism */
+        /* Glassmorphism Containers */
         .manage-box { 
             background: var(--ios-glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-            padding: 25px; border-radius: 28px; margin-bottom: 20px; 
+            padding: 25px; border-radius: 30px; margin-bottom: 20px; 
             border: 1px solid rgba(255,255,255,0.6); box-shadow: var(--shadow);
+            max-width: 900px; margin-left: auto; margin-right: auto;
         }
 
         input, select { 
             padding: 14px; border-radius: 14px; border: 1px solid rgba(0,0,0,0.05); 
-            margin: 5px; font-size: 15px; background: rgba(255,255,255,0.5); outline: none; transition: 0.2s;
+            margin: 5px; font-size: 15px; background: rgba(255,255,255,0.6); outline: none; transition: 0.2s;
         }
         input:focus { background: #fff; border-color: var(--ios-blue); }
 
-        /* Retaining Table Layout with iOS Style */
-        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; margin-top: 15px; }
-        th { padding: 15px; color: var(--ios-blue); font-size: 13px; text-transform: uppercase; font-weight: 700; text-align: center; }
-        td { background: rgba(255,255,255,0.7); padding: 15px; text-align: center; border: none; }
-        tr td:first-child { border-radius: 18px 0 0 18px; }
-        tr td:last-child { border-radius: 0 18px 18px 0; }
+        /* Table Styling */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; margin-top: 15px; max-width: 900px; margin-left: auto; margin-right: auto; }
+        th { padding: 15px; color: var(--ios-blue); font-size: 12px; text-transform: uppercase; font-weight: 700; text-align: center; }
+        td { background: rgba(255,255,255,0.7); padding: 16px; text-align: center; border: none; font-size: 15px; }
+        tr td:first-child { border-radius: 20px 0 0 20px; }
+        tr td:last-child { border-radius: 0 20px 20px 0; }
 
-        /* Management Pill List */
+        /* Mgmt Pill Design */
         .mgmt-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 15px; }
-        .mgmt-col { background: rgba(255,255,255,0.3); padding: 15px; border-radius: 20px; min-width: 200px; border: 1px solid rgba(255,255,255,0.3); }
+        .mgmt-col { background: rgba(255,255,255,0.3); padding: 15px; border-radius: 22px; min-width: 220px; border: 1px solid rgba(255,255,255,0.3); }
         .pill { 
             display: flex; justify-content: space-between; align-items: center; 
-            padding: 10px 14px; background: #fff; border-radius: 12px; margin-bottom: 8px; font-size: 14px; font-weight: 600;
+            padding: 10px 14px; background: #fff; border-radius: 12px; margin-bottom: 8px; font-size: 13px; font-weight: 600;
         }
         .del-circle { 
             width: 20px; height: 20px; background: var(--ios-red); color: white; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer;
         }
 
-        #scanner { width: 100%; max-width: 450px; margin: 20px auto; border: 8px solid white; border-radius: 35px; overflow: hidden; box-shadow: var(--shadow); }
+        #scanner { width: 100%; max-width: 450px; margin: 20px auto; border: 8px solid white; border-radius: 40px; overflow: hidden; box-shadow: var(--shadow); }
         .tab { display: none; }
-        .active-tab { display: block; animation: slideUp 0.5s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .active-tab { display: block; animation: iosSlide 0.5s ease-out; }
+        @keyframes iosSlide { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -93,37 +94,38 @@
     <button onclick="showTab('scanTab')">📸 Scanner</button>
     <button onclick="showTab('studentTab')">👥 Students</button>
     <button onclick="showTab('attendanceTab')">📋 Reports</button>
-    <button onclick="showTab('settingsTab')" style="background:#6c757d">⚙ Tools</button>
+    <button onclick="showTab('settingsTab')" style="background:#636e72">⚙ Tools</button>
 </div>
 
 <div id="scanTab" class="tab active-tab">
     <div class="manage-box" style="text-align:center;">
-        <div id="liveDateDisplay" style="font-weight:bold; color:var(--ios-blue); font-size: 1.2em; margin-bottom:10px;"></div>
+        <div id="liveDateDisplay" style="font-weight:800; color:var(--ios-blue); font-size: 1.4em; margin-bottom:10px;"></div>
         <label>Section:</label>
         <select id="scanSectionFilter" onchange="renderAll()"></select>
         <label>Camera:</label>
         <select id="cameraSource" style="width:180px;"></select>
-        <br>
-        <button onclick="startScanner()" style="background:var(--ios-green);">▶ START CAMERA</button>
+        <br><br>
+        <button onclick="startScanner()" style="background:var(--ios-green); width: 200px;">▶ START SCANNER</button>
         <button onclick="stopScanner()" style="background:var(--ios-red);">⏹ STOP</button>
     </div>
     <div id="scanner"></div>
-    <div id="scanStatus" style="text-align:center; font-weight:700; margin: 15px;">Awaiting scan...</div>
+    <div id="scanStatus" style="text-align:center; font-weight:800; margin: 20px; font-size: 1.2em; color: var(--ios-blue);">READY FOR SCANNING</div>
+    
     <table>
-        <thead><tr><th>#</th><th>Student</th><th>Time-In</th><th>Time-Out</th><th>Action</th></tr></thead>
+        <thead><tr><th>#</th><th>Student Name</th><th>Time-In</th><th>Time-Out</th><th>Action</th></tr></thead>
         <tbody id="scanMonitorBody"></tbody>
     </table>
 </div>
 
 <div id="studentTab" class="tab">
     <div class="manage-box">
-        <center><h3>Course & Section Management</h3></center>
+        <center><h3 style="margin-top:0;">Department Settings</h3></center>
         <div class="mgmt-grid">
             <div class="mgmt-col">
                 <center><b>COURSES</b></center>
                 <div style="display:flex; margin-top:10px;">
                     <input id="newCourse" placeholder="e.g. BSCS" style="width:100%;">
-                    <button onclick="addItem('courses', 'newCourse')" style="background:var(--ios-blue);">+</button>
+                    <button onclick="addItem('courses', 'newCourse')">+</button>
                 </div>
                 <div id="list-courses" style="margin-top:10px;"></div>
             </div>
@@ -131,7 +133,7 @@
                 <center><b>YEARS</b></center>
                 <div style="display:flex; margin-top:10px;">
                     <input id="newYear" placeholder="e.g. 1st" style="width:100%;">
-                    <button onclick="addItem('years', 'newYear')" style="background:var(--ios-blue);">+</button>
+                    <button onclick="addItem('years', 'newYear')">+</button>
                 </div>
                 <div id="list-years" style="margin-top:10px;"></div>
             </div>
@@ -139,7 +141,7 @@
                 <center><b>SECTIONS</b></center>
                 <div style="display:flex; margin-top:10px;">
                     <input id="newSection" placeholder="e.g. 2A" style="width:100%;">
-                    <button onclick="addItem('sections', 'newSection')" style="background:var(--ios-blue);">+</button>
+                    <button onclick="addItem('sections', 'newSection')">+</button>
                 </div>
                 <div id="list-sections" style="margin-top:10px;"></div>
             </div>
@@ -148,53 +150,57 @@
 
     <div class="manage-box">
         <center>
-            <h3>Add Student</h3>
-            <input id="sid" placeholder="Student ID">
-            <input id="sname" placeholder="Full Name">
+            <h3 style="margin-top:0;">Student Enrollment</h3>
+            <input id="sid" placeholder="Student ID Number" style="width: 250px;">
+            <input id="sname" placeholder="Full Student Name" style="width: 250px;">
+            <br>
             <select id="courseSelect"></select>
             <select id="yearSelect"></select>
             <select id="sectionSelect"></select>
-            <button onclick="saveStudent()" style="background:var(--ios-green); width: 100%; margin-top: 10px;">+ Add Student</button>
-            <hr style="margin:20px; opacity: 0.1;">
-            <label><b>QR Code Printing</b></label><br>
+            <br>
+            <button onclick="saveStudent()" style="background:var(--ios-green); width: 100%; max-width: 520px; margin-top: 15px; height: 50px;">+ REGISTER STUDENT</button>
+            <hr style="margin:25px; opacity: 0.1;">
+            <label><b>QR Generator</b></label><br>
             <select id="qrPrintSection"></select>
-            <button onclick="printQRBatch()" style="background:var(--ios-blue);">Generate per section</button>
+            <button onclick="printQRBatch()" style="background:var(--ios-blue);">Generate Batch PDF</button>
         </center>
     </div>
 
     <table>
-        <thead><tr><th>ID</th><th>Name</th><th>Class</th><th>Action</th></tr></thead>
+        <thead><tr><th>ID</th><th>Student Name</th><th>Course/Year-Sec</th><th>Action</th></tr></thead>
         <tbody id="studentTableBody"></tbody>
     </table>
 </div>
 
 <div id="attendanceTab" class="tab">
     <div class="manage-box" style="text-align:center;">
+        <h3 style="margin-top:0;">Attendance Reports</h3>
         <input type="date" id="attDate" onchange="renderAll()">
         <select id="repSectionFilter" onchange="renderAll()"></select>
-        <input id="instructorName" placeholder="Instructor Name">
-        <button onclick="printOfficialPDF()" style="background:#000;">🖨 Print Official PDF</button>
+        <input id="instructorName" placeholder="Instructor Name" style="width: 200px;">
+        <button onclick="printOfficialPDF()" style="background:#000;">🖨 EXPORT PDF</button>
     </div>
     <table>
-        <thead><tr><th>ID</th><th>Student Name</th><th>In</th><th>Out</th><th>Status</th></tr></thead>
+        <thead><tr><th>ID</th><th>Student Name</th><th>Time In</th><th>Time Out</th><th>Status</th></tr></thead>
         <tbody id="attendanceReportBody"></tbody>
     </table>
 </div>
 
 <div id="settingsTab" class="tab">
     <div class="manage-box" style="text-align:center;">
-        <h3>System Backup</h3>
-        <button onclick="backupData()" style="width:100%; background:var(--ios-blue);">💾 Download Cloud Backup</button>
-        <div style="margin-top: 20px; padding: 20px; border: 2px dashed rgba(0,0,0,0.1); border-radius: 20px;">
+        <h3>Data Control</h3>
+        <button onclick="backupData()" style="width:100%; background:var(--ios-blue); height: 50px;">💾 DOWNLOAD SYSTEM BACKUP</button>
+        <div style="margin-top: 25px; padding: 25px; border: 2px dashed rgba(0,0,0,0.1); border-radius: 25px;">
+            <p style="font-size: 12px; color: #666;">RESTORE FROM FILE</p>
             <input type="file" id="restoreFile" style="width:100%;">
-            <button onclick="restoreData()" style="width:100%; background:var(--ios-green); margin-top: 10px;">⬆ Restore Backup</button>
+            <button onclick="restoreData()" style="width:100%; background:var(--ios-green); margin-top: 10px;">⬆ UPLOAD BACKUP</button>
         </div>
-        <button onclick="factoryReset()" style="margin-top:40px; background:none; color:var(--ios-red); font-weight:700;">🚨 Wipe All Data</button>
+        <button onclick="factoryReset()" style="margin-top:50px; background:none; color:var(--ios-red); font-weight:800; border: 1px solid var(--ios-red); width: 100%;">🚨 ERASE ALL CONTENT AND SETTINGS</button>
     </div>
 </div>
 
 <script>
-/* CORE DATA LOGIC */
+/* CORE DATA */
 let students = JSON.parse(localStorage.getItem('lu_ios26_st')) || [];
 let attendance = JSON.parse(localStorage.getItem('lu_ios26_at')) || [];
 let dropdowns = JSON.parse(localStorage.getItem('lu_ios26_dr')) || {
@@ -209,9 +215,25 @@ function save(){
 
 const todayStr = new Date().toISOString().split('T')[0];
 document.getElementById('attDate').value = todayStr;
-document.getElementById('liveDateDisplay').innerText = new Date().toDateString();
+document.getElementById('liveDateDisplay').innerText = new Date().toLocaleDateString('en-PH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-/* DROPDOWN & MANAGEMENT */
+/* FILIPINO-OPTIMIZED VOICE */
+function speakGreeting(name) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // Stop current speech
+        const speech = new SpeechSynthesisUtterance();
+        speech.text = `Welcome to Laguna University, ${name}`;
+        
+        // Target Filipino voice for proper local name pronunciation
+        speech.lang = 'fil-PH'; 
+        speech.rate = 0.9;
+        speech.pitch = 1;
+        
+        window.speechSynthesis.speak(speech);
+    }
+}
+
+/* UI MANAGEMENT */
 function addItem(cat, id) {
     const v = document.getElementById(id).value.trim().toUpperCase();
     if(!v || dropdowns[cat].includes(v)) return;
@@ -220,7 +242,7 @@ function addItem(cat, id) {
 }
 
 function removeItem(cat, v) {
-    if(confirm(`Remove ${v}?`)) {
+    if(confirm(`Delete ${v}?`)) {
         dropdowns[cat] = dropdowns[cat].filter(x => x !== v);
         save(); refreshDropdowns();
     }
@@ -235,7 +257,7 @@ function refreshDropdowns() {
     document.getElementById("yearSelect").innerHTML = opts(dropdowns.years);
     document.getElementById("qrPrintSection").innerHTML = opts(dropdowns.sections);
     
-    const filter = `<option value="ALL">ALL</option>` + opts(dropdowns.sections);
+    const filter = `<option value="ALL">ALL SECTIONS</option>` + opts(dropdowns.sections);
     document.getElementById("scanSectionFilter").innerHTML = filter;
     document.getElementById("repSectionFilter").innerHTML = filter;
 
@@ -245,23 +267,32 @@ function refreshDropdowns() {
     renderAll();
 }
 
-/* SCANNER CORE */
+/* SCANNER LOGIC */
 let html5QrCode;
+let isLocked = false; 
+
 async function startScanner() {
     const camId = document.getElementById('cameraSource').value;
     if(!html5QrCode) html5QrCode = new Html5Qrcode("scanner");
     html5QrCode.start(camId, { fps: 10, qrbox: 250 }, (id) => {
+        if(isLocked) return;
+        
         const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         let s = students.find(x => x.id === id);
         if(!s) return;
+        
         let r = attendance.find(a => a.id === id && a.date === todayStr);
         if(!r) {
             attendance.push({ id, date: todayStr, timeIn: time, timeOut: null });
-            document.getElementById("scanStatus").innerText = "✅ IN: " + s.name;
+            document.getElementById("scanStatus").innerText = "SUCCESS IN: " + s.name;
+            speakGreeting(s.name); 
         } else if(!r.timeOut) {
             r.timeOut = time;
-            document.getElementById("scanStatus").innerText = "🏁 OUT: " + s.name;
+            document.getElementById("scanStatus").innerText = "SUCCESS OUT: " + s.name;
         }
+        
+        isLocked = true;
+        setTimeout(() => { isLocked = false; document.getElementById("scanStatus").innerText = "READY FOR SCANNING"; }, 3500);
         save(); renderAll();
     });
 }
@@ -274,11 +305,11 @@ function renderAll() {
         .filter(s => sF === "ALL" || s.section === sF)
         .map((s, i) => {
             const r = attendance.find(a => a.id === s.id && a.date === todayStr);
-            return `<tr><td>${i+1}</td><td><b>${s.name}</b></td><td>${r?r.timeIn:'--'}</td><td>${r?r.timeOut:'--'}</td><td><button onclick="resetAtt('${s.id}')" style="background:var(--ios-red); padding: 5px 10px;">Reset</button></td></tr>`;
+            return `<tr><td>${i+1}</td><td><b>${s.name}</b></td><td>${r?r.timeIn:'--'}</td><td>${r?r.timeOut:'--'}</td><td><button onclick="resetAtt('${s.id}')" style="background:var(--ios-red); padding: 5px 12px; font-size:11px;">Reset</button></td></tr>`;
         }).join("");
 
     document.getElementById("studentTableBody").innerHTML = students.map(s => 
-        `<tr><td>${s.id}</td><td><b>${s.name}</b></td><td>${s.course} ${s.year}-${s.section}</td><td><button onclick="delStud('${s.id}')" style="background:var(--ios-red); padding: 5px 10px;">Del</button></td></tr>`).join("");
+        `<tr><td>${s.id}</td><td><b>${s.name}</b></td><td>${s.course} ${s.year}-${s.section}</td><td><button onclick="delStud('${s.id}')" style="background:var(--ios-red); padding: 5px 12px; font-size:11px;">Delete</button></td></tr>`).join("");
 
     const rD = document.getElementById('attDate').value;
     const rF = document.getElementById("repSectionFilter").value;
@@ -286,7 +317,7 @@ function renderAll() {
         .filter(s => rF === "ALL" || s.section === rF)
         .map(s => {
             const r = attendance.find(a => a.id === s.id && a.date === rD);
-            return `<tr><td>${s.id}</td><td>${s.name}</td><td>${r?r.timeIn:'--'}</td><td>${r?r.timeOut:'--'}</td><td>${r?'✅':'❌'}</td></tr>`;
+            return `<tr><td>${s.id}</td><td>${s.name}</td><td>${r?r.timeIn:'--'}</td><td>${r?r.timeOut:'--'}</td><td>${r?'<span style="color:var(--ios-green); font-weight:bold;">PRESENT</span>':'<span style="color:var(--ios-red);">ABSENT</span>'}</td></tr>`;
         }).join("");
 }
 
@@ -296,19 +327,20 @@ function saveStudent() {
         course: document.getElementById("courseSelect").value, year: document.getElementById("yearSelect").value, 
         section: document.getElementById("sectionSelect").value 
     };
-    if(!s.id || !s.name) return alert("Fill Name and ID");
+    if(!s.id || !s.name) return alert("Please fill ID and Name");
     students.push(s); save(); renderAll();
     document.getElementById("sid").value=""; document.getElementById("sname").value="";
 }
 
-/* UTILITIES */
+/* TOOLS */
 function showTab(id) { 
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active-tab')); 
     document.getElementById(id).classList.add('active-tab'); 
     stopScanner(); renderAll();
 }
-function delStud(id) { if(confirm("Delete student?")) { students = students.filter(s => s.id !== id); save(); renderAll(); } }
-function resetAtt(id) { attendance = attendance.filter(a => !(a.id === id && a.date === todayStr)); save(); renderAll(); }
+function delStud(id) { if(confirm("Permanently delete this student?")) { students = students.filter(s => s.id !== id); save(); renderAll(); } }
+function resetAtt(id) { if(confirm("Reset today's logs for this student?")) { attendance = attendance.filter(a => !(a.id === id && a.date === todayStr)); save(); renderAll(); } }
+
 async function printQRBatch() {
     const sec = document.getElementById('qrPrintSection').value;
     const list = students.filter(s => s.section === sec);
@@ -319,27 +351,30 @@ async function printQRBatch() {
             new QRCode(div, { text: s.id, width: 120, height: 120 });
             setTimeout(() => res(div.querySelector('img').src), 150);
         });
-        cards += `<div style="border:1px solid #000; text-align:center; padding:10px; margin:5px; break-inside:avoid;">
-            <p style="font-size:10px;">LAGUNA UNIVERSITY</p><img src="${qrUrl}" width="100">
-            <p style="font-size:12px; font-weight:bold;">${s.name}</p><p style="font-size:9px;">${s.id} | ${s.section}</p>
+        cards += `<div style="border:1px solid #000; text-align:center; padding:15px; margin:10px; break-inside:avoid; border-radius:15px;">
+            <p style="font-size:10px; margin:0;">LAGUNA UNIVERSITY</p><img src="${qrUrl}" width="110" style="margin:10px 0;">
+            <p style="font-size:14px; font-weight:bold; margin:0;">${s.name}</p><p style="font-size:10px; margin:5px 0 0 0;">${s.id} | ${s.course} ${s.year}-${s.section}</p>
         </div>`;
     }
-    const w = window.open(); w.document.write(`<body style="display:grid; grid-template-columns:repeat(4,1fr); font-family:sans-serif;" onload="window.print()">${cards}</body>`);
+    const w = window.open(); w.document.write(`<body style="display:grid; grid-template-columns:repeat(3,1fr); font-family:sans-serif; padding:20px;" onload="window.print()">${cards}</body>`);
 }
+
 function printOfficialPDF() {
     const d = document.getElementById('attDate').value;
-    const inst = document.getElementById('instructorName').value || "Instructor";
+    const inst = document.getElementById('instructorName').value || "____________";
     const content = students.map(s => {
         const r = attendance.find(a => a.id === s.id && a.date === d);
-        return `<tr><td>${s.name}</td><td>${r?r.timeIn:'--'}</td><td>${r?r.timeOut:'--'}</td><td>${r?'Present':'Absent'}</td></tr>`;
+        return `<tr><td>${s.id}</td><td>${s.name}</td><td>${r?r.timeIn:'--'}</td><td>${r?r.timeOut:'--'}</td><td>${r?'Present':'Absent'}</td></tr>`;
     }).join("");
     const w = window.open();
-    w.document.write(`<style>table{width:100%; border-collapse:collapse;} th,td{border:1px solid #000; padding:8px;}</style>
-    <h1>Attendance Report - ${d}</h1><p>Instructor: ${inst}</p><table><tr><th>Name</th><th>In</th><th>Out</th><th>Status</th></tr>${content}</table><script>window.print()<\/script>`);
+    w.document.write(`<style>table{width:100%; border-collapse:collapse; margin-top:20px;} th,td{border:1px solid #000; padding:10px; text-align:left; font-family:sans-serif;}</style>
+    <center><h1>LAGUNA UNIVERSITY</h1><h3>Attendance Report - ${d}</h3></center><p>Instructor: ${inst}</p>
+    <table><tr><th>ID</th><th>Student Name</th><th>In</th><th>Out</th><th>Status</th></tr>${content}</table><script>window.print()<\/script>`);
 }
-function backupData() { const b = new Blob([JSON.stringify({lu_ios26_st:students, lu_ios26_at:attendance, lu_ios26_dr:dropdowns})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "LU_Backup.json"; a.click(); }
+
+function backupData() { const b = new Blob([JSON.stringify({lu_ios26_st:students, lu_ios26_at:attendance, lu_ios26_dr:dropdowns})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "LU_Backup_"+todayStr+".json"; a.click(); }
 function restoreData() { const r = new FileReader(); r.onload = (e) => { const d = JSON.parse(e.target.result); students=d.lu_ios26_st; attendance=d.lu_ios26_at; dropdowns=d.lu_ios26_dr; save(); location.reload(); }; r.readAsText(document.getElementById('restoreFile').files[0]); }
-function factoryReset() { if(confirm("Wipe all data?")) { localStorage.clear(); location.reload(); } }
+function factoryReset() { if(confirm("WARNING: This will delete everything. Proceed?")) { localStorage.clear(); location.reload(); } }
 
 window.onload = async () => {
     try {
