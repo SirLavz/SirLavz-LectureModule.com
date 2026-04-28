@@ -2,304 +2,348 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SirLavz QR Attendance - LU CCS Official</title>
+    <title>SirLavz QR Code LU Attendance System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root { --lu-blue: #002b5c; --lu-gold: #ffc107; --danger: #dc3545; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f0f2f5; margin:0; padding:20px; color: #333; }
-        h1, h2 { text-align:center; color: var(--lu-blue); text-transform: uppercase; margin: 5px 0; }
-        .nav-container { text-align:center; margin-bottom: 20px; background: #fff; padding: 10px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        button { padding:10px 15px; margin:4px; cursor:pointer; border-radius:6px; border:none; background: var(--lu-blue); color: white; font-weight: bold; transition: 0.3s; }
-        button:hover { opacity: 0.8; }
-        input, select { padding:10px; border-radius:6px; border:1px solid #ccc; margin:5px; font-size: 14px; }
-        table { width:100%; border-collapse:collapse; background:#fff; margin-top:15px; border-radius: 8px; overflow: hidden; }
-        th, td { border: 1px solid #eee; padding: 12px; text-align: center; }
-        th { background: var(--lu-blue); color: #fff; }
-        .tab { display: none; animation: fadeIn 0.3s ease-in; }
-        .active-tab { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .manage-box { background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        #scanner { width: 100%; max-width: 450px; margin: auto; border: 4px solid var(--lu-blue); border-radius: 12px; overflow: hidden; }
-        .status-msg { font-size: 1.2em; font-weight: bold; color: var(--lu-blue); margin: 15px 0; height: 30px; }
-        #hidden-qr-gen { display: none; }
+        :root {
+            --ios-bg: #f2f2f7;
+            --ios-glass: rgba(255, 255, 255, 0.45);
+            --ios-glass-dark: rgba(255, 255, 255, 0.7);
+            --ios-blue: #007aff;
+            --ios-red: #ff3b30;
+            --ios-green: #34c759;
+            --ios-gray: #8e8e93;
+            --shadow: 0 10px 40px rgba(0,0,0,0.08);
+            --blur: blur(25px);
+        }
+
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif; 
+            background: linear-gradient(160deg, #dae5ff 0%, #f9eaff 50%, #e8f9ff 100%);
+            background-attachment: fixed;
+            margin: 0; padding: 20px; color: #1d1d1f; min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1 { font-weight: 800; font-size: 32px; letter-spacing: -1px; text-align: center; margin: 30px 0; color: #000; }
+
+        /* iOS 26 Floating Nav */
+        .nav-container { 
+            display: flex; justify-content: space-around; align-items: center;
+            background: var(--ios-glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+            padding: 10px; border-radius: 28px; position: sticky; top: 20px; z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: var(--shadow); margin-bottom: 40px;
+            max-width: 500px; margin-left: auto; margin-right: auto;
+        }
+
+        .nav-container button { 
+            padding: 12px 20px; border-radius: 20px; border: none; 
+            background: transparent; color: #444; font-weight: 600; font-size: 14px;
+            transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer;
+        }
+
+        .nav-container button:hover { color: var(--ios-blue); background: rgba(0,0,0,0.03); }
+        .nav-container button.active-btn { background: var(--ios-blue); color: #fff; box-shadow: 0 4px 15px rgba(0,122,255,0.3); }
+
+        /* iOS Glass Cards */
+        .card { 
+            background: var(--ios-glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+            padding: 25px; border-radius: 30px; margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: var(--shadow);
+            max-width: 600px; margin-left: auto; margin-right: auto;
+        }
+
+        h3 { font-size: 20px; font-weight: 700; margin-top: 0; margin-bottom: 15px; letter-spacing: -0.5px; }
+
+        input, select { 
+            padding: 14px 18px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); 
+            background: rgba(255,255,255,0.6); font-size: 16px; outline: none; margin: 5px 0;
+            width: 100%; box-sizing: border-box; transition: 0.2s;
+        }
+
+        input:focus { background: #fff; border-color: var(--ios-blue); }
+
+        .btn-primary { 
+            background: var(--ios-blue); color: white; width: 100%; padding: 16px; 
+            border-radius: 18px; border: none; font-weight: 700; font-size: 16px; margin-top: 10px;
+        }
+
+        /* Management Lists */
+        .mgmt-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .mgmt-col { background: rgba(255,255,255,0.3); padding: 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.4); }
         
-        /* Management UI Styles */
-        .mgmt-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 10px; }
-        .mgmt-column { background: #fafafa; border: 1px solid #ddd; padding: 10px; border-radius: 8px; min-width: 200px; }
-        .item-list { margin-top: 10px; text-align: left; max-height: 150px; overflow-y: auto; background: white; border-radius: 4px; border: 1px solid #eee; }
-        .item-pill { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; border-bottom: 1px solid #f0f0f0; font-size: 0.85em; }
-        .item-pill:last-child { border-bottom: none; }
-        .btn-del-small { background: var(--danger); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; cursor: pointer; }
+        .pill { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 10px 14px; background: #fff; border-radius: 14px; margin-bottom: 8px;
+            font-size: 13px; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+
+        .del-circle { 
+            width: 20px; height: 20px; background: var(--ios-red); color: white; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 12px; cursor: pointer; transition: 0.2s;
+        }
+
+        /* iOS List Styles */
+        .ios-list { list-style: none; padding: 0; margin: 20px 0; }
+        .ios-item { 
+            background: var(--ios-glass-dark); padding: 18px; border-radius: 20px; 
+            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        #scanner { 
+            width: 100%; border-radius: 40px; overflow: hidden; 
+            box-shadow: var(--shadow); border: 8px solid white; margin: 20px 0;
+        }
+
+        .tab { display: none; }
+        .active-tab { display: block; animation: iosFade 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes iosFade { from { opacity: 0; transform: scale(0.98) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
     </style>
 </head>
 <body>
 
-<div id="hidden-qr-gen"></div>
+<h1>Attendance Pro</h1>
 
-<h2>Laguna University - CCS</h2>
-<h1>Attendance Tracking System</h1>
-
-<div class="nav-container">
-    <button onclick="showTab('scanTab')">📸 Scanner</button>
-    <button onclick="showTab('studentTab')">👥 Students</button>
-    <button onclick="showTab('attendanceTab')">📋 Reports</button>
-    <button onclick="showTab('settingsTab')" style="background:#6c757d">⚙ Tools</button>
+<div class="nav-container" id="mainNav">
+    <button onclick="showTab('scanTab', this)" class="active-btn">Scanner</button>
+    <button onclick="showTab('studentTab', this)">Students</button>
+    <button onclick="showTab('attendanceTab', this)">Reports</button>
+    <button onclick="showTab('settingsTab', this)">Settings</button>
 </div>
 
 <div id="scanTab" class="tab active-tab">
-    <div class="manage-box" style="text-align:center;">
-        <div id="liveDateDisplay" style="font-weight:bold; color:#d9534f; margin-bottom:10px;"></div>
-        <label>Section:</label>
+    <div class="card" style="text-align: center;">
+        <h3 id="iosDate" style="color:var(--ios-blue); margin-bottom:5px;"></h3>
+        <p style="font-size:14px; color:var(--ios-gray); margin-bottom:20px;">Secure Session Active</p>
+        
         <select id="scanSectionFilter" onchange="renderAll()"></select>
-        <label>Camera:</label>
-        <select id="cameraSource" style="width:180px;"></select>
-        <br>
-        <button onclick="startScanner()" style="background:#28a745;">▶ START CAMERA</button>
-        <button onclick="stopScanner()" style="background:#dc3545;">⏹ STOP</button>
+        <select id="cameraSource"></select>
+        
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button onclick="startScanner()" class="btn-primary" style="margin-top:0;">Open Camera</button>
+            <button onclick="stopScanner()" style="color:var(--ios-red); font-weight:700;">Stop</button>
+        </div>
     </div>
-    <div id="scanner"></div>
-    <div id="scanStatus" class="status-msg" style="text-align:center;">Select camera and start...</div>
-    <table>
-        <thead><tr><th>#</th><th>Student</th><th>Time-In</th><th>Time-Out</th><th>Action</th></tr></thead>
-        <tbody id="scanMonitorBody"></tbody>
-    </table>
+    
+    <div class="card">
+        <div id="scanner"></div>
+        <div id="scanStatus" style="text-align:center; font-weight:600; padding:10px;">Ready to Scan</div>
+    </div>
+
+    <div id="scanMonitorBody" class="card ios-list"></div>
 </div>
 
 <div id="studentTab" class="tab">
-    <div class="manage-box">
-        <center><h3>Course & Section Management</h3></center>
-        <div class="mgmt-grid">
-            <div class="mgmt-column">
-                <center><b>COURSES</b></center>
-                <div style="display:flex; margin-top:5px;">
-                    <input id="newCourse" placeholder="e.g. BSCS" style="width:100%; margin:2px;">
-                    <button onclick="addDropdownItem('courses', 'newCourse')" style="background:#17a2b8; padding:5px 10px;">+</button>
-                </div>
-                <div id="list-courses" class="item-list"></div>
+    <div class="card">
+        <h3>Classroom Setup</h3>
+        <div class="mgmt-row">
+            <div class="mgmt-col">
+                <input id="newCourse" placeholder="Course" style="font-size:12px;">
+                <button onclick="addItem('courses', 'newCourse')" style="width:100%; color:var(--ios-blue); font-weight:800;">Add</button>
+                <div id="list-courses" style="margin-top:10px;"></div>
             </div>
-
-            <div class="mgmt-column">
-                <center><b>YEARS</b></center>
-                <div style="display:flex; margin-top:5px;">
-                    <input id="newYear" placeholder="e.g. 1st" style="width:100%; margin:2px;">
-                    <button onclick="addDropdownItem('years', 'newYear')" style="background:#17a2b8; padding:5px 10px;">+</button>
-                </div>
-                <div id="list-years" class="item-list"></div>
+            <div class="mgmt-col">
+                <input id="newYear" placeholder="Year" style="font-size:12px;">
+                <button onclick="addItem('years', 'newYear')" style="width:100%; color:var(--ios-blue); font-weight:800;">Add</button>
+                <div id="list-years" style="margin-top:10px;"></div>
             </div>
-
-            <div class="mgmt-column">
-                <center><b>SECTIONS</b></center>
-                <div style="display:flex; margin-top:5px;">
-                    <input id="newSection" placeholder="e.g. 2A" style="width:100%; margin:2px;">
-                    <button onclick="addDropdownItem('sections', 'newSection')" style="background:#17a2b8; padding:5px 10px;">+</button>
-                </div>
-                <div id="list-sections" class="item-list"></div>
+            <div class="mgmt-col">
+                <input id="newSection" placeholder="Section" style="font-size:12px;">
+                <button onclick="addItem('sections', 'newSection')" style="width:100%; color:var(--ios-blue); font-weight:800;">Add</button>
+                <div id="list-sections" style="margin-top:10px;"></div>
             </div>
         </div>
     </div>
 
-    <div class="manage-box">
-        <center>
-            <h3>Add Student</h3>
-            <input id="sid" placeholder="Student ID">
-            <input id="sname" placeholder="Full Name">
+    <div class="card">
+        <h3>Enroll Student</h3>
+        <input id="sid" placeholder="Student ID Number">
+        <input id="sname" placeholder="Full Student Name">
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
             <select id="courseSelect"></select>
             <select id="yearSelect"></select>
             <select id="sectionSelect"></select>
-            <button onclick="saveStudent()" style="background:#28a745;">+ Add Student</button>
-            <hr>
-            <label><b>QR Code Printing</b></label>
-            <select id="qrPrintSection"></select>
-            <button onclick="printQRBatch()" style="background:#17a2b8;">Generate per section</button>
-        </center>
+        </div>
+        <button onclick="saveStudent()" class="btn-primary">Add to Registry</button>
     </div>
-    <table>
-        <thead><tr><th>ID</th><th>Name</th><th>Course/Year/Section</th><th>Action</th></tr></thead>
-        <tbody id="studentTableBody"></tbody>
-    </table>
+
+    <div class="card">
+        <h3>Batch QR Generation</h3>
+        <select id="qrPrintSection"></select>
+        <button onclick="printQRBatch()" style="color:var(--ios-blue); font-weight:700; width:100%; margin-top:10px;">Export Section QR Cards (PDF)</button>
+    </div>
+
+    <div id="studentTableBody" class="card ios-list"></div>
 </div>
 
 <div id="attendanceTab" class="tab">
-    <div class="manage-box" style="text-align:center;">
+    <div class="card">
+        <h3>Attendance Logs</h3>
         <input type="date" id="attDate" onchange="renderAll()">
         <select id="repSectionFilter" onchange="renderAll()"></select>
         <input id="instructorName" placeholder="Instructor Name">
-        <button onclick="printOfficialPDF()" style="background:var(--lu-blue);">🖨 Print Official PDF</button>
+        <button onclick="printOfficialPDF()" class="btn-primary" style="background:#000;">Generate Official PDF</button>
     </div>
-    <table>
-        <thead><tr><th>ID</th><th>Student Name</th><th>In</th><th>Out</th><th>Status</th></tr></thead>
-        <tbody id="attendanceReportBody"></tbody>
-    </table>
+    <div id="attendanceReportBody" class="card ios-list"></div>
 </div>
 
 <div id="settingsTab" class="tab">
-    <div class="manage-box">
-        <h3>System Backup</h3>
-        <button onclick="backupData()" style="width:100%; background:#28a745; margin-bottom:10px;">💾 Download Backup (JSON)</button>
-        <input type="file" id="restoreFile" style="width:100%; margin-bottom:10px; border:1px dashed #ccc; padding:10px;">
-        <button onclick="restoreData()" style="width:100%; background:#007bff;">⬆ Restore Backup</button>
-        <button onclick="factoryReset()" style="width:100%; background:#dc3545; margin-top:20px;">🚨 Wipe All Data</button>
+    <div class="card">
+        <h3>Data Management</h3>
+        <button onclick="backupData()" class="ios-item" style="width:100%; text-align:left; border:none;">
+            <span>☁️ Cloud Backup (JSON)</span>
+            <span style="color:var(--ios-blue)">Download</span>
+        </button>
+        
+        <div class="ios-item" style="flex-direction:column; align-items:flex-start;">
+            <span style="margin-bottom:10px;">Restore System Data</span>
+            <input type="file" id="restoreFile" style="font-size:12px;">
+            <button onclick="restoreData()" class="btn-primary" style="padding:10px;">Upload Backup</button>
+        </div>
+
+        <button onclick="factoryReset()" style="width:100%; margin-top:50px; color:var(--ios-red); border:none; background:transparent; font-weight:600;">Erase All Content and Settings</button>
     </div>
 </div>
 
+<div id="hidden-qr-gen" style="display:none;"></div>
+
 <script>
-let students = JSON.parse(localStorage.getItem('lu_final_st')) || [];
-let attendance = JSON.parse(localStorage.getItem('lu_final_at')) || [];
-let dropdowns = JSON.parse(localStorage.getItem('lu_final_dr')) || {
-    sections:["2A", "2B", "2C"],
-    courses:["BSCS-DS"],
-    years:["2nd"]
+/* CORE DATA */
+let students = JSON.parse(localStorage.getItem('lu_ios_st')) || [];
+let attendance = JSON.parse(localStorage.getItem('lu_ios_at')) || [];
+let dropdowns = JSON.parse(localStorage.getItem('lu_ios_dr')) || {
+    sections:["2A", "2B"], courses:["BSCS"], years:["2nd"]
 };
 
+function save(){ 
+    localStorage.setItem('lu_ios_st', JSON.stringify(students));
+    localStorage.setItem('lu_ios_at', JSON.stringify(attendance));
+    localStorage.setItem('lu_ios_dr', JSON.stringify(dropdowns));
+}
+
+/* UI LOGIC */
 const todayStr = new Date().toISOString().split('T')[0];
 document.getElementById('attDate').value = todayStr;
-document.getElementById('liveDateDisplay').innerText = new Date().toDateString();
+document.getElementById('iosDate').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
-function save(){ 
-    localStorage.setItem('lu_final_st', JSON.stringify(students));
-    localStorage.setItem('lu_final_at', JSON.stringify(attendance));
-    localStorage.setItem('lu_final_dr', JSON.stringify(dropdowns));
-}
-
-/* --- DYNAMIC DROPDOWN & MANAGEMENT LOGIC --- */
-function addDropdownItem(category, inputId) {
-    const input = document.getElementById(inputId);
-    const value = input.value.trim().toUpperCase();
-    if(!value) return alert("Enter a value");
-    if(dropdowns[category].includes(value)) return alert("Already exists");
-    
-    dropdowns[category].push(value);
-    dropdowns[category].sort();
-    save();
-    input.value = "";
-    refreshDropdownUI();
+function showTab(id, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active-tab'));
+    document.querySelectorAll('.nav-container button').forEach(b => b.classList.remove('active-btn'));
+    document.getElementById(id).classList.add('active-tab');
+    btn.classList.add('active-btn');
+    if(id !== 'scanTab') stopScanner();
     renderAll();
 }
 
-function removeDropdownItem(category, value) {
-    if(!confirm(`Remove "${value}" from the options?`)) return;
-    dropdowns[category] = dropdowns[category].filter(x => x !== value);
-    save();
-    refreshDropdownUI();
+function addItem(cat, inputId) {
+    const val = document.getElementById(inputId).value.trim().toUpperCase();
+    if(!val || dropdowns[cat].includes(val)) return;
+    dropdowns[cat].push(val); dropdowns[cat].sort();
+    save(); document.getElementById(inputId).value = "";
+    refreshDropdowns();
+}
+
+function removeItem(cat, val) {
+    if(confirm(`Remove ${val}?`)) {
+        dropdowns[cat] = dropdowns[cat].filter(x => x !== val);
+        save(); refreshDropdowns();
+    }
+}
+
+function refreshDropdowns() {
+    const opts = arr => arr.map(x => `<option value="${x}">${x}</option>`).join("");
+    const pills = (cat, arr) => arr.map(x => `<div class="pill">${x}<span class="del-circle" onclick="removeItem('${cat}','${x}')">×</span></div>`).join("");
+    
+    document.getElementById("sectionSelect").innerHTML = opts(dropdowns.sections);
+    document.getElementById("courseSelect").innerHTML = opts(dropdowns.courses);
+    document.getElementById("yearSelect").innerHTML = opts(dropdowns.years);
+    document.getElementById("qrPrintSection").innerHTML = opts(dropdowns.sections);
+    
+    const filter = `<option value="ALL">All Sections</option>` + opts(dropdowns.sections);
+    document.getElementById("scanSectionFilter").innerHTML = filter;
+    document.getElementById("repSectionFilter").innerHTML = filter;
+
+    document.getElementById("list-courses").innerHTML = pills('courses', dropdowns.courses);
+    document.getElementById("list-years").innerHTML = pills('years', dropdowns.years);
+    document.getElementById("list-sections").innerHTML = pills('sections', dropdowns.sections);
     renderAll();
 }
 
-function refreshDropdownUI() {
-    const buildOptions = arr => arr.map(x => `<option value="${x}">${x}</option>`).join("");
-    const buildManageList = (category, arr) => arr.map(x => `
-        <div class="item-pill">
-            <span>${x}</span>
-            <span class="btn-del-small" onclick="removeDropdownItem('${category}', '${x}')">×</span>
-        </div>
-    `).join("");
-
-    // Update Dropdowns
-    document.getElementById("sectionSelect").innerHTML = buildOptions(dropdowns.sections);
-    document.getElementById("courseSelect").innerHTML = buildOptions(dropdowns.courses);
-    document.getElementById("yearSelect").innerHTML = buildOptions(dropdowns.years);
-    document.getElementById("qrPrintSection").innerHTML = buildOptions(dropdowns.sections);
-    
-    const sOpts = `<option value="ALL">ALL</option>` + buildOptions(dropdowns.sections);
-    document.getElementById("scanSectionFilter").innerHTML = sOpts;
-    document.getElementById("repSectionFilter").innerHTML = sOpts;
-
-    // Update Management Lists
-    document.getElementById("list-courses").innerHTML = buildManageList('courses', dropdowns.courses);
-    document.getElementById("list-years").innerHTML = buildManageList('years', dropdowns.years);
-    document.getElementById("list-sections").innerHTML = buildManageList('sections', dropdowns.sections);
-}
-
-/* --- CORE SYSTEM LOGIC --- */
+/* SCANNER & RENDER */
 let html5QrCode;
-let isScanningPaused = false;
-
-async function initCameras() {
-    try {
-        const devices = await Html5Qrcode.getCameras();
-        const sel = document.getElementById('cameraSource');
-        sel.innerHTML = devices.map(d => `<option value="${d.id}">${d.label}</option>`).join('');
-    } catch (e) { console.log("Camera access denied."); }
-}
-
 async function startScanner() {
     const camId = document.getElementById('cameraSource').value;
-    if(!camId) return alert("No camera selected.");
     if(!html5QrCode) html5QrCode = new Html5Qrcode("scanner");
-    if(html5QrCode.isScanning) await html5QrCode.stop();
-
     html5QrCode.start(camId, { fps: 10, qrbox: 250 }, (id) => {
-        if (isScanningPaused) return;
         const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         let s = students.find(x => x.id === id);
         if(!s) return;
-        
         let r = attendance.find(a => a.id === id && a.date === todayStr);
-        if (!r) {
+        if(!r) {
             attendance.push({ id, date: todayStr, timeIn: time, timeOut: null });
-            document.getElementById("scanStatus").innerText = "✅ IN: " + s.name;
-        } else if (!r.timeOut) {
+            document.getElementById("scanStatus").innerText = "Logged In: " + s.name;
+        } else if(!r.timeOut) {
             r.timeOut = time;
-            document.getElementById("scanStatus").innerText = "🏁 OUT: " + s.name;
-        } else { return; }
-
-        isScanningPaused = true;
-        setTimeout(() => {
-            isScanningPaused = false;
-            document.getElementById("scanStatus").innerText = "Ready to scan...";
-        }, 5000); 
-
-        save(); 
-        renderAll();
-    }).catch(e => alert("Error: " + e));
+            document.getElementById("scanStatus").innerText = "Logged Out: " + s.name;
+        }
+        save(); renderAll();
+    });
 }
 
-async function stopScanner() { if(html5QrCode && html5QrCode.isScanning) { await html5QrCode.stop(); document.getElementById("scanStatus").innerText = "Stopped."; } }
+function stopScanner() { if(html5QrCode) html5QrCode.stop(); }
 
 function renderAll() {
-    // If UI elements are empty, force rebuild
-    if(document.getElementById("sectionSelect").options.length === 0) refreshDropdownUI();
-
     const sF = document.getElementById("scanSectionFilter").value;
-    document.getElementById("scanMonitorBody").innerHTML = students
+    document.getElementById("scanMonitorBody").innerHTML = `<h3>Activity Monitor</h3>` + students
         .filter(s => sF === "ALL" || s.section === sF)
-        .map((s, i) => {
+        .map(s => {
             const r = attendance.find(a => a.id === s.id && a.date === todayStr);
-            return `<tr><td>${i+1}</td><td>${s.name}</td><td>${r?r.timeIn:'--'}</td><td>${r?r.timeOut:'--'}</td><td><button onclick="resetAtt('${s.id}')">Reset</button></td></tr>`;
+            return `<div class="ios-item">
+                <div><b>${s.name}</b><br><small style="color:var(--ios-gray)">${s.id}</small></div>
+                <div style="text-align:right">In: ${r?r.timeIn:'--'}<br>Out: ${r?r.timeOut:'--'}</div>
+            </div>`;
         }).join("");
 
-    document.getElementById("studentTableBody").innerHTML = students.map(s => 
-        `<tr><td>${s.id}</td><td>${s.name}</td><td>${s.course} ${s.year}-${s.section}</td><td><button onclick="delStud('${s.id}')" style="background:#dc3545">Del</button></td></tr>`).join("");
+    document.getElementById("studentTableBody").innerHTML = `<h3>Enrolled Students (${students.length})</h3>` + students.map(s => 
+        `<div class="ios-item">
+            <div><b>${s.name}</b><br><small>${s.course} ${s.year}-${s.section}</small></div>
+            <button onclick="delStud('${s.id}')" style="color:var(--ios-red); border:none; background:transparent;">Remove</button>
+        </div>`).join("");
 
     const rD = document.getElementById('attDate').value;
     const rF = document.getElementById("repSectionFilter").value;
-    document.getElementById("attendanceReportBody").innerHTML = students
+    document.getElementById("attendanceReportBody").innerHTML = `<h3>Logs for ${rD}</h3>` + students
         .filter(s => rF === "ALL" || s.section === rF)
         .map(s => {
             const r = attendance.find(a => a.id === s.id && a.date === rD);
-            return `<tr><td>${s.id}</td><td>${s.name}</td><td>${r?r.timeIn:'--'}</td><td>${r?r.timeOut:'--'}</td><td>${r?'✅':'❌'}</td></tr>`;
+            return `<div class="ios-item">
+                <b>${s.name}</b>
+                <span style="color:${r? 'var(--ios-green)' : 'var(--ios-red)'}">${r?'Present':'Absent'}</span>
+            </div>`;
         }).join("");
 }
 
 function saveStudent() {
     let s = { 
-        id: document.getElementById("sid").value, 
-        name: document.getElementById("sname").value, 
-        course: document.getElementById("courseSelect").value, 
-        year: document.getElementById("yearSelect").value, 
+        id: document.getElementById("sid").value, name: document.getElementById("sname").value, 
+        course: document.getElementById("courseSelect").value, year: document.getElementById("yearSelect").value, 
         section: document.getElementById("sectionSelect").value 
     };
-    if(!s.id || !s.name || !s.course || !s.section) return alert("Fill all fields");
+    if(!s.id || !s.name) return alert("Missing Info");
     students.push(s); save(); renderAll();
     document.getElementById("sid").value=""; document.getElementById("sname").value="";
 }
 
-/* --- UTILITIES --- */
+/* PDF & TOOLS */
 async function printQRBatch() {
     const sec = document.getElementById('qrPrintSection').value;
-    const list = students.filter(s => s.section === sec).slice(0, 50);
-    if(list.length === 0) return alert("No students in this section.");
+    const list = students.filter(s => s.section === sec);
+    if(list.length === 0) return alert("No students found.");
     let cards = "";
     for (let s of list) {
         const qrUrl = await new Promise(res => {
@@ -308,35 +352,44 @@ async function printQRBatch() {
             new QRCode(div, { text: s.id, width: 120, height: 120 });
             setTimeout(() => res(div.querySelector('img').src), 150);
         });
-        cards += `<div class="card"><div class="ut">LAGUNA UNIVERSITY</div><img src="${qrUrl}"><div class="nm">${s.name.toUpperCase()}</div><div class="id">${s.id}</div><div class="inf">${s.course} - ${s.year} (${s.section})</div></div>`;
+        cards += `<div style="border:1px solid #ddd; text-align:center; padding:10px; margin:5px; border-radius:10px; break-inside:avoid;">
+            <p style="font-size:10px; margin:0;">LAGUNA UNIVERSITY</p>
+            <img src="${qrUrl}" width="100">
+            <p style="font-size:12px; font-weight:bold; margin:2px;">${s.name}</p>
+            <p style="font-size:9px; margin:0;">${s.id} | ${s.section}</p>
+        </div>`;
     }
-    const w = window.open("", "_blank");
-    w.document.write(`<html><head><style>@page { size: Legal; margin: 5mm; } body { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5mm; font-family: Arial; } .card { border: 1px solid #000; text-align: center; padding: 5px; display:flex; flex-direction:column; align-items:center; } .ut { font-size: 8px; font-weight: bold; } img { width: 90px; height: 90px; } .nm { font-size: 10px; font-weight: bold; } .id { font-size: 9px; } .inf { font-size: 8px; background: #eee; width: 100%; }</style></head><body onload="window.print()">${cards}</body></html>`);
+    const w = window.open();
+    w.document.write(`<body style="display:grid; grid-template-columns:repeat(4,1fr); font-family:sans-serif;" onload="window.print()">${cards}</body>`);
     w.document.close();
 }
 
 function printOfficialPDF() {
     const d = document.getElementById('attDate').value;
-    const sec = document.getElementById('repSectionFilter').value;
-    const inst = document.getElementById('instructorName').value || "________________";
-    const filtered = students.filter(s => sec === "ALL" || s.section === sec);
-    const rows = filtered.map((s, i) => {
+    const inst = document.getElementById('instructorName').value || "Instructor";
+    const content = students.map(s => {
         const r = attendance.find(a => a.id === s.id && a.date === d);
-        return `<tr><td>${i+1}</td><td>${s.id}</td><td style="text-align:left">${s.name}</td><td>${r?r.timeIn:'--'}</td><td>${r?r.timeOut:'--'}</td><td>${r?'PRESENT':'ABSENT'}</td></tr>`;
-    }).join('');
-    const w = window.open("", "_blank");
-    w.document.write(`<html><head><style>body { font-family: serif; padding: 30px; } table { width: 100%; border-collapse: collapse; } th, td { border: 1px solid #000; padding: 8px; text-align: center; }</style></head><body onload="window.print()"><h2 style="text-align:center">Attendance Report - ${d}</h2><p>Section: ${sec} | Instructor: ${inst}</p><table><thead><tr><th>#</th><th>ID</th><th>Name</th><th>In</th><th>Out</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></body></html>`);
-    w.document.close();
+        return `<tr><td>${s.name}</td><td>${r?r.timeIn:'--'}</td><td>${r?r.timeOut:'--'}</td><td>${r?'Present':'Absent'}</td></tr>`;
+    }).join("");
+    const w = window.open();
+    w.document.write(`<style>table{width:100%; border-collapse:collapse;} th,td{border:1px solid #000; padding:8px; text-align:left;}</style>
+    <h1>Attendance Report</h1><p>Date: ${d} | Instructor: ${inst}</p>
+    <table><tr><th>Name</th><th>In</th><th>Out</th><th>Status</th></tr>${content}</table>
+    <script>window.print()<\/script>`);
 }
 
 function delStud(id) { if(confirm("Delete student?")) { students = students.filter(s => s.id !== id); save(); renderAll(); } }
-function resetAtt(id) { attendance = attendance.filter(a => !(a.id === id && a.date === todayStr)); save(); renderAll(); }
-function showTab(id) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active-tab')); document.getElementById(id).classList.add('active-tab'); stopScanner(); renderAll(); }
-function backupData() { const b = new Blob([JSON.stringify({lu_final_st:students, lu_final_at:attendance, lu_final_dr:dropdowns})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "LU_Backup.json"; a.click(); }
-function restoreData() { const r = new FileReader(); r.onload = (e) => { const d = JSON.parse(e.target.result); students=d.lu_final_st; attendance=d.lu_final_at; dropdowns=d.lu_final_dr; save(); location.reload(); }; r.readAsText(document.getElementById('restoreFile').files[0]); }
-function factoryReset() { if(confirm("Wipe all data?")) { localStorage.clear(); location.reload(); } }
+function backupData() { const b = new Blob([JSON.stringify({lu_ios_st:students, lu_ios_at:attendance, lu_ios_dr:dropdowns})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "LU_Backup.json"; a.click(); }
+function restoreData() { const r = new FileReader(); r.onload = (e) => { const d = JSON.parse(e.target.result); students=d.lu_ios_st; attendance=d.lu_ios_at; dropdowns=d.lu_ios_dr; save(); location.reload(); }; r.readAsText(document.getElementById('restoreFile').files[0]); }
+function factoryReset() { if(confirm("Wipe all system data?")) { localStorage.clear(); location.reload(); } }
 
-window.onload = () => { initCameras(); refreshDropdownUI(); renderAll(); };
+window.onload = async () => {
+    try {
+        const devices = await Html5Qrcode.getCameras();
+        document.getElementById('cameraSource').innerHTML = devices.map(d => `<option value="${d.id}">${d.label}</option>`).join('');
+    } catch (e) {}
+    refreshDropdowns();
+};
 </script>
 </body>
 </html>
