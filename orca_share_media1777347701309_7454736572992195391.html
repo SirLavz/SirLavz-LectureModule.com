@@ -1,0 +1,304 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SirLavz QR Attendance - LU CCS Official</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root { --lu-blue: #002b5c; --lu-gold: #ffc107; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f0f2f5; margin:0; padding:20px; color: #333; }
+        h1, h2 { text-align:center; color: var(--lu-blue); text-transform: uppercase; margin: 5px 0; }
+        .nav-container { text-align:center; margin-bottom: 20px; background: #fff; padding: 10px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        button { padding:10px 15px; margin:4px; cursor:pointer; border-radius:6px; border:none; background: var(--lu-blue); color: white; font-weight: bold; transition: 0.3s; }
+        button:hover { opacity: 0.8; }
+        input, select { padding:10px; border-radius:6px; border:1px solid #ccc; margin:5px; font-size: 14px; }
+        table { width:100%; border-collapse:collapse; background:#fff; margin-top:15px; border-radius: 8px; overflow: hidden; }
+        th, td { border: 1px solid #eee; padding: 12px; text-align: center; }
+        th { background: var(--lu-blue); color: #fff; }
+        .tab { display: none; animation: fadeIn 0.3s ease-in; }
+        .active-tab { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .manage-box { background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        #scanner { width: 100%; max-width: 450px; margin: auto; border: 4px solid var(--lu-blue); border-radius: 12px; overflow: hidden; }
+        .status-msg { font-size: 1.2em; font-weight: bold; color: var(--lu-blue); margin: 15px 0; height: 30px; }
+        #hidden-qr-gen { display: none; }
+    </style>
+</head>
+<body>
+
+<div id="hidden-qr-gen"></div>
+
+<h2>Laguna University - CCS</h2>
+<h1>Attendance Tracking System</h1>
+
+<div class="nav-container">
+    <button onclick="showTab('scanTab')">📸 Scanner</button>
+    <button onclick="showTab('studentTab')">👥 Students</button>
+    <button onclick="showTab('attendanceTab')">📋 Reports</button>
+    <button onclick="showTab('settingsTab')" style="background:#6c757d">⚙ Tools</button>
+</div>
+
+<div id="scanTab" class="tab active-tab">
+    <div class="manage-box" style="text-align:center;">
+        <div id="liveDateDisplay" style="font-weight:bold; color:#d9534f; margin-bottom:10px;"></div>
+        
+        <label>Section:</label>
+        <select id="scanSectionFilter" onchange="renderAll()"></select>
+        
+        <label>Camera:</label>
+        <select id="cameraSource" style="width:180px;"></select>
+        <br>
+        <button onclick="startScanner()" style="background:#28a745;">▶ START CAMERA</button>
+        <button onclick="stopScanner()" style="background:#dc3545;">⏹ STOP</button>
+    </div>
+    <div id="scanner"></div>
+    <div id="scanStatus" class="status-msg" style="text-align:center;">Select camera and start...</div>
+    
+    <table>
+        <thead><tr><th>#</th><th>Student</th><th>Time-In</th><th>Time-Out</th><th>Action</th></tr></thead>
+        <tbody id="scanMonitorBody"></tbody>
+    </table>
+</div>
+
+<div id="studentTab" class="tab">
+    <div class="manage-box">
+        <center><h3>Add Student</h3>
+        <input id="sid" placeholder="Student ID">
+        <input id="sname" placeholder="Full Name">
+        <select id="courseSelect"></select>
+        <select id="yearSelect"></select>
+        <select id="sectionSelect"></select>
+        <button onclick="saveStudent()" style="background:#28a745;">+ Add Student</button>
+        <hr>
+        <center><label><b>QR Code Printing(Save as PDF)</b></label>
+        <select id="qrPrintSection"></select>
+        <button onclick="printQRBatch()" style="background:#17a2b8;">Generate per section</button></center>
+    </div>
+    <table>
+        <thead><tr><th>ID</th><th>Name</th><th>Course/Year/Section</th><th>Action</th></tr></thead>
+        <tbody id="studentTableBody"></tbody>
+    </table></center>
+</div>
+
+<div id="attendanceTab" class="tab">
+    <div class="manage-box" style="text-align:center;">
+        <input type="date" id="attDate" onchange="renderAll()">
+        <select id="repSectionFilter" onchange="renderAll()"></select>
+        <input id="instructorName" placeholder="Instructor Name">
+        <button onclick="printOfficialPDF()" style="background:var(--lu-blue);">🖨 Print Official PDF</button>
+    </div>
+    <table>
+        <thead><tr><th>ID</th><th>Student Name</th><th>In</th><th>Out</th><th>Status</th></tr></thead>
+        <tbody id="attendanceReportBody"></tbody>
+    </table>
+</div>
+
+<div id="settingsTab" class="tab">
+    <div class="manage-box">
+        <h3>Management</h3>
+        <button onclick="backupData()" style="width:100%; background:#28a745; margin-bottom:10px;">💾 Download Backup (JSON)</button>
+        <input type="file" id="restoreFile" style="width:100%; margin-bottom:10px; border:1px dashed #ccc; padding:10px;">
+        <button onclick="restoreData()" style="width:100%; background:#007bff;">⬆ Restore Backup</button>
+        <button onclick="factoryReset()" style="width:100%; background:#dc3545; margin-top:20px;">🚨 Wipe All Data</button>
+    </div>
+</div>
+
+<script>
+let students = JSON.parse(localStorage.getItem('lu_final_st')) || [];
+let attendance = JSON.parse(localStorage.getItem('lu_final_at')) || [];
+let dropdowns = JSON.parse(localStorage.getItem('lu_final_dr')) || {
+    sections:["2A", "2B", "2C"],
+    courses:["BSCS-DS"],
+    years:["2nd"]
+};
+
+const todayStr = new Date().toISOString().split('T')[0];
+document.getElementById('attDate').value = todayStr;
+document.getElementById('liveDateDisplay').innerText = new Date().toDateString();
+
+function save(){ 
+    localStorage.setItem('lu_final_st', JSON.stringify(students));
+    localStorage.setItem('lu_final_at', JSON.stringify(attendance));
+    localStorage.setItem('lu_final_dr', JSON.stringify(dropdowns));
+}
+
+/* --- CAMERA & SCANNER --- */
+let html5QrCode;
+let isScanningPaused = false; // New flag for cooldown
+
+async function initCameras() {
+    try {
+        const devices = await Html5Qrcode.getCameras();
+        const sel = document.getElementById('cameraSource');
+        sel.innerHTML = devices.map(d => `<option value="${d.id}">${d.label}</option>`).join('');
+    } catch (e) { console.log("Camera access denied initially."); }
+}
+
+async function startScanner() {
+    const camId = document.getElementById('cameraSource').value;
+    if(!camId) return alert("No camera selected.");
+    if(!html5QrCode) html5QrCode = new Html5Qrcode("scanner");
+    if(html5QrCode.isScanning) await html5QrCode.stop();
+
+    html5QrCode.start(camId, { fps: 10, qrbox: 250 }, (id) => {
+        // Check if we are currently in a 5-second cooldown
+        if (isScanningPaused) return;
+
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        let s = students.find(x => x.id === id);
+        if(!s) return;
+        
+        let r = attendance.find(a => a.id === id && a.date === todayStr);
+        if (!r) {
+            attendance.push({ id, date: todayStr, timeIn: time, timeOut: null });
+            document.getElementById("scanStatus").innerText = "✅ IN: " + s.name;
+        } else if (!r.timeOut) {
+            r.timeOut = time;
+            document.getElementById("scanStatus").innerText = "🏁 OUT: " + s.name;
+        } else {
+            // Already timed out today
+            return;
+        }
+
+        // Start 5-second cooldown
+        isScanningPaused = true;
+        setTimeout(() => {
+            isScanningPaused = false;
+            document.getElementById("scanStatus").innerText = "Ready to scan...";
+        }, 5000); 
+
+        save(); 
+        renderAll();
+    }).catch(e => alert("Error: " + e));
+}
+
+async function stopScanner() { if(html5QrCode && html5QrCode.isScanning) { await html5QrCode.stop(); document.getElementById("scanStatus").innerText = "Stopped."; } }
+
+/* --- 4x4 QR PRINTING --- */
+async function printQRBatch() {
+    const sec = document.getElementById('qrPrintSection').value;
+    const list = students.filter(s => s.section === sec).slice(0, 50);
+    if(list.length === 0) return alert("No students.");
+
+    let cards = "";
+    for (let s of list) {
+        const qrUrl = await new Promise(res => {
+            const div = document.getElementById('hidden-qr-gen');
+            div.innerHTML = "";
+            new QRCode(div, { text: s.id, width: 120, height: 120 });
+            setTimeout(() => res(div.querySelector('img').src), 150);
+        });
+        cards += `
+            <div class="card">
+                <div class="ut">LAGUNA UNIVERSITY</div>
+                <img src="${qrUrl}">
+                <div class="nm">${s.name.toUpperCase()}</div>
+                <div class="id">${s.id}</div>
+                <div class="inf">${s.course} - ${s.year} (${s.section})</div>
+            </div>`;
+    }
+
+    const w = window.open("", "_blank");
+    w.document.write(`<html><head><style>
+        @page { size: Legal; margin: 50mm; }
+        body { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); gap: 5mm; font-family: Arial; }
+        .card { border: 1px solid #000; text-align: center; padding: 5px; box-sizing: border-box; display:flex; flex-direction:column; justify-content:center; align-items:center; }
+        .ut { font-size: 8px; font-weight: bold; }
+        img { width: 90px; height: 90px; }
+        .nm { font-size: 10px; font-weight: bold; }
+        .id { font-size: 9px; }
+        .inf { font-size: 8px; background: #eee; width: 100%; margin-top:2px; }
+    </style></head><body onload="window.print()">${cards}</body></html>`);
+    w.document.close();
+}
+
+/* --- OFFICIAL PDF --- */
+function printOfficialPDF() {
+    const d = document.getElementById('attDate').value;
+    const sec = document.getElementById('repSectionFilter').value;
+    const inst = document.getElementById('instructorName').value || "________________";
+    const filtered = students.filter(s => sec === "ALL" || s.section === sec);
+    const rows = filtered.map((s, i) => {
+        const r = attendance.find(a => a.id === s.id && a.date === d);
+        return `<tr><td>${i+1}</td><td>${s.id}</td><td style="text-align:left">${s.name}</td><td>${r?r.timeIn:'--'}</td><td>${r?r.timeOut:'--'}</td><td>${r?'PRESENT':'ABSENT'}</td></tr>`;
+    }).join('');
+
+    const w = window.open("", "_blank");
+    w.document.write(`<html><head><style>
+        body { font-family: "Times New Roman", serif; padding: 30px; }
+        .header { display: flex; align-items: center; border-bottom: 2px solid #000; padding-bottom: 10px; text-align: center; }
+        .ht { flex-grow: 1; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #000; padding: 8px; font-size: 12px; }
+        .footer { margin-top: 40px; display: flex; justify-content: space-between; }
+    </style></head><body onload="window.print()">
+        <div class="header">
+            <img src="lulogoREAL.png" width="60">
+            <div class="ht">
+                <p style="margin:0">Republic of the Philippines</p>
+                <h2 style="margin:0">LAGUNA UNIVERSITY</h2>
+                <h3 style="margin:0">College of Computer Studies</h3>
+            </div>
+            <img src="CCSLogo.jpg" width="60">
+        </div>
+        <h3 style="text-align:center">ATTENDANCE REPORT - ${d}</h3>
+        <p>Section: ${sec} | Instructor: ${inst}</p>
+        <table><thead><tr><th>#</th><th>ID</th><th>Student Name</th><th>In</th><th>Out</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>
+        <div class="footer"><p>Printed: ${new Date().toLocaleDateString()}</p><div><br>________________<br>Instructor</div></div>
+    </body></html>`);
+    w.document.close();
+}
+
+/* --- UI & DATA --- */
+function renderAll() {
+    const opt = arr => arr.map(x => `<option value="${x}">${x}</option>`).join("");
+    if(document.getElementById("sectionSelect").options.length === 0){
+        document.getElementById("sectionSelect").innerHTML = opt(dropdowns.sections);
+        document.getElementById("courseSelect").innerHTML = opt(dropdowns.courses);
+        document.getElementById("yearSelect").innerHTML = opt(dropdowns.years);
+        document.getElementById("qrPrintSection").innerHTML = opt(dropdowns.sections);
+        const sOpts = `<option value="ALL">ALL</option>` + opt(dropdowns.sections);
+        document.getElementById("scanSectionFilter").innerHTML = sOpts;
+        document.getElementById("repSectionFilter").innerHTML = sOpts;
+    }
+
+    const sF = document.getElementById("scanSectionFilter").value;
+    document.getElementById("scanMonitorBody").innerHTML = students
+        .filter(s => sF === "ALL" || s.section === sF)
+        .map((s, i) => {
+            const r = attendance.find(a => a.id === s.id && a.date === todayStr);
+            return `<tr><td>${i+1}</td><td>${s.name}</td><td>${r?r.timeIn:'--'}</td><td>${r?r.timeOut:'--'}</td><td><button onclick="resetAtt('${s.id}')">Reset</button></td></tr>`;
+        }).join("");
+
+    document.getElementById("studentTableBody").innerHTML = students.map(s => 
+        `<tr><td>${s.id}</td><td>${s.name}</td><td>${s.course} ${s.year}-${s.section}</td><td><button onclick="delStud('${s.id}')" style="background:#dc3545">Del</button></td></tr>`).join("");
+
+    const rD = document.getElementById('attDate').value;
+    const rF = document.getElementById("repSectionFilter").value;
+    document.getElementById("attendanceReportBody").innerHTML = students
+        .filter(s => rF === "ALL" || s.section === rF)
+        .map(s => {
+            const r = attendance.find(a => a.id === s.id && a.date === rD);
+            return `<tr><td>${s.id}</td><td>${s.name}</td><td>${r?r.timeIn:'--'}</td><td>${r?r.timeOut:'--'}</td><td>${r?'✅':'❌'}</td></tr>`;
+        }).join("");
+}
+
+function saveStudent() {
+    let s = { id: document.getElementById("sid").value, name: document.getElementById("sname").value, course: document.getElementById("courseSelect").value, year: document.getElementById("yearSelect").value, section: document.getElementById("sectionSelect").value };
+    if(!s.id || !s.name) return alert("Fill all fields");
+    students.push(s); save(); renderAll();
+    document.getElementById("sid").value=""; document.getElementById("sname").value="";
+}
+function delStud(id) { if(confirm("Delete?")) { students = students.filter(s => s.id !== id); save(); renderAll(); } }
+function resetAtt(id) { attendance = attendance.filter(a => !(a.id === id && a.date === todayStr)); save(); renderAll(); }
+function showTab(id) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active-tab')); document.getElementById(id).classList.add('active-tab'); stopScanner(); renderAll(); }
+function backupData() { const b = new Blob([JSON.stringify({lu_final_st:students, lu_final_at:attendance, lu_final_dr:dropdowns})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "LU_Backup.json"; a.click(); }
+function restoreData() { const r = new FileReader(); r.onload = (e) => { const d = JSON.parse(e.target.result); students=d.lu_final_st; attendance=d.lu_final_at; dropdowns=d.lu_final_dr; save(); location.reload(); }; r.readAsText(document.getElementById('restoreFile').files[0]); }
+function factoryReset() { if(confirm("Wipe all data?")) { localStorage.clear(); location.reload(); } }
+
+window.onload = () => { initCameras(); renderAll(); };
+</script>
+</body>
+</html>
