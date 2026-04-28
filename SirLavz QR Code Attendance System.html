@@ -67,15 +67,15 @@
         <div class="mgmt-grid">
             <div class="mgmt-item">
                 <input id="newCourse" placeholder="New Course" style="width:120px;">
-                <button onclick="addDropdownItem('courses', 'newCourse')" style="background:#17a2b8;">Add</button>
+                <button onclick="addDropdownItem('courses', 'newCourse')" style="background:#17a2b8;">Add Course</button>
             </div>
             <div class="mgmt-item">
                 <input id="newYear" placeholder="New Year" style="width:120px;">
-                <button onclick="addDropdownItem('years', 'newYear')" style="background:#17a2b8;">Add</button>
+                <button onclick="addDropdownItem('years', 'newYear')" style="background:#17a2b8;">Add Year</button>
             </div>
             <div class="mgmt-item">
                 <input id="newSection" placeholder="New Section" style="width:120px;">
-                <button onclick="addDropdownItem('sections', 'newSection')" style="background:#17a2b8;">Add</button>
+                <button onclick="addDropdownItem('sections', 'newSection')" style="background:#17a2b8;">Add Section</button>
             </div>
         </div>
     </div>
@@ -143,34 +143,39 @@ function save(){
     localStorage.setItem('lu_final_dr', JSON.stringify(dropdowns));
 }
 
-/* --- DROPDOWN MANAGEMENT --- */
+/* --- DROPDOWN MANAGEMENT LOGIC --- */
 function addDropdownItem(category, inputId) {
     const input = document.getElementById(inputId);
     const value = input.value.trim().toUpperCase();
-    if(!value) return alert("Enter a value");
-    if(dropdowns[category].includes(value)) return alert("Already exists");
+    
+    if(!value) return alert("Please enter a value.");
+    if(dropdowns[category].includes(value)) return alert("This already exists.");
     
     dropdowns[category].push(value);
-    dropdowns[category].sort();
+    dropdowns[category].sort(); // Keep them organized
     save();
-    input.value = "";
-    refreshDropdownUI();
+    
+    input.value = ""; // Clear input
+    refreshDropdownUI(); // Update UI immediately
     renderAll();
 }
 
 function refreshDropdownUI() {
     const opt = arr => arr.map(x => `<option value="${x}">${x}</option>`).join("");
+    
+    // Refresh student form
     document.getElementById("sectionSelect").innerHTML = opt(dropdowns.sections);
     document.getElementById("courseSelect").innerHTML = opt(dropdowns.courses);
     document.getElementById("yearSelect").innerHTML = opt(dropdowns.years);
     document.getElementById("qrPrintSection").innerHTML = opt(dropdowns.sections);
     
+    // Refresh filter dropdowns
     const sOpts = `<option value="ALL">ALL</option>` + opt(dropdowns.sections);
     document.getElementById("scanSectionFilter").innerHTML = sOpts;
     document.getElementById("repSectionFilter").innerHTML = sOpts;
 }
 
-/* --- CAMERA & SCANNER --- */
+/* --- SCANNER & CORE LOGIC --- */
 let html5QrCode;
 let isScanningPaused = false;
 
@@ -179,7 +184,7 @@ async function initCameras() {
         const devices = await Html5Qrcode.getCameras();
         const sel = document.getElementById('cameraSource');
         sel.innerHTML = devices.map(d => `<option value="${d.id}">${d.label}</option>`).join('');
-    } catch (e) { console.log("Camera access denied initially."); }
+    } catch (e) { console.log("Camera access denied."); }
 }
 
 async function startScanner() {
@@ -216,8 +221,8 @@ async function startScanner() {
 
 async function stopScanner() { if(html5QrCode && html5QrCode.isScanning) { await html5QrCode.stop(); document.getElementById("scanStatus").innerText = "Stopped."; } }
 
-/* --- UI RENDER --- */
 function renderAll() {
+    // Ensure dropdowns are built if empty
     if(document.getElementById("sectionSelect").options.length === 0) refreshDropdownUI();
 
     const sF = document.getElementById("scanSectionFilter").value;
@@ -254,11 +259,11 @@ function saveStudent() {
     document.getElementById("sid").value=""; document.getElementById("sname").value="";
 }
 
-/* --- OTHER FUNCTIONS --- */
+/* --- PDF & SYSTEM TOOLS --- */
 async function printQRBatch() {
     const sec = document.getElementById('qrPrintSection').value;
     const list = students.filter(s => s.section === sec).slice(0, 50);
-    if(list.length === 0) return alert("No students.");
+    if(list.length === 0) return alert("No students in this section.");
     let cards = "";
     for (let s of list) {
         const qrUrl = await new Promise(res => {
@@ -288,14 +293,14 @@ function printOfficialPDF() {
     w.document.close();
 }
 
-function delStud(id) { if(confirm("Delete?")) { students = students.filter(s => s.id !== id); save(); renderAll(); } }
+function delStud(id) { if(confirm("Delete student?")) { students = students.filter(s => s.id !== id); save(); renderAll(); } }
 function resetAtt(id) { attendance = attendance.filter(a => !(a.id === id && a.date === todayStr)); save(); renderAll(); }
 function showTab(id) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active-tab')); document.getElementById(id).classList.add('active-tab'); stopScanner(); renderAll(); }
 function backupData() { const b = new Blob([JSON.stringify({lu_final_st:students, lu_final_at:attendance, lu_final_dr:dropdowns})], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = "LU_Backup.json"; a.click(); }
 function restoreData() { const r = new FileReader(); r.onload = (e) => { const d = JSON.parse(e.target.result); students=d.lu_final_st; attendance=d.lu_final_at; dropdowns=d.lu_final_dr; save(); location.reload(); }; r.readAsText(document.getElementById('restoreFile').files[0]); }
 function factoryReset() { if(confirm("Wipe all data?")) { localStorage.clear(); location.reload(); } }
 
-window.onload = () => { initCameras(); renderAll(); };
+window.onload = () => { initCameras(); refreshDropdownUI(); renderAll(); };
 </script>
 </body>
 </html>
