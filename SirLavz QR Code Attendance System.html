@@ -7,7 +7,7 @@
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root { --lu-blue: #002b5c; --lu-gold: #ffc107; }
+        :root { --lu-blue: #002b5c; --lu-gold: #ffc107; --danger: #dc3545; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f0f2f5; margin:0; padding:20px; color: #333; }
         h1, h2 { text-align:center; color: var(--lu-blue); text-transform: uppercase; margin: 5px 0; }
         .nav-container { text-align:center; margin-bottom: 20px; background: #fff; padding: 10px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -24,8 +24,14 @@
         #scanner { width: 100%; max-width: 450px; margin: auto; border: 4px solid var(--lu-blue); border-radius: 12px; overflow: hidden; }
         .status-msg { font-size: 1.2em; font-weight: bold; color: var(--lu-blue); margin: 15px 0; height: 30px; }
         #hidden-qr-gen { display: none; }
-        .mgmt-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }
-        .mgmt-item { border: 1px solid #eee; padding: 10px; border-radius: 8px; background: #fafafa; }
+        
+        /* Management UI Styles */
+        .mgmt-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 10px; }
+        .mgmt-column { background: #fafafa; border: 1px solid #ddd; padding: 10px; border-radius: 8px; min-width: 200px; }
+        .item-list { margin-top: 10px; text-align: left; max-height: 150px; overflow-y: auto; background: white; border-radius: 4px; border: 1px solid #eee; }
+        .item-pill { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; border-bottom: 1px solid #f0f0f0; font-size: 0.85em; }
+        .item-pill:last-child { border-bottom: none; }
+        .btn-del-small { background: var(--danger); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -62,20 +68,34 @@
 </div>
 
 <div id="studentTab" class="tab">
-    <div class="manage-box" style="border: 1px solid #dee2e6;">
+    <div class="manage-box">
         <center><h3>Course & Section Management</h3></center>
         <div class="mgmt-grid">
-            <div class="mgmt-item">
-                <input id="newCourse" placeholder="New Course" style="width:120px;">
-                <button onclick="addDropdownItem('courses', 'newCourse')" style="background:#17a2b8;">Add Course</button>
+            <div class="mgmt-column">
+                <center><b>COURSES</b></center>
+                <div style="display:flex; margin-top:5px;">
+                    <input id="newCourse" placeholder="e.g. BSCS" style="width:100%; margin:2px;">
+                    <button onclick="addDropdownItem('courses', 'newCourse')" style="background:#17a2b8; padding:5px 10px;">+</button>
+                </div>
+                <div id="list-courses" class="item-list"></div>
             </div>
-            <div class="mgmt-item">
-                <input id="newYear" placeholder="New Year" style="width:120px;">
-                <button onclick="addDropdownItem('years', 'newYear')" style="background:#17a2b8;">Add Year</button>
+
+            <div class="mgmt-column">
+                <center><b>YEARS</b></center>
+                <div style="display:flex; margin-top:5px;">
+                    <input id="newYear" placeholder="e.g. 1st" style="width:100%; margin:2px;">
+                    <button onclick="addDropdownItem('years', 'newYear')" style="background:#17a2b8; padding:5px 10px;">+</button>
+                </div>
+                <div id="list-years" class="item-list"></div>
             </div>
-            <div class="mgmt-item">
-                <input id="newSection" placeholder="New Section" style="width:120px;">
-                <button onclick="addDropdownItem('sections', 'newSection')" style="background:#17a2b8;">Add Section</button>
+
+            <div class="mgmt-column">
+                <center><b>SECTIONS</b></center>
+                <div style="display:flex; margin-top:5px;">
+                    <input id="newSection" placeholder="e.g. 2A" style="width:100%; margin:2px;">
+                    <button onclick="addDropdownItem('sections', 'newSection')" style="background:#17a2b8; padding:5px 10px;">+</button>
+                </div>
+                <div id="list-sections" class="item-list"></div>
             </div>
         </div>
     </div>
@@ -143,39 +163,55 @@ function save(){
     localStorage.setItem('lu_final_dr', JSON.stringify(dropdowns));
 }
 
-/* --- DROPDOWN MANAGEMENT LOGIC --- */
+/* --- DYNAMIC DROPDOWN & MANAGEMENT LOGIC --- */
 function addDropdownItem(category, inputId) {
     const input = document.getElementById(inputId);
     const value = input.value.trim().toUpperCase();
-    
-    if(!value) return alert("Please enter a value.");
-    if(dropdowns[category].includes(value)) return alert("This already exists.");
+    if(!value) return alert("Enter a value");
+    if(dropdowns[category].includes(value)) return alert("Already exists");
     
     dropdowns[category].push(value);
-    dropdowns[category].sort(); // Keep them organized
+    dropdowns[category].sort();
     save();
-    
-    input.value = ""; // Clear input
-    refreshDropdownUI(); // Update UI immediately
+    input.value = "";
+    refreshDropdownUI();
+    renderAll();
+}
+
+function removeDropdownItem(category, value) {
+    if(!confirm(`Remove "${value}" from the options?`)) return;
+    dropdowns[category] = dropdowns[category].filter(x => x !== value);
+    save();
+    refreshDropdownUI();
     renderAll();
 }
 
 function refreshDropdownUI() {
-    const opt = arr => arr.map(x => `<option value="${x}">${x}</option>`).join("");
+    const buildOptions = arr => arr.map(x => `<option value="${x}">${x}</option>`).join("");
+    const buildManageList = (category, arr) => arr.map(x => `
+        <div class="item-pill">
+            <span>${x}</span>
+            <span class="btn-del-small" onclick="removeDropdownItem('${category}', '${x}')">×</span>
+        </div>
+    `).join("");
+
+    // Update Dropdowns
+    document.getElementById("sectionSelect").innerHTML = buildOptions(dropdowns.sections);
+    document.getElementById("courseSelect").innerHTML = buildOptions(dropdowns.courses);
+    document.getElementById("yearSelect").innerHTML = buildOptions(dropdowns.years);
+    document.getElementById("qrPrintSection").innerHTML = buildOptions(dropdowns.sections);
     
-    // Refresh student form
-    document.getElementById("sectionSelect").innerHTML = opt(dropdowns.sections);
-    document.getElementById("courseSelect").innerHTML = opt(dropdowns.courses);
-    document.getElementById("yearSelect").innerHTML = opt(dropdowns.years);
-    document.getElementById("qrPrintSection").innerHTML = opt(dropdowns.sections);
-    
-    // Refresh filter dropdowns
-    const sOpts = `<option value="ALL">ALL</option>` + opt(dropdowns.sections);
+    const sOpts = `<option value="ALL">ALL</option>` + buildOptions(dropdowns.sections);
     document.getElementById("scanSectionFilter").innerHTML = sOpts;
     document.getElementById("repSectionFilter").innerHTML = sOpts;
+
+    // Update Management Lists
+    document.getElementById("list-courses").innerHTML = buildManageList('courses', dropdowns.courses);
+    document.getElementById("list-years").innerHTML = buildManageList('years', dropdowns.years);
+    document.getElementById("list-sections").innerHTML = buildManageList('sections', dropdowns.sections);
 }
 
-/* --- SCANNER & CORE LOGIC --- */
+/* --- CORE SYSTEM LOGIC --- */
 let html5QrCode;
 let isScanningPaused = false;
 
@@ -222,7 +258,7 @@ async function startScanner() {
 async function stopScanner() { if(html5QrCode && html5QrCode.isScanning) { await html5QrCode.stop(); document.getElementById("scanStatus").innerText = "Stopped."; } }
 
 function renderAll() {
-    // Ensure dropdowns are built if empty
+    // If UI elements are empty, force rebuild
     if(document.getElementById("sectionSelect").options.length === 0) refreshDropdownUI();
 
     const sF = document.getElementById("scanSectionFilter").value;
@@ -254,12 +290,12 @@ function saveStudent() {
         year: document.getElementById("yearSelect").value, 
         section: document.getElementById("sectionSelect").value 
     };
-    if(!s.id || !s.name) return alert("Fill all fields");
+    if(!s.id || !s.name || !s.course || !s.section) return alert("Fill all fields");
     students.push(s); save(); renderAll();
     document.getElementById("sid").value=""; document.getElementById("sname").value="";
 }
 
-/* --- PDF & SYSTEM TOOLS --- */
+/* --- UTILITIES --- */
 async function printQRBatch() {
     const sec = document.getElementById('qrPrintSection').value;
     const list = students.filter(s => s.section === sec).slice(0, 50);
